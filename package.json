@@ -1,0 +1,46 @@
+{
+  "name": "dayline",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Dayline: a day record for families of autistic children, kept on the parent's phone.",
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build && pagefind --site dist",
+    "preview": "node scripts/serve.mjs --port 4321 --base ${PUBLIC_BASE_PATH:-/}",
+    "check": "astro check && eslint . && vitest run",
+    "test": "vitest run",
+    "test:e2e": "playwright test",
+    "format": "prettier --write ."
+  },
+  "dependencies": {
+    "@astrojs/check": "^0.9.12",
+    "@astrojs/preact": "^6.1.6",
+    "@fontsource-variable/bricolage-grotesque": "^5.3.0",
+    "@fontsource-variable/figtree": "^5.3.0",
+    "@fontsource/hind-siliguri": "^5.3.0",
+    "@vite-pwa/astro": "^2.0.3",
+    "astro": "^7.4.13",
+    "dexie": "^4.4.7",
+    "modern-screenshot": "^4.7.0",
+    "pdf-lib": "^1.17.1",
+    "preact": "^11.2.0",
+    "typescript": "^6.0.3",
+    "vite-plugin-pwa": "^2.0.0",
+    "workbox-window": "^7.4.1"
+  },
+  "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "@playwright/test": "^1.65.1",
+    "@types/node": "^26.6.6",
+    "eslint": "^10.15.0",
+    "eslint-plugin-astro": "^3.2.1",
+    "fake-indexeddb": "^6.2.8",
+    "globals": "^17.14.0",
+    "pagefind": "^1.6.0",
+    "prettier": "^3.10.1",
+    "prettier-plugin-astro": "^1.1.2",
+    "typescript-eslint": "^8.73.0",
+    "vitest": "^5.1.1"
+  }
+}

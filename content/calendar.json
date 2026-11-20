@@ -1,0 +1,13 @@
+{
+  "$description": "Seasonal routine changes for Bangladesh. Drives 'For [child] this week' picks and routine-change nudges. Islamic dates depend on moon sighting: dates marked approx must be confirmed against the official Bangladesh government holiday list each year before release.",
+  "events": [
+    { "key": "victory-day", "name": { "en": "Victory Day", "bn": "বিজয় দিবস" }, "start": "2026-12-16", "end": "2026-12-16", "approx": false, "guides": ["crowds-and-noise"] },
+    { "key": "winter-break", "name": { "en": "School winter break", "bn": "শীতকালীন ছুটি" }, "start": "2026-12-15", "end": "2026-12-31", "approx": true, "guides": ["school-holidays", "sleep-routine-changes"] },
+    { "key": "new-school-year", "name": { "en": "New school year", "bn": "নতুন শিক্ষাবর্ষ" }, "start": "2027-01-01", "end": "2027-01-15", "approx": true, "guides": ["new-teacher", "school-brief"] },
+    { "key": "ramadan", "name": { "en": "Ramadan", "bn": "রমজান" }, "start": "2027-02-09", "end": "2027-03-10", "approx": true, "guides": ["ramadan-routines", "medicine-times-ramadan", "sleep-routine-changes"] },
+    { "key": "eid-ul-fitr", "name": { "en": "Eid ul-Fitr", "bn": "ঈদুল ফিতর" }, "start": "2027-03-10", "end": "2027-03-13", "approx": true, "guides": ["haircut-day", "visiting-relatives", "travel-day", "crowds-and-noise"] },
+    { "key": "independence-day", "name": { "en": "Independence Day", "bn": "স্বাধীনতা দিবস" }, "start": "2027-03-26", "end": "2027-03-26", "approx": false, "guides": ["crowds-and-noise"] },
+    { "key": "pohela-boishakh", "name": { "en": "Pohela Boishakh", "bn": "পহেলা বৈশাখ" }, "start": "2027-04-14", "end": "2027-04-14", "approx": false, "guides": ["crowds-and-noise", "new-clothes"] },
+    { "key": "eid-ul-adha", "name": { "en": "Eid ul-Adha", "bn": "ঈদুল আযহা" }, "start": "2027-05-16", "end": "2027-05-19", "approx": true, "guides": ["haircut-day", "visiting-relatives", "animals-and-loud-sounds", "travel-day"] }
+  ]
+}
