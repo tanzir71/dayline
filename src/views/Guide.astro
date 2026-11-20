@@ -1,0 +1,144 @@
+---
+import { render } from 'astro:content';
+import SitePage from '../layouts/SitePage.astro';
+import { Overline } from '../components/Overline';
+import { Icon } from '../components/Icon';
+import { getDict, fmt, monthYear, otherLang } from '../i18n';
+import { localHref, type Lang } from '../lib/paths';
+import { publishedGuides, translationOf, type Guide } from '../lib/guides';
+import { browseKeyFor, BROWSE_TONE } from '../content/guide-schema';
+import { flags } from '../config/flags';
+import '../styles/guides.css';
+
+interface Props {
+  lang: Lang;
+  guide: Guide;
+}
+
+const { lang, guide } = Astro.props;
+const g = guide.data;
+const d = getDict(lang);
+const G = d.guides;
+const T = d.guide;
+const { Content } = await render(guide);
+const other = translationOf(guide, await publishedGuides());
+const browse = browseKeyFor(g.category);
+const path = `guides/${g.slug}/`;
+const isDraft = g.status === 'draft';
+const otherLangName = d.guide.otherLangName;
+---
+
+<SitePage
+  lang={lang}
+  title={`${g.title} · Dayline`}
+  description={g.summary}
+  path={path}
+  altPath={other ? path : 'guides/'}
+  current="guides"
+  ogType="article"
+  bodyClass="guide-body-page"
+>
+  <article
+    class="column guide"
+    data-pagefind-body
+  >
+    <span hidden data-pagefind-meta={`tone:${g.tone}`}></span>
+    <span hidden data-pagefind-meta={`minutes:${g.read_minutes}`}></span>
+    <span hidden data-pagefind-meta={`status:${g.status}`}></span>
+    <a class="back-link no-print" href={localHref(lang, 'guides/')} data-pagefind-ignore><Icon name="chevron-left" size={18} />{G.back}</a>
+    <header class="guide__head">
+      <Overline tone={BROWSE_TONE[browse]}><a href={localHref(lang, `guides/category/${browse}/`)} data-pagefind-ignore>{G.categories[browse]}</a></Overline>
+      <h1 class="guide__title" data-pagefind-meta="title">{g.title}</h1>
+      <p class="guide__meta t-caption-13" data-pagefind-ignore>
+        {fmt(T.readMinutes, { n: g.read_minutes }, lang)} ·{' '}
+        {isDraft ? T.draftMeta : fmt(T.reviewedBy, { name: g.reviewed_by, date: monthYear(g.reviewed_on, lang) }, lang)}
+        {
+          other && (
+            <>
+              {' · '}
+              {T.alsoIn}{' '}
+              <a href={localHref(otherLang(lang), path)} hreflang={otherLang(lang)} data-lang-switch={otherLang(lang)}>
+                <span lang={otherLang(lang)}>{otherLangName}</span>
+              </a>
+            </>
+          )
+        }
+      </p>
+      <p class="sr-only" data-pagefind-ignore="all">{g.summary}</p>
+    </header>
+
+    {
+      isDraft && (
+        <div class="draft-banner" role="note" data-pagefind-ignore>
+          <span>
+            <strong>{T.draftBanner}</strong>
+            <br />
+            <span class="draft-banner__body">{T.draftBannerBody}</span>
+          </span>
+        </div>
+      )
+    }
+
+    <p class="print-only print-hint">{T.printTitle}: {T.printHint}</p>
+
+    <div class="guide__body">
+      <Content />
+    </div>
+
+    {g.category === 'medicines' && <p class="guide__boundary t-body-14">{T.notAdvice}</p>}
+
+    {
+      g.sources.length > 0 && (
+        <section class="guide__sources" data-pagefind-ignore>
+          <h2 class="t-heading-17">{T.sources}</h2>
+          <ul>
+            {g.sources.map((s) => (
+              <li>{s.url ? <a href={s.url}>{s.title}</a> : s.title}</li>
+            ))}
+          </ul>
+        </section>
+      )
+    }
+
+    <div class="guide__actions no-print" data-pagefind-ignore>
+      {
+        flags.PLAYBOOK && g.playbook_items.length > 0 && (
+          <a class="btn btn--primary btn--block" href={`${localHref(lang, 'app/')}#/playbook/add/${g.slug}`}>
+            {T.saveToPlaybook}
+          </a>
+        )
+      }
+      <div class="guide__actions-row">
+        <button type="button" class="btn btn--secondary" data-print>
+          <Icon name="print" size={20} />
+          {T.print}
+        </button>
+        <button type="button" class="btn btn--secondary" data-share data-copied={T.copied} data-title={g.title} data-text={g.summary}>
+          <Icon name="share" size={20} />
+          <span class="sr-only">{T.share}</span>
+        </button>
+      </div>
+      <p class="guide__share-status t-caption-13" aria-live="polite" data-share-status></p>
+    </div>
+  </article>
+</SitePage>
+
+<script>
+  document.querySelector('[data-print]')?.addEventListener('click', () => window.print());
+  const share = document.querySelector<HTMLButtonElement>('[data-share]');
+  const status = document.querySelector<HTMLElement>('[data-share-status]');
+  share?.addEventListener('click', async () => {
+    const url = location.href.split('#')[0]!;
+    const data = { title: share.dataset.title, text: share.dataset.text, url };
+    try {
+      if (navigator.share) {
+        await navigator.share(data);
+        return;
+      }
+      await navigator.clipboard.writeText(url);
+      if (status) status.textContent = share.dataset.copied ?? '';
+    } catch {
+      /* the reader closed the share sheet */
+    }
+  });
+</script>

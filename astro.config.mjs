@@ -1,6 +1,7 @@
 // @ts-check
 import { defineConfig } from 'astro/config';
 import preact from '@astrojs/preact';
+import rehypeGuide from './src/lib/rehype-guide.mjs';
 
 /** PUBLIC_SITE_URL: origin only, e.g. https://user.github.io or https://dayline.example */
 const site = process.env.PUBLIC_SITE_URL || 'https://tanzir71.github.io';
@@ -15,5 +16,6 @@ export default defineConfig({
   trailingSlash: 'always',
   build: { format: 'directory', assets: '_astro' },
   integrations: [preact()],
+  markdown: { rehypePlugins: [rehypeGuide] },
   devToolbar: { enabled: false },
 });

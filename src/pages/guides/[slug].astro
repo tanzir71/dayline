@@ -1,0 +1,13 @@
+---
+import Guide from '../../views/Guide.astro';
+import { publishedGuides, type Guide as GuideEntry } from '../../lib/guides';
+
+export async function getStaticPaths() {
+  const guides = await publishedGuides('en');
+  return guides.map((guide) => ({ params: { slug: guide.data.slug }, props: { guide } }));
+}
+
+const { guide } = Astro.props as { guide: GuideEntry };
+---
+
+<Guide lang="en" guide={guide} />
