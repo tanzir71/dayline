@@ -2,6 +2,7 @@
 import { getDict, otherLang } from '../i18n';
 import { localHref, type Lang } from '../lib/paths';
 import { Icon } from './Icon';
+import { flags } from '../config/flags';
 
 interface Props {
   lang: Lang;
@@ -39,6 +40,7 @@ const links = [
       <a class="lang-switch" href={altHref} hreflang={other} data-lang-switch={other}>
         <span lang={other}>{d.lang.switchLabel}</span><span class="sr-only"> · {d.lang.switchAria}</span>
       </a>
+      {flags.DESKTOP && <button type="button" class="btn btn--secondary btn--sm site-header__install" data-install-desktop hidden>{d.nav.installApp}</button>}
       <a class="btn btn--primary site-header__app" href={localHref(lang, 'app/')}>{d.nav.openApp}</a>
       <details class="site-menu">
         <summary class="site-menu__toggle">

@@ -5,6 +5,7 @@ import '../styles/base.css';
 import '../styles/components.css';
 import { href, localHref, type Lang } from '../lib/paths';
 import { pwaInfo } from 'virtual:pwa-info';
+import { flags } from '../config/flags';
 
 interface Props {
   lang: Lang;
@@ -140,5 +141,12 @@ const csp = [
     <script>
       import '../lib/pwa-register';
     </script>
+    {
+      flags.DESKTOP && (
+        <script>
+          import '../lib/desktop-install';
+        </script>
+      )
+    }
   </body>
 </html>
