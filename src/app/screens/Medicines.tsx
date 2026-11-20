@@ -58,7 +58,7 @@ export function Medicines() {
             const times = scheds.flatMap((s) => s.times).sort().map((x) => hhmmLabel(x, lang)).join(', ');
             return (
               <li key={m.id}>
-                <a class="card med-card tone-medicine" href={`#/child/medicines/${m.id}`}>
+                <a class="card med-card tone-medicine" href={ctx.flags.insights ? `#/child/medicines/${m.id}/info` : `#/child/medicines/${m.id}`}>
                   <span class="med-card__dot" aria-hidden="true" />
                   <span class="med-card__text">
                     <span class="t-body-strong-15">
@@ -169,6 +169,16 @@ export function MedicineEdit({ id }: { id: string }) {
     let medId = med?.id;
     if (med) await repos.medicines.update(med.id, mv);
     else medId = (await repos.medicines.add({ ...mv, child_id: child!.id, prescriber_id: null, label_key: null, active: true })).id;
+    // Every medicine change gets a review date (M2).
+    if (ctx.flags.insights) {
+      const describe = (times: string[], amount: string) => [times.map((x) => hhmmLabel(x, lang)).join(', '), amount].filter(Boolean).join(' · ');
+      const summary = !med
+        ? fmt(t.changes.autoStart, { medicine: mv.generic_name })
+        : sched && (sched.times.join() !== sv.times.join() || sched.amount_text !== sv.amount_text)
+          ? fmt(t.changes.autoDose, { medicine: mv.generic_name, from: describe(sched.times, sched.amount_text), to: describe(sv.times, sv.amount_text) })
+          : null;
+      if (summary) await addChange(med ? 'dose_change' : 'medicine_start', summary, medId!);
+    }
     if (sched) await repos.schedules.update(sched.id, sv);
     else await repos.schedules.add({ ...sv, medicine_id: medId!, starts_on: localDay(), ends_on: null });
     const units = left.trim() === '' ? null : Math.max(0, Number(left));
@@ -181,9 +191,15 @@ export function MedicineEdit({ id }: { id: string }) {
     go('/child/medicines');
   }
 
+  async function addChange(type: 'medicine_start' | 'dose_change' | 'medicine_stop', summary: string, medicineId: string) {
+    const today = localDay();
+    await repos.changes.add({ child_id: child!.id, type, medicine_id: medicineId, summary, reason: '', decided_by: '', effective_on: today, review_on: addDays(today, 17), outcome: 'undecided' });
+  }
+
   async function setActive(active: boolean) {
     if (!med) return;
     await repos.medicines.update(med.id, { active });
+    if (!active && ctx.flags.insights) await addChange('medicine_stop', fmt(t.changes.autoStop, { medicine: med.generic_name }), med.id);
     if (!active && sched) await repos.schedules.update(sched.id, { ends_on: localDay() });
     if (active && sched) await repos.schedules.update(sched.id, { ends_on: null });
     go('/child/medicines');
