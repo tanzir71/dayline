@@ -1,0 +1,30 @@
+---
+import Base from './Base.astro';
+import SiteHeader from '../components/SiteHeader.astro';
+import SiteFooter from '../components/SiteFooter.astro';
+import '../styles/site.css';
+import type { Lang } from '../lib/paths';
+
+interface Props {
+  lang: Lang;
+  title: string;
+  description: string;
+  path: string;
+  altPath?: string | null;
+  current?: 'home' | 'guides' | 'privacy' | 'help-now' | 'app' | 'other';
+  ogType?: 'website' | 'article';
+  bodyClass?: string;
+  noindex?: boolean;
+}
+
+const props = Astro.props;
+---
+
+<Base {...props}>
+  <slot name="head" slot="head" />
+  <SiteHeader lang={props.lang} path={props.path} altPath={props.altPath} current={props.current} />
+  <main id="main" tabindex="-1">
+    <slot />
+  </main>
+  <SiteFooter lang={props.lang} />
+</Base>

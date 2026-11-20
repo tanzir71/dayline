@@ -1,0 +1,68 @@
+---
+import { getDict } from '../i18n';
+import { localHref, type Lang } from '../lib/paths';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const d = getDict(lang);
+const home = localHref(lang, '');
+const repo = 'https://github.com/tanzir71/dayline';
+const cols = [
+  {
+    title: d.footer.product,
+    links: [
+      { href: `${home}#features`, label: d.nav.features },
+      { href: `${home}#how`, label: d.nav.how },
+      { href: `${home}#features`, label: d.footer.milestones },
+    ],
+  },
+  {
+    title: d.footer.guides,
+    links: [
+      { href: localHref(lang, 'guides/category/everyday/'), label: d.footer.everyday },
+      { href: localHref(lang, 'guides/category/medicines/'), label: d.footer.medicines },
+      { href: localHref(lang, 'guides/category/school-services/'), label: d.footer.services },
+    ],
+  },
+  {
+    title: d.footer.about,
+    links: [
+      { href: localHref(lang, 'privacy/'), label: d.nav.privacy },
+      { href: `${home}#who`, label: d.nav.clinicians },
+      { href: `${repo}/issues`, label: d.footer.contact },
+    ],
+  },
+];
+---
+
+<footer class="site-footer">
+  <div class="wrap site-footer__inner">
+    <div class="site-footer__brand">
+      <a class="wordmark wordmark--light" href={home} aria-label={d.nav.home}>dayline<span class="wordmark__dot" aria-hidden="true"></span></a>
+      <p class="t-body-14">{d.footer.disclaimer}</p>
+      <p class="site-footer__meta">
+        <button type="button" class="site-footer__install" data-install-open hidden>{d.nav.installApp}</button>
+        <a href={repo}>{d.footer.source}</a>
+      </p>
+    </div>
+    <nav class="site-footer__links" aria-label={d.footer.about}>
+      {
+        cols.map((c) => (
+          <div>
+            <h2 class="t-body-strong-14">{c.title}</h2>
+            <ul role="list">
+              {c.links.map((l) => (
+                <li>
+                  <a href={l.href}>{l.label}</a>
+                </li>
+              ))}
+            </ul>
+          </div>
+        ))
+      }
+    </nav>
+  </div>
+</footer>

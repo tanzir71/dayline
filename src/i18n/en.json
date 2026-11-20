@@ -1,0 +1,496 @@
+{
+  "meta": {
+    "siteTitle": "Dayline: every day, on one line",
+    "siteDescription": "A day record for families of autistic children, kept on your phone. Guides, Help now, reminders and a brief for whoever is next. No account, works offline, in Bangla and English.",
+    "brandBangla": "ডেলাইন"
+  },
+  "nav": {
+    "skip": "Skip to content",
+    "features": "Features",
+    "how": "How it works",
+    "guides": "Guides",
+    "privacy": "Privacy",
+    "clinicians": "For clinicians",
+    "helpNow": "Help now",
+    "openApp": "Open the app",
+    "menu": "Menu",
+    "installApp": "Install app",
+    "home": "Dayline home",
+    "primary": "Main"
+  },
+  "lang": {
+    "switchLabel": "বাংলা",
+    "switchAria": "Read this page in Bangla",
+    "switchTo": "bn"
+  },
+  "landing": {
+    "title": "Dayline: every day, on one line",
+    "description": "Doses, sleep and hard moments on one line, on your phone. A brief for the next caregiver, a two-page PDF for each doctor, and guides that help from day one. No account, works offline.",
+    "hero": {
+      "overline": "For families of autistic children",
+      "title": "Every day, on one line.",
+      "body": "Dayline keeps doses, sleep and hard moments on one line, on your phone. Show the next caregiver a simple brief, and send each doctor a two-page PDF on WhatsApp. And it helps from day one, even if you never log a thing.",
+      "ctaApp": "Open the app, free",
+      "ctaGuides": "Read the guides",
+      "reassure": [
+        "Works offline",
+        "Bangla and English",
+        "Your data stays on your phone"
+      ],
+      "phoneAlt": "Dayline on a phone: Today for a boy called Rafi, with something to watch for, the next dose with a Mark given button, and the day so far on one line."
+    },
+    "useful": {
+      "title": "Useful from day one",
+      "body": "Most trackers need weeks of logging before they help. Dayline is useful the first time you open it, and keeps being useful when life gets busy and nobody logs.",
+      "cards": [
+        {
+          "title": "Guides",
+          "body": "Short guides for haircuts, Eid visits, sleep and gut trouble, each reviewed by a clinician or trained parent before it's final. Offline, in Bangla and English."
+        },
+        {
+          "title": "Help now",
+          "body": "One tap in a hard moment: calm steps from your child's own playbook. Ending it saves the moment for you."
+        },
+        {
+          "title": "About your child",
+          "body": "Five minutes, once. Becomes a brief for sitters and a passport for hospital visits."
+        },
+        {
+          "title": "Reminders",
+          "body": "Doses, refills and visits. Every tap you'd make anyway becomes part of the record."
+        }
+      ]
+    },
+    "how": {
+      "title": "How it works",
+      "body": "Five everyday workflows. None of them asks you to fill in a form.",
+      "stepLabel": "Step {n}",
+      "workflows": [
+        {
+          "label": "The daily loop",
+          "steps": [
+            "Tap once when something happens, or just mark the dose",
+            "The day line fills itself in, colour by colour",
+            "Show the next caregiver a brief, or send it as a PDF"
+          ]
+        },
+        {
+          "label": "A hard moment",
+          "steps": [
+            "Open Help now",
+            "Try what works for your child, from the playbook",
+            "Tap “It's over”: the moment is saved with what helped"
+          ]
+        },
+        {
+          "label": "A change",
+          "steps": [
+            "Note a new medicine, dose or routine",
+            "Two weeks later, see before and after, with overlaps flagged",
+            "Keep it, or add it to the next visit"
+          ]
+        },
+        {
+          "label": "A doctor visit",
+          "steps": [
+            "Prep in 60 seconds, from memory if needed",
+            "One short report for each doctor",
+            "Every prescriber's changes on one page"
+          ]
+        },
+        {
+          "label": "Coming back after weeks",
+          "steps": [
+            "No streaks and no guilt",
+            "Three yes/no questions about what changed",
+            "Back to today, as if you never left"
+          ]
+        }
+      ]
+    },
+    "seeIt": {
+      "title": "See it in a real day",
+      "body": "Help now in the moment, a brief for Nanu, guides for what's coming, and a change review two weeks later.",
+      "screens": [
+        {
+          "caption": "Help now",
+          "alt": "Help now on a dark screen: keep Rafi safe, fewer words, more space. What works for Rafi, each with a Helped button, and an It's over, save it button."
+        },
+        {
+          "caption": "Handoff brief, no app needed",
+          "alt": "Show mode brief for Nanu: Rafi from 3:05 pm, the next dose, what to watch for, what calms him and call buttons."
+        },
+        {
+          "caption": "Guides, offline",
+          "alt": "Guides: a search box, two picks for Rafi this week and six categories to browse."
+        },
+        {
+          "caption": "Change review",
+          "alt": "Change review: melatonin moved from 8:30 to 7:00 pm, with 14 days before and after compared and an overlapping change flagged."
+        }
+      ]
+    },
+    "features": {
+      "title": "Everything in Dayline",
+      "body": "Each feature ships in a milestone. M0 is live first; every later milestone adds to the same app without losing what you saved.",
+      "items": [
+        {
+          "badge": "M0 · first",
+          "title": "Guides",
+          "body": "Offline, in Bangla and English, reviewed before they're final"
+        },
+        {
+          "badge": "M0 · first",
+          "title": "Help now",
+          "body": "Calm steps first, saving second"
+        },
+        {
+          "badge": "M1",
+          "title": "Day line and quick log",
+          "body": "One tap per moment, colour by kind"
+        },
+        {
+          "badge": "M1",
+          "title": "About your child",
+          "body": "Profile, brief and hospital passport"
+        },
+        {
+          "badge": "M1",
+          "title": "Medicines and refills",
+          "body": "Reminders, dose taps, refill warnings"
+        },
+        {
+          "badge": "M1",
+          "title": "Handoff brief",
+          "body": "Show on your phone, or send a PDF"
+        },
+        {
+          "badge": "M2",
+          "title": "Visit prep and report",
+          "body": "From memory or from the record"
+        },
+        {
+          "badge": "M2",
+          "title": "Changes and reviews",
+          "body": "Before and after every change"
+        },
+        {
+          "badge": "M2",
+          "title": "Patterns with evidence",
+          "body": "“Seen 6 of 8 times”, never guesses"
+        },
+        {
+          "badge": "M2",
+          "title": "Welcome back",
+          "body": "Three questions after a gap"
+        },
+        {
+          "badge": "M3",
+          "title": "On your computer",
+          "body": "Install on desktop: wide view, printing"
+        },
+        {
+          "badge": "M3",
+          "title": "Hospital passport",
+          "body": "One page for the ER, in Bangla and English"
+        }
+      ],
+      "live": "Live",
+      "next": "Coming"
+    },
+    "who": {
+      "title": "One record, shaped for each person",
+      "items": [
+        {
+          "title": "Parents",
+          "body": "One place for everything you'd otherwise keep in your head."
+        },
+        {
+          "title": "Grandparents and sitters",
+          "body": "A simple brief on your phone, or a PDF on WhatsApp. No app needed."
+        },
+        {
+          "title": "Teachers",
+          "body": "Your child's brief as a PDF on the first day of term."
+        },
+        {
+          "title": "Doctors and therapists",
+          "body": "A two-page PDF with every prescriber's changes."
+        }
+      ]
+    },
+    "privacy": {
+      "title": "Your child's record stays with you",
+      "body": "Dayline is a record and a reminder, not a diagnostic tool. It never suggests doses or changes to treatment.",
+      "items": [
+        {
+          "title": "On your phone first",
+          "body": "Works offline. Nothing leaves your phone unless you send a PDF or a backup."
+        },
+        {
+          "title": "No accounts, no cloud",
+          "body": "There's no sign-up and no server holding your child's data."
+        },
+        {
+          "title": "No ads, no selling",
+          "body": "Your data is never sold or used for advertising."
+        },
+        {
+          "title": "Yours to take or delete",
+          "body": "Export everything, or delete everything, at any time."
+        }
+      ],
+      "more": "Read the privacy page"
+    },
+    "cta": {
+      "title": "Start with the guides today. No sign-up.",
+      "hint": "On Android, add it to your home screen from Chrome. On iPhone, use Share, then Add to Home Screen."
+    },
+    "mock": {
+      "child": "Rafi",
+      "date": "Friday, 20 November",
+      "today": "Today",
+      "langPill": "EN · বাংলা",
+      "watchFor": "Watch for today",
+      "watchBody": "Short night (6 h 10 m). After nights under 7 hours, 6 of 8 days had a hard moment, mostly 4–6 pm.",
+      "watchLink": "What helps: quiet car ride, headphones",
+      "nextDose": "Next dose · 7:00 pm",
+      "doseName": "Melatonin, 1 tablet",
+      "doseHint": "With water, 30 min before bed",
+      "markGiven": "Mark given",
+      "daySoFar": "The day so far",
+      "caregivers": "3 caregivers",
+      "items": [
+        {
+          "time": "6:40 am",
+          "title": "Woke up · slept 6 h 10 m",
+          "detail": "Woke twice in the night",
+          "tone": "sleep"
+        },
+        {
+          "time": "7:50 am",
+          "title": "Risperidone given",
+          "detail": "By Amma · 40 min late",
+          "tone": "medicine"
+        },
+        {
+          "time": "8:05 am",
+          "title": "Breakfast, ate about half",
+          "detail": "No bowel movement since yesterday",
+          "tone": "food"
+        },
+        {
+          "time": "12:40 pm",
+          "title": "Hard moment · 6 min",
+          "detail": "Lunch to class transition · per Ms. Akter at pickup",
+          "tone": "hard-moment"
+        },
+        {
+          "time": "2:15 pm",
+          "title": "Win: asked for a break",
+          "detail": "Used his break card · Ms. Akter",
+          "tone": "win"
+        }
+      ],
+      "nowTime": "3:05 pm",
+      "now": "Now · picked up by Nanu",
+      "hardMoment": "Hard moment",
+      "win": "Win",
+      "dose": "Dose",
+      "more": "More",
+      "tabToday": "Today",
+      "tabGuides": "Guides",
+      "tabInsights": "Insights"
+    }
+  },
+  "footer": {
+    "disclaimer": "Not a medical device. Not medical advice. In an emergency in Bangladesh, call 999.",
+    "product": "Product",
+    "milestones": "Milestones",
+    "guides": "Guides",
+    "everyday": "Everyday situations",
+    "medicines": "Medicines",
+    "services": "Services in Bangladesh",
+    "about": "About",
+    "contact": "Contact",
+    "source": "Open source on GitHub"
+  },
+  "guides": {
+    "title": "Guides",
+    "metaTitle": "Guides · Dayline",
+    "description": "Short guides for everyday situations with an autistic child: haircuts, Eid visits, sleep, gut trouble, hard moments, school and services. Offline, in Bangla and English.",
+    "subtitle": "Short guides for everyday situations. Works offline.",
+    "subtitleReviewed": "Reviewed by clinicians and parents. Works offline.",
+    "searchLabel": "Search guides",
+    "searchPlaceholder": "Search: haircut, constipation, sleep",
+    "searching": "Searching…",
+    "noResults": "No guide matches “{q}” yet. Try another word, or browse the topics below.",
+    "resultsCount": "{n} guides found",
+    "resultsOne": "1 guide found",
+    "searchOffline": "Search needs this page to have loaded once with a connection. You can still browse the topics below.",
+    "thisWeek": "This week",
+    "thisWeekFor": "For {name} this week",
+    "comingUp": "{event} is in {n} days",
+    "comingUpOne": "{event} is tomorrow",
+    "happeningNow": "{event} is now",
+    "browse": "Browse",
+    "count": "{n} guides",
+    "countOne": "1 guide",
+    "countZero": "Coming soon",
+    "categories": {
+      "everyday": "Everyday situations",
+      "medicines": "Medicines",
+      "sleep": "Sleep",
+      "food-gut": "Food and gut",
+      "hard-moments": "Hard moments",
+      "school-services": "School, rights, services"
+    },
+    "categoryIntro": {
+      "everyday": "Haircuts, visits, travel, festivals and the other days that ask a lot.",
+      "medicines": "What to watch and what to ask the prescriber.",
+      "sleep": "Bedtimes, night waking and routines that change.",
+      "food-gut": "Eating, constipation and the signs a child may not say.",
+      "hard-moments": "Meltdowns, shutdowns and pain that shows up as distress.",
+      "school-services": "Teachers, rights and where to find help in Bangladesh."
+    },
+    "emptyCategory": "Guides for this topic are being written and reviewed. Until then, Help now has calm steps for a hard moment.",
+    "emptyMedicines": "Medicine guides are published only after a clinician reviews them. Until then, take your questions to the prescriber.",
+    "kindGuide": "Guide",
+    "kindMedicine": "Medicine",
+    "minutes": "{n} min",
+    "draft": "draft",
+    "reviewed": "reviewed",
+    "allGuides": "All guides",
+    "back": "Guides"
+  },
+  "guide": {
+    "readMinutes": "{n} min read",
+    "reviewedBy": "Reviewed by {name}, {date}",
+    "draftMeta": "Not yet reviewed",
+    "draftBanner": "Draft — not yet reviewed by a clinician",
+    "draftBannerBody": "Use it as a starting point. A clinician or trained parent will check it before it's final.",
+    "alsoIn": "also in",
+    "otherLangName": "বাংলা",
+    "print": "Print as picture steps",
+    "share": "Share this guide",
+    "copied": "Link copied",
+    "sources": "Sources",
+    "notAdvice": "Dayline never suggests doses or changes; ask the prescriber.",
+    "printTitle": "Picture steps",
+    "printHint": "Stick a photo or draw each step in its box.",
+    "saveToPlaybook": "Save to playbook",
+    "related": "More in {category}"
+  },
+  "helpNow": {
+    "metaTitle": "Help now · Dayline",
+    "description": "Calm steps for a hard moment, right now. Works offline.",
+    "overline": "Help now",
+    "started": "Started {time}",
+    "elapsed": "{n} min",
+    "title": "Keep your child safe. Fewer words, more space.",
+    "titleNamed": "Keep {name} safe. Fewer words, more space.",
+    "reassure": "You're doing the right thing by staying close.",
+    "stepsHeading": "Calm steps",
+    "ifNotWorking": "If it isn't working",
+    "getHelp": "Get help now if",
+    "emergency": "Emergency {number}",
+    "call": "Call {name}",
+    "changeNumber": "Emergency number: {number}. Change",
+    "numberLabel": "Emergency number to call",
+    "numberHint": "999 is the national emergency number in Bangladesh.",
+    "save": "Save",
+    "cancel": "Cancel",
+    "done": "I'm done",
+    "footnote": "These are general steps. In the app, Help now shows your child's own playbook first.",
+    "readGuide": "Read the full guide"
+  },
+  "install": {
+    "title": "Install Dayline",
+    "body": "Works offline, opens in one tap.",
+    "install": "Install",
+    "notNow": "Not now",
+    "close": "Close",
+    "iosTitle": "Add Dayline to your Home Screen",
+    "iosStep1": "Tap Share",
+    "iosStep1Hint": "The square with an arrow, at the bottom of Safari.",
+    "iosStep2": "Then tap Add to Home Screen",
+    "iosStep2Hint": "Scroll down the list if you don't see it.",
+    "manualTitle": "Add Dayline to your home screen",
+    "manualStep1": "Open your browser's menu",
+    "manualStep1Hint": "Usually ⋮ at the top right.",
+    "manualStep2": "Tap Install app or Add to Home screen",
+    "manualStep2Hint": "Dayline then opens like an app, even offline."
+  },
+  "privacy": {
+    "metaTitle": "Privacy · Dayline",
+    "description": "No accounts. No server. Your child's data stays on your phone.",
+    "title": "Privacy",
+    "lead": "No accounts. No server. Your child's data stays on your phone.",
+    "sections": [
+      {
+        "title": "What Dayline collects",
+        "body": "Nothing. There is no sign-up, no account, no analytics and no advertising. The site and app only ever talk to this website, to load the pages and guides."
+      },
+      {
+        "title": "Where your child's record lives",
+        "body": "Everything you add in the app (your child's profile, medicines, the day line) is stored in your browser's storage on this phone. It is not copied to any server, because Dayline doesn't have one."
+      },
+      {
+        "title": "How anything leaves your phone",
+        "body": "Only when you choose: you show the brief on your screen, send a PDF (for example on WhatsApp), print, or save a backup file. Each of these is made on your phone."
+      },
+      {
+        "title": "Backups matter",
+        "body": "Because the record lives only on this phone, clearing the browser's data or losing the phone loses it. Dayline reminds you once a month to save a backup file somewhere safe."
+      },
+      {
+        "title": "Deleting",
+        "body": "You can export everything or delete everything at any time from the app's settings. Uninstalling or clearing site data also deletes it."
+      },
+      {
+        "title": "Not medical advice",
+        "body": "Dayline is a record and a reminder, not a diagnostic tool or a medical device. It never suggests doses or changes to treatment; ask the prescriber."
+      }
+    ],
+    "contact": "Questions or problems? Open an issue on GitHub."
+  },
+  "app": {
+    "metaTitle": "The app · Dayline",
+    "description": "The Dayline app arrives in the next release.",
+    "placeholderTitle": "The app arrives in the next release.",
+    "placeholderBody": "Install now to get it automatically. Until then, the guides and Help now work offline.",
+    "goGuides": "Read the guides",
+    "goHelpNow": "Open Help now"
+  },
+  "offline": {
+    "metaTitle": "Offline · Dayline",
+    "title": "You're offline",
+    "body": "This page isn't saved on your phone yet. Guides and Help now are saved after your first visit, so they still work.",
+    "goGuides": "Open the guides",
+    "goHelpNow": "Open Help now"
+  },
+  "notFound": {
+    "metaTitle": "Page not found · Dayline",
+    "title": "This page isn't here",
+    "body": "The link may be old. The guides and Help now are a tap away.",
+    "home": "Go to the home page"
+  },
+  "common": {
+    "close": "Close",
+    "back": "Back",
+    "monthNames": [
+      "January",
+      "February",
+      "March",
+      "April",
+      "May",
+      "June",
+      "July",
+      "August",
+      "September",
+      "October",
+      "November",
+      "December"
+    ]
+  }
+}

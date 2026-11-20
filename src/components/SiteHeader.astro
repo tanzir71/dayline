@@ -1,0 +1,68 @@
+---
+import { getDict, otherLang } from '../i18n';
+import { localHref, type Lang } from '../lib/paths';
+import { Icon } from './Icon';
+
+interface Props {
+  lang: Lang;
+  /** Current page path without the language prefix. */
+  path: string;
+  /** Same page in the other language, when it differs from `path`. */
+  altPath?: string | null;
+  current?: 'home' | 'guides' | 'privacy' | 'help-now' | 'app' | 'other';
+}
+
+const { lang, path, altPath, current = 'other' } = Astro.props;
+const d = getDict(lang);
+const other = otherLang(lang);
+const altHref = localHref(other, altPath ?? path);
+const home = localHref(lang, '');
+const links = [
+  { href: `${home}#features`, label: d.nav.features },
+  { href: `${home}#how`, label: d.nav.how },
+  { href: localHref(lang, 'guides/'), label: d.nav.guides, here: current === 'guides' },
+  { href: localHref(lang, 'privacy/'), label: d.nav.privacy, here: current === 'privacy' },
+  { href: `${home}#who`, label: d.nav.clinicians },
+];
+---
+
+<a class="skip-link" href="#main">{d.nav.skip}</a>
+<header class="site-header">
+  <div class="wrap site-header__inner">
+    <a class="wordmark" href={home} aria-label={d.nav.home}>dayline<span class="wordmark__dot" aria-hidden="true"></span></a>
+    <nav class="site-nav" aria-label={d.nav.primary}>
+      <ul role="list">
+        {links.map((l) => <li><a href={l.href} aria-current={l.here ? 'page' : undefined}>{l.label}</a></li>)}
+      </ul>
+    </nav>
+    <div class="site-header__actions">
+      <a class="lang-switch" href={altHref} hreflang={other} data-lang-switch={other}>
+        <span lang={other}>{d.lang.switchLabel}</span><span class="sr-only"> · {d.lang.switchAria}</span>
+      </a>
+      <a class="btn btn--primary site-header__app" href={localHref(lang, 'app/')}>{d.nav.openApp}</a>
+      <details class="site-menu">
+        <summary class="site-menu__toggle">
+          <Icon name="menu" />
+          <span class="sr-only">{d.nav.menu}</span>
+        </summary>
+        <div class="site-menu__panel">
+          <ul role="list">
+            {links.map((l) => <li><a href={l.href} aria-current={l.here ? 'page' : undefined}>{l.label}</a></li>)}
+            <li><a href={localHref(lang, 'help-now/')}>{d.nav.helpNow}</a></li>
+            <li><a href={localHref(lang, 'app/')}>{d.nav.openApp}</a></li>
+            <li><button type="button" class="site-menu__install" data-install-open hidden>{d.nav.installApp}</button></li>
+          </ul>
+        </div>
+      </details>
+    </div>
+  </div>
+</header>
+
+<script>
+  // Close the phone menu after following an in-page link.
+  document.querySelectorAll<HTMLDetailsElement>('.site-menu').forEach((menu) => {
+    menu.addEventListener('click', (e) => {
+      if ((e.target as HTMLElement).closest('a,button[data-install-open]')) menu.open = false;
+    });
+  });
+</script>

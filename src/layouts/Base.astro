@@ -86,6 +86,36 @@ const csp = [
     <meta property="og:image:height" content="630" />
     <meta property="og:locale" content={ogLocale} />
     <meta name="twitter:card" content="summary_large_image" />
+    <script is:inline>
+      // Remember the language the reader picked; open that language on the next visit from outside the site.
+      (function () {
+        const KEY = 'dayline.lang';
+        const root = document.documentElement;
+        document.addEventListener(
+          'click',
+          function (e) {
+            const a = e.target && e.target.closest && e.target.closest('[data-lang-switch]');
+            if (!a) return;
+            try {
+              localStorage.setItem(KEY, a.getAttribute('data-lang-switch'));
+            } catch {
+              /* storage unavailable: the switch still works for this visit */
+            }
+          },
+          true,
+        );
+        try {
+          const saved = localStorage.getItem(KEY);
+          if (!saved || saved === root.lang || root.hasAttribute('data-no-lang-redirect')) return;
+          const ref = document.referrer;
+          if (ref && new URL(ref).origin === location.origin) return;
+          const alt = document.querySelector('link[rel="alternate"][hreflang="' + saved + '"]');
+          if (alt) location.replace(new URL(alt.href).pathname + location.search + location.hash);
+        } catch {
+          /* storage unavailable: stay on this page */
+        }
+      })();
+    </script>
     <slot name="head" />
   </head>
   <body class={bodyClass}>
