@@ -891,7 +891,7 @@
       "exportJson": "Save a backup file",
       "exportCsv": "Spreadsheet files (CSV)",
       "import": "Restore from a backup file",
-      "importConfirm": "This replaces everything on this phone with the backup from {date}. Continue?",
+      "importConfirm": "This replaces everything on this device with the backup from {date}. Nothing is merged. Continue?",
       "imported": "Restored from the backup",
       "importFailed": "Couldn't restore: {reason}",
       "lastBackup": "Last backup: {date}",
@@ -902,7 +902,9 @@
       "deletedAll": "Everything on this phone was deleted",
       "privacy": "Privacy",
       "storage": "Storage on this phone is protected from automatic clearing.",
-      "storageNot": "This browser may clear storage when space runs low. Keep a backup."
+      "storageNot": "This browser may clear storage when space runs low. Keep a backup.",
+      "move": "Move to a computer or another phone",
+      "moveBody": "Save a backup file here, send it to yourself (WhatsApp, email or a USB stick), then open Dayline on the other device and restore it. The backup replaces what is there."
     },
     "insights": {
       "title": "Insights",
@@ -1193,6 +1195,36 @@
       "boxed": "This label has a boxed warning. Ask the prescriber to explain it.",
       "edit": "Edit schedule",
       "symptomsHint": "Pick one, or type it"
+    },
+    "passport": {
+      "title": "Hospital passport",
+      "pdfTitle": "{name}'s hospital passport",
+      "readFirst": "Please read before examining or treating {name}",
+      "communication": "How {name} communicates",
+      "distress": "Signs of pain or distress",
+      "medicines": "Medicines and allergies",
+      "calms": "What calms {name}",
+      "avoid": "Please avoid",
+      "contacts": "Who to call",
+      "noMedicines": "No regular medicines",
+      "empty": "Not added yet",
+      "made": "Made with Dayline on {date}. The family's description, not medical advice.",
+      "print": "Hospital passport",
+      "share": "Share {name}'s hospital passport",
+      "shareSub": "One page for the ER and new doctors: how {name} communicates, signs of pain, medicines, what calms, who to call",
+      "showBody": "Big and simple, for a nurse or doctor to read on this phone.",
+      "pdfBody": "One page. Opens WhatsApp, or any app you choose.",
+      "emergency": "Emergency {number}"
+    },
+    "keys": {
+      "title": "Keyboard shortcuts",
+      "newMoment": "N: log a moment",
+      "dose": "D: dose given",
+      "search": "/: search guides",
+      "close": "Esc: close"
+    },
+    "install": {
+      "desktop": "Install app"
     }
   },
   "offline": {

@@ -75,7 +75,7 @@ const labels = Object.values(labelFiles).map(({ default: l }) => {
         helpSteps={helpSteps}
         calendar={calendar}
         labels={labels}
-        flags={{ playbook: flags.PLAYBOOK, insights: flags.INSIGHTS }}
+        flags={{ playbook: flags.PLAYBOOK, insights: flags.INSIGHTS, desktop: flags.DESKTOP }}
       >
         <main slot="fallback" class="column app-message" aria-busy="true">
           <p class="t-body-15 muted">{d.app.loading}</p>

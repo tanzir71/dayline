@@ -49,7 +49,7 @@ export interface AppCtx {
   labels: LabelSummary[];
   toast: (message: string, undo?: () => void) => void;
   emergency: string;
-  flags: { playbook: boolean; insights: boolean };
+  flags: { playbook: boolean; insights: boolean; desktop: boolean };
 }
 
 export const Ctx = createContext<AppCtx | null>(null);

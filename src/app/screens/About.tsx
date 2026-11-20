@@ -90,10 +90,15 @@ export function About() {
           <a class="btn btn--primary" href="#/child?sheet=share">
             {fmt(A.share, { name })}
           </a>
-          <a class="btn btn--secondary" href="#/playbook">
-            {A.playbook}
-          </a>
+          {ctx.flags.desktop && (
+            <a class="btn btn--secondary" href="#/child?sheet=passport">
+              {t.passport.print}
+            </a>
+          )}
         </div>
+        <a class="btn btn--secondary" href="#/playbook">
+          {A.playbook}
+        </a>
         <a class="btn btn--ghost" href="#/settings">
           {A.settings}
         </a>

@@ -1,4 +1,3 @@
-import { useEffect, useRef, useState } from 'preact/hooks';
 import { useApp } from '../context';
 import { useChildData, useEvents } from '../data';
 import { useNow } from '../live';
@@ -8,8 +7,7 @@ import { addDays, localDay } from '../../lib/time';
 import { buildBrief } from '../brief';
 import { markDose } from '../actions';
 import type { Lang } from '../../data/types';
-
-const HOLD_MS = 1000;
+import { HoldButton, useShowLock } from '../lock';
 
 /**
  * Show mode (2523:179): the brief, full screen, big type, no navigation.
@@ -25,74 +23,7 @@ export function ShowMode({ briefLang }: { briefLang: Lang }) {
   const now = useNow();
   const b = buildBrief(ctx, data, events, tags, lang, now);
   const B = b.t.brief;
-  const [progress, setProgress] = useState(0);
-  const leaving = useRef(false);
-  const timer = useRef<number | null>(null);
-  const started = useRef(0);
-  const route = useRef(location.hash);
-
-  // Stay here: no hash changes and no Back until Done is held.
-  useEffect(() => {
-    route.current = location.hash;
-    history.pushState({ show: true }, '', location.href);
-    const onPop = () => {
-      if (!leaving.current) history.pushState({ show: true }, '', route.current);
-    };
-    const onHash = () => {
-      if (!leaving.current && location.hash !== route.current && !location.hash.startsWith('#/show/')) {
-        history.replaceState(history.state, '', route.current);
-        window.dispatchEvent(new HashChangeEvent('hashchange'));
-      } else route.current = location.hash;
-    };
-    window.addEventListener('popstate', onPop);
-    window.addEventListener('hashchange', onHash);
-    return () => {
-      window.removeEventListener('popstate', onPop);
-      window.removeEventListener('hashchange', onHash);
-    };
-  }, []);
-
-  // Keep the screen awake while the phone is handed over.
-  useEffect(() => {
-    let lock: WakeLockSentinel | null = null;
-    const ask = async () => {
-      try {
-        lock = (await navigator.wakeLock?.request('screen')) ?? null;
-      } catch {
-        /* not supported or not allowed */
-      }
-    };
-    void ask();
-    const onVis = () => document.visibilityState === 'visible' && void ask();
-    document.addEventListener('visibilitychange', onVis);
-    return () => {
-      document.removeEventListener('visibilitychange', onVis);
-      void lock?.release();
-    };
-  }, []);
-
-  function holdStart(e?: Event) {
-    e?.preventDefault();
-    if (timer.current) return;
-    started.current = performance.now();
-    const tick = () => {
-      const p = Math.min(1, (performance.now() - started.current) / HOLD_MS);
-      setProgress(p);
-      if (p >= 1) {
-        timer.current = null;
-        leaving.current = true;
-        location.hash = '#/today';
-        return;
-      }
-      timer.current = requestAnimationFrame(tick);
-    };
-    timer.current = requestAnimationFrame(tick);
-  }
-  function holdEnd() {
-    if (timer.current) cancelAnimationFrame(timer.current);
-    timer.current = null;
-    setProgress(0);
-  }
+  const leave = useShowLock('#/show/');
 
   async function give() {
     if (!b.next) return;
@@ -203,24 +134,7 @@ export function ShowMode({ briefLang }: { briefLang: Lang }) {
             {fmt(ctx.dict.helpNow.emergency, { number: emergency })}
           </a>
         </div>
-        <button
-          type="button"
-          class="btn btn--secondary btn--block hold"
-          style={{ '--hold': String(progress) }}
-          onPointerDown={holdStart}
-          onPointerUp={holdEnd}
-          onPointerLeave={holdEnd}
-          onPointerCancel={holdEnd}
-          onKeyDown={(e) => (e.key === 'Enter' || e.key === ' ') && !e.repeat && holdStart(e)}
-          onKeyUp={holdEnd}
-          onContextMenu={(e) => e.preventDefault()}
-          aria-describedby="hold-hint"
-        >
-          {B.done}
-        </button>
-        <p id="hold-hint" class="t-caption-13 muted center">
-          {progress > 0 ? B.hold : ' '}
-        </p>
+        <HoldButton label={B.done} hint={B.hold} onDone={() => leave('#/today')} />
       </div>
     </div>
   );
