@@ -6,12 +6,13 @@
   "description": "Dayline: a day record for families of autistic children, kept on the parent's phone.",
   "scripts": {
     "dev": "astro dev",
-    "build": "astro build && pagefind --site dist",
+    "build": "astro build",
     "preview": "node scripts/serve.mjs --port 4321 --base ${PUBLIC_BASE_PATH:-/}",
     "check": "astro check && eslint . && vitest run",
     "test": "vitest run",
     "test:e2e": "playwright test",
-    "format": "prettier --write ."
+    "format": "prettier --write .",
+    "lighthouse": "node scripts/lighthouse.mjs"
   },
   "dependencies": {
     "@astrojs/check": "^0.9.12",
@@ -34,10 +35,12 @@
     "@eslint/js": "^10.0.1",
     "@playwright/test": "^1.65.1",
     "@types/node": "^26.6.6",
+    "chrome-launcher": "^1.2.3",
     "eslint": "^10.15.0",
     "eslint-plugin-astro": "^3.2.1",
     "fake-indexeddb": "^6.2.8",
     "globals": "^17.14.0",
+    "lighthouse": "^13.6.0",
     "pagefind": "^1.6.0",
     "prettier": "^3.10.1",
     "prettier-plugin-astro": "^1.1.2",
