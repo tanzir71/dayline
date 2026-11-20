@@ -10,6 +10,7 @@ import { isoWithOffset, localDay, addDays } from '../../lib/time';
 import { plannedDoses, nextDose } from '../../domain/schedule';
 import { timeLabel, hardWord } from '../format';
 import { markDose, rememberNoter, saveMoment } from '../actions';
+import { SYMPTOMS } from '../../domain/labels';
 
 const DURATION_MIN = [3, 10, 22, 40];
 const pad = (n: number) => String(n).padStart(2, '0');
@@ -63,6 +64,7 @@ export function QuickLog({
   const [ate, setAte] = useState<string | null>(null);
   const [gut, setGut] = useState<string | null>(null);
   const [symptom, setSymptom] = useState('');
+  const [symptomKey, setSymptomKey] = useState<string | null>(null);
   const [value, setValue] = useState('');
   const [note, setNote] = useState('');
   const [notedBy, setNotedBy] = useState<string | null>(null);
@@ -146,7 +148,7 @@ export function QuickLog({
       );
     } else {
       const d: Record<string, unknown> =
-        kind === 'win' ? { text: text.trim() } : kind === 'food' ? { meal, ate, gut } : kind === 'school' ? { summary: text.trim() } : kind === 'health' ? { symptom: symptom.trim(), value: value.trim() } : {};
+        kind === 'win' ? { text: text.trim() } : kind === 'food' ? { meal, ate, gut } : kind === 'school' ? { summary: text.trim() } : kind === 'health' ? { symptom: symptom.trim(), symptom_key: symptomKey, value: value.trim() } : {};
       undo = await saveMoment(ctx, { ...base, kind, data: d }, []);
     }
     ctx.toast(L.saved, undo ? () => void undo!() : undefined);
@@ -302,6 +304,27 @@ export function QuickLog({
         </div>
       )}
 
+      {kind === 'health' && (
+        <fieldset class="field">
+          <legend class="field__label">{L.symptom}</legend>
+          <div class="chip-group" role="radiogroup" aria-label={L.symptom}>
+            {SYMPTOMS.map((sx) => (
+              <Chip
+                key={sx.key}
+                mode="single"
+                on={symptomKey === sx.key}
+                onClick={() => {
+                  const on = symptomKey === sx.key;
+                  setSymptomKey(on ? null : sx.key);
+                  setSymptom(on ? '' : sx[lang]);
+                }}
+              >
+                {sx[lang]}
+              </Chip>
+            ))}
+          </div>
+        </fieldset>
+      )}
       {kind === 'health' && (
         <div class="field-row">
           <div class="field">

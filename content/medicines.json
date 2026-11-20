@@ -1,0 +1,18 @@
+{
+  "$description": "Curated medicines for the label check. 'generic' is searched in openFDA's drug label endpoint by scripts/fetch-labels.mjs. 'brands' maps local (Bangladesh) brand names to the generic; add them only from a verified list (e.g. the DGDA registry). Melatonin has no FDA drug label (it is sold as a supplement in the US).",
+  "medicines": [
+    { "generic": "risperidone", "names": { "en": "Risperidone", "bn": "রিসপেরিডোন" }, "brands": [] },
+    { "generic": "aripiprazole", "names": { "en": "Aripiprazole", "bn": "অ্যারিপিপ্রাজল" }, "brands": [] },
+    { "generic": "methylphenidate hydrochloride", "names": { "en": "Methylphenidate", "bn": "মিথাইলফেনিডেট" }, "brands": [] },
+    { "generic": "atomoxetine", "names": { "en": "Atomoxetine", "bn": "অ্যাটোমোক্সেটিন" }, "brands": [] },
+    { "generic": "guanfacine", "names": { "en": "Guanfacine", "bn": "গুয়ানফাসিন" }, "brands": [] },
+    { "generic": "clonidine hydrochloride", "names": { "en": "Clonidine", "bn": "ক্লোনিডিন" }, "brands": [] },
+    { "generic": "sertraline hydrochloride", "names": { "en": "Sertraline", "bn": "সারট্রালিন" }, "brands": [] },
+    { "generic": "fluoxetine hydrochloride", "names": { "en": "Fluoxetine", "bn": "ফ্লুওক্সেটিন" }, "brands": [] },
+    { "generic": "valproic acid", "names": { "en": "Valproate", "bn": "ভ্যালপ্রোয়েট" }, "brands": [] },
+    { "generic": "levetiracetam", "names": { "en": "Levetiracetam", "bn": "লেভেটিরাসিটাম" }, "brands": [] },
+    { "generic": "carbamazepine", "names": { "en": "Carbamazepine", "bn": "কার্বামাজেপিন" }, "brands": [] },
+    { "generic": "polyethylene glycol 3350", "names": { "en": "Polyethylene glycol (PEG 3350)", "bn": "পলিইথিলিন গ্লাইকল" }, "brands": [] },
+    { "generic": "melatonin", "names": { "en": "Melatonin", "bn": "মেলাটোনিন" }, "brands": [], "no_fda_label": true }
+  ]
+}

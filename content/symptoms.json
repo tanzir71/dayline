@@ -1,0 +1,25 @@
+{
+  "$description": "Symptoms a parent can note (quick log 'Health' chips and visit prep) and the words that find them in official medicine labels. Used by scripts/fetch-labels.mjs and the app's label check. Matching only says a symptom is listed on a label; it never says the medicine caused it.",
+  "symptoms": [
+    { "key": "sleepiness", "en": "Sleepiness", "bn": "ঘুম ঘুম ভাব", "label": ["somnolence", "sedation", "drowsiness", "sleepiness"] },
+    { "key": "appetite_up", "en": "More appetite", "bn": "খিদে বেড়েছে", "label": ["increased appetite", "appetite increased"] },
+    { "key": "appetite_down", "en": "Less appetite", "bn": "খিদে কমেছে", "label": ["decreased appetite", "appetite decreased", "anorexia"] },
+    { "key": "weight_gain", "en": "Weight gain", "bn": "ওজন বেড়েছে", "label": ["weight increased", "weight gain"] },
+    { "key": "constipation", "en": "Constipation", "bn": "কোষ্ঠকাঠিন্য", "label": ["constipation"] },
+    { "key": "diarrhoea", "en": "Loose stools", "bn": "পাতলা পায়খানা", "label": ["diarrhea", "diarrhoea"] },
+    { "key": "drooling", "en": "Drooling", "bn": "লালা পড়া", "label": ["drooling", "salivary hypersecretion", "sialorrhea", "hypersalivation"] },
+    { "key": "tremor", "en": "Shaking (tremor)", "bn": "কাঁপুনি", "label": ["tremor"] },
+    { "key": "nausea", "en": "Feeling sick", "bn": "বমি বমি ভাব", "label": ["nausea"] },
+    { "key": "vomiting", "en": "Vomiting", "bn": "বমি", "label": ["vomiting"] },
+    { "key": "stomach_pain", "en": "Stomach pain", "bn": "পেটব্যথা", "label": ["abdominal pain", "upper abdominal pain", "abdominal discomfort"] },
+    { "key": "headache", "en": "Headache", "bn": "মাথাব্যথা", "label": ["headache"] },
+    { "key": "trouble_sleeping", "en": "Trouble sleeping", "bn": "ঘুমাতে কষ্ট", "label": ["insomnia", "initial insomnia", "sleep disorder"] },
+    { "key": "tiredness", "en": "Tiredness", "bn": "ক্লান্তি", "label": ["fatigue", "lethargy", "asthenia"] },
+    { "key": "dizziness", "en": "Dizziness", "bn": "মাথা ঘোরা", "label": ["dizziness"] },
+    { "key": "irritability", "en": "Irritability", "bn": "খিটখিটে মেজাজ", "label": ["irritability", "agitation"] },
+    { "key": "rash", "en": "Rash", "bn": "র‍্যাশ", "label": ["rash"] },
+    { "key": "fever", "en": "Fever", "bn": "জ্বর", "label": ["pyrexia", "fever"] },
+    { "key": "bedwetting", "en": "Bedwetting", "bn": "বিছানা ভেজানো", "label": ["enuresis", "urinary incontinence"] },
+    { "key": "nosebleed", "en": "Nosebleeds", "bn": "নাক দিয়ে রক্ত", "label": ["epistaxis"] }
+  ]
+}

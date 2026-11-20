@@ -45,6 +45,23 @@ function steps(l: Lang) {
   return { sections };
 }
 const helpSteps = { en: steps('en'), bn: steps('bn') };
+
+/** Official label summaries (content/labels/, refreshed by a scheduled action); the full text stays out of the app. */
+const labelFiles = import.meta.glob<{ default: Record<string, unknown> }>('../../content/labels/*.json', { eager: true });
+const labels = Object.values(labelFiles).map(({ default: l }) => {
+  const sections = l.sections as Record<string, string>;
+  const ind = sections.indications ?? '';
+  return {
+    generic: String(l.generic),
+    source: String(l.source),
+    effective_time: String(l.effective_time),
+    fetched_at: String(l.fetched_at),
+    dailymed_url: String(l.dailymed_url),
+    indications: ind.length > 700 ? `${ind.slice(0, 700).replace(/\s+\S*$/, '')}…` : ind,
+    boxed: !!sections.boxed_warning,
+    terms: l.terms as string[],
+  };
+});
 ---
 
 {
@@ -57,6 +74,7 @@ const helpSteps = { en: steps('en'), bn: steps('bn') };
         guides={guides}
         helpSteps={helpSteps}
         calendar={calendar}
+        labels={labels}
         flags={{ playbook: flags.PLAYBOOK, insights: flags.INSIGHTS }}
       >
         <main slot="fallback" class="column app-message" aria-busy="true">

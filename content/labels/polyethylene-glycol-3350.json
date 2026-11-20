@@ -1,0 +1,20 @@
+{
+ "generic": "polyethylene glycol 3350",
+ "source": "U.S. FDA drug label via openFDA",
+ "set_id": "006a9eca-400f-47f5-bee5-facf7034043e",
+ "effective_time": "20260902",
+ "fetched_at": "2026-11-20",
+ "dailymed_url": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=006a9eca-400f-47f5-bee5-facf7034043e",
+ "sections": {
+  "indications": "Use • relieves occasional constipation (irregularity) • generally produces a bowel movement in 1 to 3 days",
+  "adverse_reactions": "",
+  "warnings": "Warnings Allergy alert: Do not use if you are allergic to polyethylene glycol Do not use if you have kidney disease, except under the advice and supervision of a doctor Ask a doctor before use if you have • nausea, vomiting or abdominal pain • a sudden change in bowel habits that lasts over 2 weeks • irritable bowel syndrome Ask a doctor or pharmacist before use if you are taking a prescription drug When using this product you may have loose, watery, more frequent stools Stop use and ask a doctor if • you have rectal bleeding or your nausea, bloating, cramping or abdominal pain gets worse. These may be signs of a serious condition. • you get diarrhea • you need to use a laxative for longer than 1 week If pregnant or breast-feeding, ask a health professional before use. Keep out of reach of children. In case of overdose, get medical help or contact a Poison Control Center right away (1-800-222-1222).",
+  "boxed_warning": ""
+ },
+ "terms": [
+  "diarrhoea",
+  "nausea",
+  "vomiting",
+  "stomach_pain"
+ ]
+}
