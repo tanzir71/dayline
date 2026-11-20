@@ -1,0 +1,149 @@
+import { useState } from 'preact/hooks';
+import { useApp } from '../context';
+import { useChildData, useEvents } from '../data';
+import { useLive } from '../live';
+import { Sheet } from '../ui';
+import { Chip } from '../../components/Chip';
+import { Icon } from '../../components/Icon';
+import { fmt } from '../../i18n';
+import { addDays, isoWithOffset, localDay } from '../../lib/time';
+import { buildBrief, BriefPage } from '../brief';
+import { makePdf, printPages } from '../share';
+import { deliverFile } from '../actions';
+import { go } from '../router';
+import { shortDate, timeLabel } from '../format';
+import type { Lang } from '../../data/types';
+
+/** Share sheet (2540:198): pick a language, then show on this phone, send as PDF, or print. */
+export function ShareSheet({ onClose }: { onClose: () => void }) {
+  const ctx = useApp();
+  const { t, lang, child, repos } = ctx;
+  const S = t.share;
+  const data = useChildData();
+  const today = localDay();
+  const { events, tags } = useEvents(addDays(today, -1), today);
+  const [briefLang, setBriefLang] = useState<Lang>(child!.language ?? lang);
+  const [state, setState] = useState<'idle' | 'making' | 'failed' | 'downloaded'>('idle');
+  const [file, setFile] = useState('');
+  const last = useLive(
+    async () => (await repos.shares.where('child_id', child!.id)).filter((s) => s.what === 'brief').sort((a, b) => b.at.localeCompare(a.at))[0],
+    [child!.id],
+    undefined,
+  );
+  const name = child!.name;
+
+  const record = (how: 'show' | 'pdf' | 'print') =>
+    repos.shares.add({ child_id: child!.id, what: 'brief', how, to_text: '', language: briefLang, at: isoWithOffset() });
+
+  async function pdf() {
+    setState('making');
+    try {
+      const b = buildBrief(ctx, data, events, tags, briefLang);
+      const f = await makePdf(<BriefPage b={b} />, { name, what: 'brief', lang: briefLang, title: fmt(b.t.brief.pdfTitle, { name }) });
+      const how = await deliverFile(f, { share: true, title: f.name });
+      if (how !== 'cancelled') await record('pdf');
+      if (how === 'downloaded') {
+        setFile(f.name);
+        setState('downloaded');
+      } else setState('idle');
+    } catch (e) {
+      console.error(e);
+      setState('failed');
+    }
+  }
+
+  async function print() {
+    const b = buildBrief(ctx, data, events, tags, briefLang);
+    await record('print');
+    await printPages(<BriefPage b={b} />);
+  }
+
+  return (
+    <Sheet
+      title={fmt(S.title, { name })}
+      subtitle={
+        <>
+          {fmt(S.subtitle, { time: timeLabel(new Date(), lang) })}
+          {last && <span class="t-caption-13"> · {fmt(S.lastSent, { date: shortDate(last.at, lang) })}</span>}
+        </>
+      }
+      onClose={onClose}
+      footer={
+        <p class="t-caption-13 muted center share-foot">
+          <svg width="16" height="16" viewBox="0 0 22 22" fill="none" aria-hidden="true">
+            <rect x="5" y="10" width="12" height="9" rx="2" stroke="currentColor" stroke-width="1.8" />
+            <path d="M8 10V7a3 3 0 0 1 6 0v3" stroke="currentColor" stroke-width="1.8" />
+          </svg>
+          {S.footer}
+        </p>
+      }
+    >
+      <fieldset class="field">
+        <legend class="t-overline-12 muted">{S.language}</legend>
+        <div class="chip-group" role="radiogroup" aria-label={S.language}>
+          <Chip mode="single" on={briefLang === 'en'} onClick={() => setBriefLang('en')}>
+            <span lang="en">English</span>
+          </Chip>
+          <Chip mode="single" on={briefLang === 'bn'} onClick={() => setBriefLang('bn')}>
+            <span lang="bn">বাংলা</span>
+          </Chip>
+        </div>
+      </fieldset>
+      <ul class="share-options card" role="list">
+        <li>
+          <button
+            type="button"
+            class="share-option"
+            onClick={async () => {
+              await record('show');
+              go(`/show/${briefLang}`);
+            }}
+          >
+            <span class="share-option__icon tone-monsoon" aria-hidden="true">
+              <svg width="22" height="22" viewBox="0 0 22 22" fill="none">
+                <rect x="6" y="2.5" width="10" height="17" rx="2.5" stroke="currentColor" stroke-width="1.9" />
+                <path d="M10 16.5h2" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" />
+              </svg>
+            </span>
+            <span>
+              <span class="t-body-strong-15">{S.show}</span>
+              <span class="t-caption-13 muted">{S.showBody}</span>
+            </span>
+            <Icon name="chevron-right" size={18} />
+          </button>
+        </li>
+        <li>
+          <button type="button" class="share-option" onClick={() => void pdf()} disabled={state === 'making'} aria-busy={state === 'making'}>
+            <span class="share-option__icon tone-win" aria-hidden="true">
+              <svg width="22" height="22" viewBox="0 0 22 22" fill="none">
+                <path d="M5 3.5h8l4 4V18a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V4.5a1 1 0 0 1 1-1Z" stroke="currentColor" stroke-width="1.9" stroke-linejoin="round" />
+                <path d="M7.5 11h7M7.5 14.5h5" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" />
+              </svg>
+            </span>
+            <span>
+              <span class="t-body-strong-15">{state === 'making' ? S.making : S.pdf}</span>
+              <span class="t-caption-13 muted">{S.pdfBody}</span>
+            </span>
+            <Icon name="chevron-right" size={18} />
+          </button>
+        </li>
+        <li>
+          <button type="button" class="share-option" onClick={() => void print()}>
+            <span class="share-option__icon tone-neutral" aria-hidden="true">
+              <Icon name="print" size={22} />
+            </span>
+            <span>
+              <span class="t-body-strong-15">{S.print}</span>
+              <span class="t-caption-13 muted">{S.printBody}</span>
+            </span>
+            <Icon name="chevron-right" size={18} />
+          </button>
+        </li>
+      </ul>
+      <p class="t-body-14" role="status">
+        {state === 'failed' && S.failed}
+        {state === 'downloaded' && fmt(S.downloaded, { file })}
+      </p>
+    </Sheet>
+  );
+}
