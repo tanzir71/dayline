@@ -188,6 +188,12 @@ export function Settings() {
               }}
             />
           </label>
+          {ctx.flags.desktop && (
+            <div class="empty-note stack" style="--stack-gap: 4px">
+              <p class="t-body-strong-14">{S.move}</p>
+              <p class="t-body-14">{S.moveBody}</p>
+            </div>
+          )}
           <p class="t-caption-13 muted">{persisted ? S.storage : S.storageNot}</p>
           {message && (
             <p class="t-body-14" role="status">
