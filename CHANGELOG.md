@@ -2,6 +2,16 @@
 
 Each milestone release is tagged `v0.<milestone>.0` and deployed to GitHub Pages.
 
+## v0.2.0 — M2: Visits and changes (2026-11-21)
+
+- Doctors and therapists, planned visits, and a "prep in 60 seconds" nudge three days before.
+- Visit prep from memory (four quick answers and your questions) and a visit report per prescriber: counts with coverage, changes from every prescriber, a weekly chart, symptoms that match a medicine label (as questions), and your questions. Works with nothing logged. Two-page PDF for WhatsApp, on screen, or printed.
+- Changes with reason, who decided and a review date; adding, editing or stopping a medicine notes one automatically. Reviews compare 14 days before and after (first 3 days left out) and flag overlapping changes.
+- Welcome back after 7 days away: three yes/no questions, never a backlog.
+- Optional weekly check-in: sleep, mood, hard moments.
+- Patterns, computed on the phone in a background worker: shown only with at least 7 days in each group, as counts ("8 of 10 days"), each opening its raw days; time of day; Makes sense / Not this.
+- Official label sections (openFDA, refreshed weekly at build time) on each medicine page, with source and dates.
+
 ## v0.1.0 — M1: The child on this phone (2026-11-21)
 
 - The app at /app/ (English) and /bn/app/ (Bangla): set up a child in under two minutes (only the name is needed), several children with a switcher.

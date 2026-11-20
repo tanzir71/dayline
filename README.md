@@ -10,7 +10,7 @@ Live site: https://tanzir71.github.io/dayline/
 | --- | --- | --- |
 | M0 | Landing page, Guides (knowledge base), Help now, installable offline PWA | Live (v0.0.0) |
 | M1 | The child on this phone: profile, medicines and reminders, quick log, Today, brief in show mode or as a PDF, backup | Live (v0.1.0) |
-| M2 | Visits and changes: visit prep, visit report PDF, change reviews, welcome back, patterns, label check | Not started |
+| M2 | Visits and changes: visit prep, visit report PDF, change reviews, welcome back, patterns, label check | Live (v0.2.0) |
 | M3 | Desktop and passport: wide layouts, install on computers, hospital passport | Not started |
 
 ## How it's built
