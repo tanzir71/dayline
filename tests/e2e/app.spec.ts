@@ -65,6 +65,7 @@ test.describe('app', () => {
     await onboard(page);
     await page.goto('app/#/playbook/add/help-now');
     await page.getByRole('button', { name: "Save to Rafi's playbook" }).click();
+    await expect(page).toHaveURL(/#\/playbook$/);
     await page.goto('app/#/help-now');
     await expect(page.getByRole('heading', { name: 'What works for Rafi' })).toBeVisible();
     await page.locator('.play').filter({ hasText: 'Fewer words' }).getByRole('button', { name: 'Helped' }).click();
@@ -116,6 +117,7 @@ test.describe('app', () => {
     await page.goto('app/#/child/section/calms');
     await page.locator('#sec-body').fill('হেডফোন, স্কুলব্যাগের সামনের পকেটে\nচুপচাপ কোণ');
     await page.getByRole('button', { name: 'Save' }).click();
+    await expect(page).toHaveURL(/#\/child$/);
     await page.goto('app/#/today?sheet=share');
     await page.getByRole('radio', { name: 'বাংলা' }).click();
     await expect(page.getByRole('radio', { name: 'বাংলা' })).toHaveAttribute('aria-checked', 'true');
