@@ -1,0 +1,35 @@
+---
+import Base from '../layouts/Base.astro';
+import { getDict } from '../i18n';
+import { localHref } from '../lib/paths';
+import '../styles/site.css';
+
+const en = getDict('en').notFound;
+const bn = getDict('bn').notFound;
+const enNav = getDict('en').nav;
+const bnNav = getDict('bn').nav;
+---
+
+<Base lang="en" title={en.metaTitle} description={en.body} path="404/" altPath={null} noindex noLangRedirect>
+  <main id="main" class="column status-page">
+    <a class="wordmark" href={localHref('en', '')}>dayline<span class="wordmark__dot" aria-hidden="true"></span></a>
+    <section>
+      <h1 class="page-title">{en.title}</h1>
+      <p class="t-body-15">{en.body}</p>
+      <div class="status-page__actions">
+        <a class="btn btn--primary" href={localHref('en', '')}>{en.home}</a>
+        <a class="btn btn--secondary" href={localHref('en', 'guides/')}>{enNav.guides}</a>
+        <a class="btn btn--secondary" href={localHref('en', 'help-now/')}>{enNav.helpNow}</a>
+      </div>
+    </section>
+    <section lang="bn">
+      <h2 class="page-title">{bn.title}</h2>
+      <p class="t-body-15">{bn.body}</p>
+      <div class="status-page__actions">
+        <a class="btn btn--primary" href={localHref('bn', '')}>{bn.home}</a>
+        <a class="btn btn--secondary" href={localHref('bn', 'guides/')}>{bnNav.guides}</a>
+        <a class="btn btn--secondary" href={localHref('bn', 'help-now/')}>{bnNav.helpNow}</a>
+      </div>
+    </section>
+  </main>
+</Base>

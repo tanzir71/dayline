@@ -1,0 +1,32 @@
+---
+// Offline fallback served by the service worker for pages this phone hasn't saved yet. Bilingual on purpose.
+import Base from '../../layouts/Base.astro';
+import { getDict } from '../../i18n';
+import { localHref } from '../../lib/paths';
+import '../../styles/site.css';
+
+const en = getDict('en').offline;
+const bn = getDict('bn').offline;
+---
+
+<Base lang="en" title={en.metaTitle} description={en.body} path="offline/" altPath={null} noindex noLangRedirect>
+  <main id="main" class="column status-page">
+    <a class="wordmark" href={localHref('en', '')}>dayline<span class="wordmark__dot" aria-hidden="true"></span></a>
+    <section>
+      <h1 class="page-title">{en.title}</h1>
+      <p class="t-body-15">{en.body}</p>
+      <div class="status-page__actions">
+        <a class="btn btn--primary" href={localHref('en', 'help-now/')}>{en.goHelpNow}</a>
+        <a class="btn btn--secondary" href={localHref('en', 'guides/')}>{en.goGuides}</a>
+      </div>
+    </section>
+    <section lang="bn">
+      <h2 class="page-title">{bn.title}</h2>
+      <p class="t-body-15">{bn.body}</p>
+      <div class="status-page__actions">
+        <a class="btn btn--primary" href={localHref('bn', 'help-now/')}>{bn.goHelpNow}</a>
+        <a class="btn btn--secondary" href={localHref('bn', 'guides/')}>{bn.goGuides}</a>
+      </div>
+    </section>
+  </main>
+</Base>

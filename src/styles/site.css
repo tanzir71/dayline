@@ -249,3 +249,30 @@
     gap: var(--space-16);
   }
 }
+
+/* Offline and not-found pages */
+.status-page {
+  display: grid;
+  gap: var(--space-10);
+  padding-block: var(--space-8) var(--space-16);
+}
+
+.status-page section {
+  display: grid;
+  gap: var(--space-3);
+}
+
+.status-page .page-title {
+  font: 700 28px/1.15 var(--font-display);
+}
+
+.status-page [lang='bn'] .page-title {
+  font-family: var(--font-bangla);
+}
+
+.status-page__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+  margin-top: var(--space-2);
+}
