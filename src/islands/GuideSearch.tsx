@@ -48,6 +48,16 @@ export default function GuideSearch({ lang, base, s }: { lang: 'en' | 'bn'; base
     setReady(true);
     const early = input.current?.value ?? '';
     if (early.trim()) void search(early);
+    if (new URLSearchParams(location.search).get('focus') === 'search') input.current?.focus();
+    // "/" jumps to the search box, as on most sites.
+    const onKey = (e: KeyboardEvent) => {
+      const el = e.target as HTMLElement | null;
+      if (e.key !== '/' || e.ctrlKey || e.metaKey || (el && ['INPUT', 'TEXTAREA', 'SELECT'].includes(el.tagName))) return;
+      e.preventDefault();
+      input.current?.focus();
+    };
+    document.addEventListener('keydown', onKey);
+    return () => document.removeEventListener('keydown', onKey);
   }, []);
 
   useEffect(() => {

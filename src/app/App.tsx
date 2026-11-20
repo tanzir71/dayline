@@ -23,6 +23,8 @@ import { ChangeForm, ChangeReview } from './screens/Changes';
 import { WelcomeBack } from './screens/WelcomeBack';
 import { MedicineInfo } from './screens/MedicineInfo';
 import { DayView } from './screens/DayView';
+import { PassportShow } from './passport';
+import { PassportShareSheet } from './screens/PassportShare';
 import { NavBar } from './ui';
 import type { LabelSummary } from '../domain/labels';
 
@@ -33,7 +35,7 @@ interface Props {
   helpSteps: Record<Lang, HelpSteps>;
   calendar: SeasonEvent[];
   labels: LabelSummary[];
-  flags: { playbook: boolean; insights: boolean };
+  flags: { playbook: boolean; insights: boolean; desktop: boolean };
 }
 
 interface Toast {
@@ -117,8 +119,33 @@ export default function App(props: Props) {
   };
 
   useEffect(() => {
-    document.documentElement.classList.toggle('show-mode', route.parts[0] === 'show');
+    document.documentElement.classList.toggle('show-mode', route.parts[0] === 'show' || route.parts[0] === 'passport');
   }, [route.path]);
+
+  // Keyboard (M3): N logs a moment, D a dose, / searches guides; Esc closes sheets (in Sheet).
+  useEffect(() => {
+    if (!props.flags.desktop) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.ctrlKey || e.metaKey || e.altKey || e.repeat) return;
+      const el = e.target as HTMLElement | null;
+      if (el && (el.isContentEditable || ['INPUT', 'TEXTAREA', 'SELECT'].includes(el.tagName))) return;
+      const here = location.hash.replace(/^#/, '').split('?')[0] || '/today';
+      if (/^\/(show|passport|help-now|onboarding|welcome)/.test(here) || document.querySelector('[role="dialog"]')) return;
+      const key = e.key.toLowerCase();
+      if (key === 'n') {
+        e.preventDefault();
+        go(`/today?sheet=log&kind=hard_moment`);
+      } else if (key === 'd') {
+        e.preventDefault();
+        go(`/today?sheet=log&kind=dose`);
+      } else if (e.key === '/') {
+        e.preventDefault();
+        location.href = `${base}${lang === 'bn' ? 'bn/' : ''}guides/?focus=search`;
+      }
+    };
+    document.addEventListener('keydown', onKey);
+    return () => document.removeEventListener('keydown', onKey);
+  }, []);
 
   if (status === 'error') {
     return (
@@ -143,6 +170,8 @@ export default function App(props: Props) {
   let screen;
   if (section === 'onboarding' || (needsChild && !child)) {
     screen = <Onboarding adding={section === 'onboarding' && !!child} />;
+  } else if (section === 'passport' && props.flags.desktop) {
+    screen = <PassportShow lang={(a as Lang) ?? lang} />;
   } else if (section === 'show') {
     screen = <ShowMode briefLang={(a as Lang) ?? lang} />;
   } else if (section === 'help-now') {
@@ -211,6 +240,7 @@ export default function App(props: Props) {
         />
       )}
       {child && sheet === 'share' && section !== 'show' && <ShareSheet onClose={closeSheet} />}
+      {child && sheet === 'passport' && props.flags.desktop && <PassportShareSheet onClose={closeSheet} />}
       <div class="toasts" role="status" aria-live="polite">
         {toasts.map((x) => (
           <div class="toast" key={x.id}>
