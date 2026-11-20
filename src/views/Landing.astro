@@ -1,0 +1,242 @@
+---
+import SitePage from '../layouts/SitePage.astro';
+import { getDict } from '../i18n';
+import { href, localHref, type Lang } from '../lib/paths';
+import { Overline } from '../components/Overline';
+import { Icon } from '../components/Icon';
+import '../styles/landing.css';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const d = getDict(lang);
+const L = d.landing;
+const m = L.mock;
+const usefulTones = ['win', 'hard-moment', 'monsoon', 'medicine'];
+const workflowTones = ['medicine', 'hard-moment', 'sleep', 'monsoon', 'win'];
+const audienceTones = ['monsoon', 'win', 'neutral', 'medicine'];
+const screens = ['see-help-now.png', 'see-brief.png', 'see-guides.png', 'see-change.png'];
+const badgeTone = (badge: string) =>
+  badge.startsWith('M0') ? 'marigold' : badge.startsWith('M1') ? 'monsoon' : badge.startsWith('M2') ? 'medicine' : 'sleep';
+---
+
+<SitePage lang={lang} title={L.title} description={L.description} path="" current="home" bodyClass="landing">
+  <section class="hero">
+    <div class="wrap hero__inner">
+      <div class="hero__copy">
+        <Overline tone="marigold">{L.hero.overline}</Overline>
+        <h1 class="hero__title">{L.hero.title}</h1>
+        <p class="hero__body">{L.hero.body}</p>
+        <div class="hero__cta">
+          <a class="btn btn--primary" href={localHref(lang, 'app/')}>{L.hero.ctaApp}</a>
+          <a class="btn btn--secondary" href={localHref(lang, 'guides/')}>{L.hero.ctaGuides}</a>
+        </div>
+        <ul class="hero__reassure" role="list">
+          {L.hero.reassure.map((r) => <li><Icon name="check" size={18} class="hero__check" />{r}</li>)}
+        </ul>
+      </div>
+
+      <div class="phone" role="img" aria-label={L.hero.phoneAlt}>
+        <div class="phone__screen" aria-hidden="true">
+          <div class="mock-head">
+            <div class="mock-top">
+              <span class="mock-child"><span class="mock-avatar">{m.child.slice(0, 1)}</span><b>{m.child}</b><Icon name="chevron-down" size={15} /></span>
+              <span class="mock-actions"><span class="mock-pill">{m.langPill}</span><span class="mock-share"><Icon name="share" size={16} /></span></span>
+            </div>
+            <span class="mock-date">{m.date}</span>
+            <span class="mock-title">{m.today}</span>
+          </div>
+          <div class="mock-main">
+            <div class="mock-card">
+              <span class="mock-overline tone-marigold"><i></i>{m.watchFor}</span>
+              <span class="mock-text">{m.watchBody}</span>
+              <span class="mock-link">{m.watchLink} <Icon name="chevron-right" size={13} /></span>
+            </div>
+            <div class="mock-dose">
+              <span class="mock-dose__text">
+                <span class="mock-overline tone-medicine"><i></i>{m.nextDose}</span>
+                <b>{m.doseName}</b>
+                <small>{m.doseHint}</small>
+              </span>
+              <span class="mock-btn mock-btn--dose">{m.markGiven}</span>
+            </div>
+            <div class="mock-card mock-day">
+              <span class="mock-day__head"><b>{m.daySoFar}</b><small>{m.caregivers}</small></span>
+              <ol class="mock-line">
+                {
+                  m.items.map((it) => (
+                    <li class={`tone-${it.tone}`}>
+                      <span class="mock-line__time">{it.time}</span>
+                      <span class="mock-line__rail"><i /></span>
+                      <span class="mock-line__body"><b>{it.title}</b><small>{it.detail}</small></span>
+                    </li>
+                  ))
+                }
+                <li class="mock-line__now">
+                  <span class="mock-line__time">{m.nowTime}</span>
+                  <span class="mock-line__rail"><i /></span>
+                  <span class="mock-line__body"><b>{m.now}</b></span>
+                </li>
+              </ol>
+            </div>
+          </div>
+          <div class="mock-quick">
+            <span class="mock-btn mock-btn--hard">{m.hardMoment}</span>
+            <span class="mock-btn mock-btn--win">{m.win}</span>
+            <span class="mock-btn mock-btn--dose">{m.dose}</span>
+            <span class="mock-btn mock-btn--plus">+</span>
+          </div>
+          <div class="mock-nav">
+            <span class="is-active"><Icon name="today" size={18} />{m.tabToday}</span>
+            <span><Icon name="guides" size={18} />{m.tabGuides}</span>
+            <span><Icon name="insights" size={18} />{m.tabInsights}</span>
+            <span><Icon name="child" size={18} />{m.child}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="band band--surface" aria-labelledby="useful-title">
+    <div class="wrap">
+      <header class="band__head">
+        <h2 id="useful-title" class="band__title">{L.useful.title}</h2>
+        <p class="band__body">{L.useful.body}</p>
+      </header>
+      <ul class="grid-4" role="list">
+        {
+          L.useful.cards.map((c, i) => (
+            <li class={`useful-card tone-${usefulTones[i]}`}>
+              <span class="useful-card__dot" aria-hidden="true" />
+              <h3 class="useful-card__title">{c.title}</h3>
+              <p class="t-body-14">{c.body}</p>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </section>
+
+  <section id="how" class="band" aria-labelledby="how-title">
+    <div class="wrap">
+      <header class="band__head">
+        <h2 id="how-title" class="band__title">{L.how.title}</h2>
+        <p class="band__body">{L.how.body}</p>
+      </header>
+      <ol class="workflows" role="list">
+        {
+          L.how.workflows.map((w, i) => (
+            <li class={`workflow tone-${workflowTones[i]}`}>
+              <h3 class="workflow__label">
+                <span class="workflow__dot" aria-hidden="true" />
+                {w.label}
+              </h3>
+              <ol class="workflow__steps" role="list">
+                {w.steps.map((s, j) => (
+                  <li class="workflow__step">
+                    <span class="workflow__num" aria-hidden="true">{j + 1}</span>
+                    <span>{s}</span>
+                    {j < w.steps.length - 1 && <Icon name="arrow-right" size={20} class="workflow__arrow" />}
+                  </li>
+                ))}
+              </ol>
+            </li>
+          ))
+        }
+      </ol>
+    </div>
+  </section>
+
+  <section class="band band--ink" aria-labelledby="see-title">
+    <div class="wrap">
+      <header class="band__head">
+        <h2 id="see-title" class="band__title">{L.seeIt.title}</h2>
+        <p class="band__body">{L.seeIt.body}</p>
+      </header>
+      <ul class="screens" role="list">
+        {
+          L.seeIt.screens.map((s, i) => (
+            <li>
+              <figure>
+                <img src={href(`landing/${screens[i]}`)} alt={s.alt} width="276" height="589" loading="lazy" decoding="async" />
+                <figcaption>{s.caption}</figcaption>
+              </figure>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </section>
+
+  <section id="features" class="band band--surface" aria-labelledby="features-title">
+    <div class="wrap">
+      <header class="band__head">
+        <h2 id="features-title" class="band__title">{L.features.title}</h2>
+        <p class="band__body">{L.features.body}</p>
+      </header>
+      <ul class="grid-4" role="list">
+        {
+          L.features.items.map((f) => (
+            <li class="feature-card">
+              <span class={`feature-card__badge tone-${badgeTone(f.badge)}`}>{f.badge}</span>
+              <h3 class="t-heading-17">{f.title}</h3>
+              <p class="t-body-14 muted">{f.body}</p>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </section>
+
+  <section id="who" class="band" aria-labelledby="who-title">
+    <div class="wrap">
+      <header class="band__head">
+        <h2 id="who-title" class="band__title">{L.who.title}</h2>
+      </header>
+      <ul class="grid-4" role="list">
+        {
+          L.who.items.map((w, i) => (
+            <li class={`who-card tone-${audienceTones[i]}`}>
+              <span class="who-card__bar" aria-hidden="true" />
+              <h3 class="t-heading-17">{w.title}</h3>
+              <p class="t-body-14 muted">{w.body}</p>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </section>
+
+  <section class="band band--monsoon" aria-labelledby="privacy-title">
+    <div class="wrap">
+      <header class="band__head">
+        <h2 id="privacy-title" class="band__title">{L.privacy.title}</h2>
+        <p class="band__body">{L.privacy.body}</p>
+      </header>
+      <ul class="grid-4" role="list">
+        {
+          L.privacy.items.map((p) => (
+            <li class="promise-card">
+              <h3 class="t-heading-17">{p.title}</h3>
+              <p class="t-body-14">{p.body}</p>
+            </li>
+          ))
+        }
+      </ul>
+      <p class="band__more"><a href={localHref(lang, 'privacy/')}>{L.privacy.more}</a></p>
+    </div>
+  </section>
+
+  <section class="band band--surface cta-band" aria-labelledby="cta-title">
+    <div class="wrap">
+      <h2 id="cta-title" class="band__title">{L.cta.title}</h2>
+      <div class="hero__cta cta-band__buttons">
+        <a class="btn btn--primary" href={localHref(lang, 'app/')}>{L.hero.ctaApp}</a>
+        <a class="btn btn--secondary" href={localHref(lang, 'guides/')}>{L.hero.ctaGuides}</a>
+      </div>
+      <p class="t-body-14 muted">{L.cta.hint}</p>
+    </div>
+  </section>
+</SitePage>
