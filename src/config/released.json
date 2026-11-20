@@ -2,5 +2,5 @@
   "APP": true,
   "PLAYBOOK": true,
   "INSIGHTS": true,
-  "DESKTOP": false
+  "DESKTOP": true
 }

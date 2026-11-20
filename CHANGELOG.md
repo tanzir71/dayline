@@ -2,6 +2,15 @@
 
 Each milestone release is tagged `v0.<milestone>.0` and deployed to GitHub Pages.
 
+## v0.3.0 — M3: Desktop and passport (2026-11-21)
+
+- Wide layouts from 1024 px: a left rail instead of the tab bar, Today in two panes, Insights in three columns, the visit report full width, sheets as centred dialogs.
+- Install Dayline on a computer from the header (Chrome and Edge); it opens in its own window.
+- Keyboard: N logs a moment, D a dose, / searches guides, Esc closes.
+- Hospital passport: one A4 page and a show-mode view, in Bangla or English, built from About the child; shared like the brief.
+- Move the record between a phone and a computer with a backup file (the confirm says it replaces the data on that device).
+- Print views fit A4 and Letter: brief and passport on one page, the visit report on two.
+
 ## v0.2.0 — M2: Visits and changes (2026-11-21)
 
 - Doctors and therapists, planned visits, and a "prep in 60 seconds" nudge three days before.
