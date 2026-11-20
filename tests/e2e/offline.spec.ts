@@ -46,9 +46,11 @@ test('the browser considers Dayline installable', async ({ page, context, browse
   // Test browsers run in an incognito-like profile; every other installability error fails the test.
   expect(installabilityErrors.filter((e) => e.errorId !== 'in-incognito')).toEqual([]);
   const manifest = await (await page.request.get('manifest.webmanifest')).json();
-  expect(manifest.start_url).toBe('/dayline/');
+  // The e2e build runs with the app on: an installed Dayline opens Today, long-press offers three shortcuts.
+  expect(manifest.start_url).toBe('/dayline/app/');
   expect(manifest.scope).toBe('/dayline/');
   expect(manifest.theme_color).toBe('#1A5F5A');
-  expect(manifest.shortcuts.map((s: { name: string }) => s.name)).toEqual(['Help now', 'Guides']);
+  expect(manifest.background_color).toBe('#F3F6F5');
+  expect(manifest.shortcuts.slice(0, 3).map((s: { name: string }) => s.name)).toEqual(['Help now', 'Dose given', 'Log a moment']);
   expect(manifest.icons.some((i: { purpose: string }) => i.purpose === 'maskable')).toBe(true);
 });

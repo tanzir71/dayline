@@ -31,6 +31,9 @@ jobs:
       - name: Playwright (smoke, install sheet, offline, installability)
         run: npm run test:e2e
 
+      - name: Bundle budget (/app/ ≤ 200 KB gzipped JS without the PDF code)
+        run: npm run budget
+
       - name: Lighthouse accessibility (≥ 95 on every page)
         run: npm run lighthouse
         env:

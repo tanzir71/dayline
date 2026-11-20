@@ -184,7 +184,7 @@ test('no request ever leaves the site', async ({ page, baseURL }) => {
     const u = new URL(r.url());
     if (['http:', 'https:'].includes(u.protocol) && u.origin !== origin) outside.push(r.url());
   });
-  for (const path of ['', 'bn/', 'guides/', 'guides/haircut-day/', 'bn/guides/', 'help-now/', 'privacy/', 'app/']) {
+  for (const path of ['', 'bn/', 'guides/', 'guides/haircut-day/', 'bn/guides/', 'help-now/', 'privacy/', 'app/', 'bn/app/', 'app/#/help-now']) {
     await page.goto(path, { waitUntil: 'networkidle' });
   }
   await page.goto('guides/');

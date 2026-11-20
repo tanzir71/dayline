@@ -8,7 +8,7 @@ import lighthouse from 'lighthouse';
 const PORT = 4330;
 const BASE = '/dayline/';
 const MIN = 95;
-const pages = ['', 'bn/', 'guides/', 'bn/guides/', 'guides/haircut-day/', 'bn/guides/haircut-day/', 'guides/category/sleep/', 'help-now/', 'bn/help-now/', 'privacy/', 'app/', 'offline/'];
+const pages = ['', 'bn/', 'guides/', 'bn/guides/', 'guides/haircut-day/', 'bn/guides/haircut-day/', 'guides/category/sleep/', 'help-now/', 'bn/help-now/', 'privacy/', 'app/', 'bn/app/', 'offline/'];
 
 const candidates = [
   process.env.CHROME_PATH,
