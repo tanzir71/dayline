@@ -1,52 +1,67 @@
 # Dayline
 
-**Every day, on one line.** A day record for families of autistic children, kept on the parent's phone: what happened, what changed, what helps. It's useful from the first day even if nobody logs anything. Show the next caregiver a simple brief on the phone, and send each doctor a PDF on WhatsApp. No accounts, no server.
+**Every day, on one line.** A day record for families of autistic children, kept on the parent's phone: what happened, what changed, what helps. It's useful from the first day even if nobody logs anything. Show the next caregiver a simple brief, and send each doctor a PDF on WhatsApp. No accounts, no server.
 
-This repository starts as a handoff package for Claude Code. Each milestone ships as a working release on GitHub Pages.
+Live site: https://tanzir71.github.io/dayline/
 
 ## Status
 
 | Milestone | What ships | Status |
 | --- | --- | --- |
-| M0 | Landing page, Guides (knowledge base), Help now, installable offline PWA | Not started |
+| M0 | Landing page, Guides (knowledge base), Help now, installable offline PWA | In progress |
 | M1 | The child on this phone: profile, medicines and reminders, quick log, Today, brief in show mode or as a PDF, backup | Not started |
 | M2 | Visits and changes: visit prep, visit report PDF, change reviews, welcome back, patterns, label check | Not started |
 | M3 | Desktop and passport: wide layouts, install on computers, hospital passport | Not started |
-| Later | Not planned (needs a server): parent tips, sync between phones, Ask Dayline, wearables | — |
 
-## What's here
+## How it's built
+
+- [Astro](https://astro.build) static site with [Preact](https://preactjs.com) islands; the app lives at `/app/` with hash routing, so GitHub Pages needs no server routing.
+- Child data stays in the browser's IndexedDB on the device. It leaves only as a PDF, a print or a backup file the parent chooses to send.
+- Works offline through a service worker; Bangla and English throughout; fonts are self-hosted.
+- Same-origin requests only: no analytics, no CDNs, no third-party scripts.
 
 ```
-CLAUDE.md                     Instructions Claude Code reads first
-docs/MILESTONES.md            Tasks and acceptance criteria per milestone
-docs/PRODUCT.md               Users, principles, features, voice
-docs/DESIGN.md                Figma node map for every screen and component
-docs/ARCHITECTURE.md          Stack, routes, offline, show mode, PDF sharing
-docs/DATA_MODEL.md            Entities, local storage, backup format
-docs/RESEARCH.md              Research and concept doc (exported copy)
-design/tokens.json|css        Colours and type from the Figma variables
-content/guides/               Guide template, backlog and drafts (need review)
-content/calendar.json         Bangladesh seasonal routine changes
-setup/github/                 Deploy workflow; Claude Code moves it to .github/ (M0-01)
+src/pages/        Routes (English at /, Bangla at /bn/)
+src/views/        Page views shared by both languages
+src/components/   UI components (Button, Chip, Overline, Guide row, …)
+src/islands/      Interactive Preact islands
+src/i18n/         en.json and bn.json UI strings
+src/styles/       Tokens, fonts and styles
+content/guides/   Guides in Markdown (en/ and bn/), see _TEMPLATE.md
+content/calendar.json  Bangladesh seasonal routine changes
 ```
 
-## Links
+## Develop
 
-- Design: [SEVA Design in Figma](https://www.figma.com/design/hWA0tZUaRY535kNq6NZu09/SEVA-Design?node-id=2519-4106). See the pages "v2 · Dayline — Screens", "Landing page" and "Foundations".
-- Concept and research: [Claude doc](https://claude.ai/artifact/2SMw5RhDr2nWtZnbJ1E1jJ) (living version of `docs/RESEARCH.md`).
+Needs Node 24.
 
-## Getting started with Claude Code
+```bash
+npm install
+```
 
-1. Connect the Figma MCP server in Claude Code so it can pull screens by node ID, and sign in to GitHub (`gh auth login`).
-2. Open this folder in Claude Code and say:
+```bash
+npm run dev
+```
 
-   > Read CLAUDE.md and docs/MILESTONES.md, then build and deploy M0 to M3 in order on GitHub Pages, committing straight to main.
+```bash
+npm run check
+```
 
-3. Claude Code sets up the repo and GitHub Pages itself (M0-01). Each milestone goes live when it's done; open the site on your phone and install it.
+```bash
+npm run test:e2e
+```
+
+`npm run check` runs type checks, lint and unit tests. `npm run test:e2e` builds the site under the `/dayline/` sub-path and runs the Playwright tests, including the offline test.
+
+## Deploy
+
+Every push to `main` builds and deploys to GitHub Pages (`.github/workflows/deploy.yml`). The site URL and base path come from `PUBLIC_SITE_URL` and `PUBLIC_BASE_PATH`, so the same code works at `user.github.io/<repo>/` and on a custom domain.
 
 ## Before you launch
 
-- Get every guide reviewed by a named clinician or trained parent (`status: reviewed`). Until then guides show a draft banner; turn off `PUBLISH_DRAFT_GUIDES` if you'd rather hide them.
+- Get every guide reviewed by a named clinician or trained parent (`status: reviewed` with `reviewed_by` and `reviewed_on`). Until then guides show a draft banner; turn off `PUBLISH_DRAFT_GUIDES` in `src/config/flags.ts` to hide them. Medicine guides are never published as drafts.
 - Confirm the Islamic holiday dates in `content/calendar.json` each year.
-- Data lives only on each phone. Tell families to use the monthly backup; a cleared browser or lost phone without one loses the record.
+- Data lives only on each phone. Families should use the monthly backup; a cleared browser or lost phone without one loses the record.
 - Other apps already use the name "Dayline". Use a qualifier in stores, e.g. "Dayline: Autism Care Log", and check trademarks before buying a domain.
+
+Not a medical device. Not medical advice.

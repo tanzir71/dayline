@@ -1,5 +1,5 @@
 ---
-import '../../design/tokens.css';
+import '../styles/tokens.css';
 import '../styles/fonts.css';
 import '../styles/base.css';
 import '../styles/components.css';
@@ -18,6 +18,8 @@ interface Props {
   noindex?: boolean;
   bodyClass?: string;
   themeColor?: string;
+  /** Never redirect to the remembered language (Help now must open instantly). */
+  noLangRedirect?: boolean;
 }
 
 const {
@@ -31,6 +33,7 @@ const {
   noindex = false,
   bodyClass,
   themeColor = '#1A5F5A',
+  noLangRedirect = false,
 } = Astro.props;
 
 const other: Lang = lang === 'en' ? 'bn' : 'en';
@@ -59,7 +62,7 @@ const csp = [
 ---
 
 <!doctype html>
-<html lang={lang} data-base={href()}>
+<html lang={lang} data-base={href()} data-no-lang-redirect={noLangRedirect ? '' : undefined}>
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />

@@ -1,4 +1,4 @@
-// Renders the PWA icons, favicon and the Open Graph image from the Figma app icon (2526:17).
+// Renders the PWA icons, favicon and the Open Graph image from the app icon.
 // Run with: node scripts/make-icons.mjs   (needs Playwright with Edge or Chromium)
 import { chromium } from '@playwright/test';
 import { mkdir, readFile, writeFile } from 'node:fs/promises';

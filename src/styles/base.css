@@ -1,4 +1,4 @@
-/* Base styles: reset, page, layout helpers. Colours, type and spacing come from design/tokens.css. */
+/* Base styles: reset, page, layout helpers. Colours, type and spacing come from src/styles/tokens.css. */
 
 *,
 *::before,
@@ -83,6 +83,10 @@ button {
 
 ::selection {
   background: var(--brand-marigold-tint);
+}
+
+[hidden] {
+  display: none !important;
 }
 
 .sr-only {

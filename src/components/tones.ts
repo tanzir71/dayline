@@ -1,4 +1,4 @@
-/** Colour = kind of moment, everywhere. Tones map to the event colours in design/tokens.css. */
+/** Colour = kind of moment, everywhere. Tones map to the event colours in src/styles/tokens.css. */
 export type Tone = 'win' | 'medicine' | 'sleep' | 'food' | 'hard-moment' | 'neutral';
 export type OverlineTone = Tone | 'marigold';
 
