@@ -351,3 +351,49 @@
   border-radius: 50%;
   background: var(--brand-marigold);
 }
+
+/* ---------- Install sheet ---------- */
+.install-sheet__head {
+  display: grid;
+  grid-template-columns: 56px 1fr;
+  gap: var(--space-4);
+  align-items: center;
+}
+
+.install-sheet__head img {
+  border-radius: 14px;
+}
+
+.install-steps {
+  display: grid;
+  gap: var(--space-3);
+  margin: var(--space-5) 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.install-steps li {
+  display: grid;
+  grid-template-columns: 48px 1fr;
+  gap: var(--space-3);
+  align-items: center;
+  padding: var(--space-3);
+  border-radius: var(--radius-card);
+  background: var(--bg-mist);
+}
+
+.install-steps li > span:last-child {
+  display: grid;
+  gap: 2px;
+}
+
+.install-steps__icon {
+  display: grid;
+  place-items: center;
+  width: 48px;
+  height: 48px;
+  border-radius: var(--radius-small);
+  background: var(--bg-surface);
+  color: var(--event-medicine);
+  box-shadow: inset 0 0 0 1px var(--line-default);
+}

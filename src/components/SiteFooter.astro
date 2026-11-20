@@ -41,7 +41,7 @@ const cols = [
 <footer class="site-footer">
   <div class="wrap site-footer__inner">
     <div class="site-footer__brand">
-      <a class="wordmark wordmark--light" href={home} aria-label={d.nav.home}>dayline<span class="wordmark__dot" aria-hidden="true"></span></a>
+      <a class="wordmark wordmark--light" href={home}>dayline<span class="wordmark__dot" aria-hidden="true"></span><span class="sr-only"> · {d.nav.home}</span></a>
       <p class="t-body-14">{d.footer.disclaimer}</p>
       <p class="site-footer__meta">
         <button type="button" class="site-footer__install" data-install-open hidden>{d.nav.installApp}</button>

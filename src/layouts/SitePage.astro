@@ -3,6 +3,9 @@ import Base from './Base.astro';
 import SiteHeader from '../components/SiteHeader.astro';
 import SiteFooter from '../components/SiteFooter.astro';
 import '../styles/site.css';
+import InstallSheet from '../islands/InstallSheet';
+import { getDict } from '../i18n';
+import { href } from '../lib/paths';
 import type { Lang } from '../lib/paths';
 
 interface Props {
@@ -18,6 +21,7 @@ interface Props {
 }
 
 const props = Astro.props;
+const d = getDict(props.lang);
 ---
 
 <Base {...props}>
@@ -27,4 +31,7 @@ const props = Astro.props;
     <slot />
   </main>
   <SiteFooter lang={props.lang} />
+  <div id="install-sheet-root" class="no-print">
+    <InstallSheet client:idle s={d.install} iconSrc={href('icons/icon-192.png')} />
+  </div>
 </Base>

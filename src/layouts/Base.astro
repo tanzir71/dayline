@@ -4,6 +4,7 @@ import '../styles/fonts.css';
 import '../styles/base.css';
 import '../styles/components.css';
 import { href, localHref, type Lang } from '../lib/paths';
+import { pwaInfo } from 'virtual:pwa-info';
 
 interface Props {
   lang: Lang;
@@ -78,6 +79,11 @@ const csp = [
     <link rel="icon" href={href('favicon.svg')} type="image/svg+xml" />
     <link rel="icon" href={href('icons/icon-192.png')} type="image/png" sizes="192x192" />
     <link rel="apple-touch-icon" href={href('icons/apple-touch-icon.png')} />
+    {pwaInfo && <Fragment set:html={pwaInfo.webManifest.linkTag} />}
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-title" content="Dayline" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
 
     <meta property="og:site_name" content="Dayline" />
     <meta property="og:type" content={ogType} />
@@ -89,6 +95,14 @@ const csp = [
     <meta property="og:image:height" content="630" />
     <meta property="og:locale" content={ogLocale} />
     <meta name="twitter:card" content="summary_large_image" />
+    <script is:inline>
+      // Keep Chrome's install event for Dayline's own install sheet (it can fire before the sheet loads).
+      window.addEventListener('beforeinstallprompt', function (e) {
+        e.preventDefault();
+        window.__daylineInstall = e;
+        window.dispatchEvent(new CustomEvent('dayline:installable'));
+      });
+    </script>
     <script is:inline>
       // Remember the language the reader picked; open that language on the next visit from outside the site.
       (function () {
@@ -123,5 +137,8 @@ const csp = [
   </head>
   <body class={bodyClass}>
     <slot />
+    <script>
+      import '../lib/pwa-register';
+    </script>
   </body>
 </html>
