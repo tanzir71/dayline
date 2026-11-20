@@ -1,0 +1,12 @@
+---
+import GuidesCategory from '../../../views/GuidesCategory.astro';
+import { BROWSE_KEYS, type BrowseKey } from '../../../content/guide-schema';
+
+export function getStaticPaths() {
+  return BROWSE_KEYS.map((key) => ({ params: { key } }));
+}
+
+const key = Astro.params.key as BrowseKey;
+---
+
+<GuidesCategory lang="en" category={key} />

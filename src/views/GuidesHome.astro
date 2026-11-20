@@ -1,0 +1,145 @@
+---
+import SitePage from '../layouts/SitePage.astro';
+import GuideSearch from '../islands/GuideSearch';
+import { GuideRow } from '../components/GuideRow';
+import { CategoryTile } from '../components/CategoryTile';
+import { Overline } from '../components/Overline';
+import { getDict, fmt, plural } from '../i18n';
+import { basePath, localHref, type Lang } from '../lib/paths';
+import { publishedGuides, guidesInBrowse } from '../lib/guides';
+import { BROWSE_KEYS, BROWSE_TONE } from '../content/guide-schema';
+import { events, LEAD_DAYS } from '../lib/seasonal';
+import '../styles/guides.css';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const d = getDict(lang);
+const G = d.guides;
+const all = await publishedGuides(lang);
+const anyDraft = all.some((g) => g.data.status === 'draft');
+const guideMeta = (g: (typeof all)[number]) =>
+  [G.kindGuide, fmt(G.minutes, { n: g.data.read_minutes }, lang), g.data.status === 'reviewed' ? G.reviewed : G.draft].join(' · ');
+
+const seasonal = events.flatMap((e) =>
+  e.guides
+    .map((slug) => all.find((g) => g.data.slug === slug))
+    .filter((g) => !!g)
+    .map((g) => ({ e, g })),
+);
+const fallback = ['help-now', 'meltdown-vs-shutdown', 'haircut-day']
+  .map((slug) => all.find((g) => g.data.slug === slug))
+  .filter((g) => !!g);
+const searchStrings = {
+  label: G.searchLabel,
+  placeholder: G.searchPlaceholder,
+  searching: G.searching,
+  noResults: G.noResults,
+  resultsCount: G.resultsCount,
+  resultsOne: G.resultsOne,
+  searchOffline: G.searchOffline,
+  kindGuide: G.kindGuide,
+  minutes: G.minutes,
+  draft: G.draft,
+  reviewed: G.reviewed,
+};
+---
+
+<SitePage lang={lang} title={G.metaTitle} description={G.description} path="guides/" current="guides">
+  <div class="column guides-page">
+    <header class="page-head">
+      <h1 class="page-title">{G.title}</h1>
+      <p class="t-body-14 muted">{anyDraft ? G.subtitle : G.subtitleReviewed}</p>
+    </header>
+
+    <GuideSearch client:idle lang={lang} base={basePath} s={searchStrings} />
+
+    <div class="guides-browse">
+      <section class="card week" aria-label={G.thisWeek}>
+        <Overline tone="marigold">{G.thisWeek}</Overline>
+        <ul
+          class="guide-list"
+          role="list"
+          data-week
+          data-lead={LEAD_DAYS}
+          data-lang={lang}
+          data-tpl-soon={G.comingUp}
+          data-tpl-tomorrow={G.comingUpOne}
+          data-tpl-now={G.happeningNow}
+        >
+          {
+            seasonal.map(({ e, g }) => (
+              <li hidden data-start={e.start} data-end={e.end} data-event={e.name[lang]} data-slug={g.data.slug}>
+                <GuideRow
+                  href={localHref(lang, `guides/${g.data.slug}/`)}
+                  tone={g.data.tone}
+                  title={g.data.title}
+                  meta={`${G.kindGuide} · ${fmt(G.minutes, { n: g.data.read_minutes }, lang)}`}
+                />
+              </li>
+            ))
+          }
+          {
+            fallback.map((g) => (
+              <li data-fallback>
+                <GuideRow href={localHref(lang, `guides/${g.data.slug}/`)} tone={g.data.tone} title={g.data.title} meta={guideMeta(g)} />
+              </li>
+            ))
+          }
+        </ul>
+      </section>
+
+      <section class="browse" aria-labelledby="browse-title">
+        <h2 id="browse-title" class="t-heading-17">{G.browse}</h2>
+        <div class="category-grid">
+          {
+            BROWSE_KEYS.map((k) => {
+              const n = guidesInBrowse(all, k).length;
+              return (
+                <CategoryTile
+                  href={localHref(lang, `guides/category/${k}/`)}
+                  tone={BROWSE_TONE[k]}
+                  label={G.categories[k]}
+                  count={plural(n, { one: G.countOne, other: G.count, zero: G.countZero }, lang)}
+                />
+              );
+            })
+          }
+        </div>
+      </section>
+    </div>
+  </div>
+</SitePage>
+
+<script>
+  // "This week": seasonal picks from content/calendar.json, chosen on the reader's own date.
+  const list = document.querySelector<HTMLUListElement>('[data-week]');
+  if (list) {
+    const lead = Number(list.dataset.lead ?? 30);
+    const lang = list.dataset.lang === 'bn' ? 'bn-BD' : 'en-GB';
+    const n = (v: number) => new Intl.NumberFormat(lang).format(v);
+    const today = new Date();
+    const t = new Date(today.getFullYear(), today.getMonth(), today.getDate()).getTime();
+    const days = (iso: string) => Math.round((new Date(`${iso}T00:00:00`).getTime() - t) / 86_400_000);
+    const seen = new Set<string>();
+    let shown = 0;
+    const items = [...list.querySelectorAll<HTMLLIElement>('li[data-start]')]
+      .map((li) => ({ li, inDays: days(li.dataset.start!), endsIn: days(li.dataset.end!) }))
+      .filter((x) => x.inDays <= lead && x.endsIn >= 0)
+      .sort((a, b) => a.inDays - b.inDays);
+    for (const { li, inDays } of items) {
+      const slug = li.dataset.slug!;
+      if (seen.has(slug) || shown >= 3) continue;
+      seen.add(slug);
+      const ev = li.dataset.event ?? '';
+      const tpl = inDays <= 0 ? list.dataset.tplNow : inDays === 1 ? list.dataset.tplTomorrow : list.dataset.tplSoon;
+      const meta = li.querySelector('.guide-row__meta');
+      if (meta && tpl) meta.textContent += ` · ${tpl.replace('{event}', ev).replace('{n}', n(inDays))}`;
+      li.hidden = false;
+      shown++;
+    }
+    if (shown > 0) list.querySelectorAll<HTMLLIElement>('li[data-fallback]').forEach((li) => (li.hidden = true));
+  }
+</script>

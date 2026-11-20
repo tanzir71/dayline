@@ -1,0 +1,54 @@
+---
+import SitePage from '../layouts/SitePage.astro';
+import { GuideRow } from '../components/GuideRow';
+import { Overline } from '../components/Overline';
+import { Icon } from '../components/Icon';
+import { getDict, fmt } from '../i18n';
+import { localHref, type Lang } from '../lib/paths';
+import { publishedGuides, guidesInBrowse } from '../lib/guides';
+import { BROWSE_TONE, type BrowseKey } from '../content/guide-schema';
+import '../styles/guides.css';
+
+interface Props {
+  lang: Lang;
+  category: BrowseKey;
+}
+
+const { lang, category } = Astro.props;
+const d = getDict(lang);
+const G = d.guides;
+const list = guidesInBrowse(await publishedGuides(lang), category);
+const path = `guides/category/${category}/`;
+---
+
+<SitePage lang={lang} title={`${G.categories[category]} · ${G.metaTitle}`} description={G.categoryIntro[category]} path={path} current="guides">
+  <div class="column guides-page">
+    <a class="back-link" href={localHref(lang, 'guides/')}><Icon name="chevron-left" size={18} />{G.back}</a>
+    <header class="page-head">
+      <Overline tone={BROWSE_TONE[category]}>{G.browse}</Overline>
+      <h1 class="page-title">{G.categories[category]}</h1>
+      <p class="t-body-14 muted">{G.categoryIntro[category]}</p>
+    </header>
+    {
+      list.length > 0 ? (
+        <ul class="guide-list card" role="list">
+          {list.map((g) => (
+            <li>
+              <GuideRow
+                href={localHref(lang, `guides/${g.data.slug}/`)}
+                tone={g.data.tone}
+                title={g.data.title}
+                meta={[G.kindGuide, fmt(G.minutes, { n: g.data.read_minutes }, lang), g.data.status === 'reviewed' ? G.reviewed : G.draft].join(' · ')}
+              />
+            </li>
+          ))}
+        </ul>
+      ) : (
+        <div class="card empty">
+          <p class="t-body-15">{category === 'medicines' ? G.emptyMedicines : G.emptyCategory}</p>
+          <a class="btn btn--secondary" href={localHref(lang, 'help-now/')}>{d.nav.helpNow}</a>
+        </div>
+      )
+    }
+  </div>
+</SitePage>
