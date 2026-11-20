@@ -1,0 +1,148 @@
+---
+import { render } from 'astro:content';
+import Base from '../layouts/Base.astro';
+import { Icon } from '../components/Icon';
+import { getDict, fmt } from '../i18n';
+import { localHref, type Lang } from '../lib/paths';
+import { publishedGuides } from '../lib/guides';
+import '../styles/helpnow.css';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const d = getDict(lang);
+const H = d.helpNow;
+const guides = await publishedGuides(lang);
+const guide = guides.find((g) => g.data.slug === 'help-now');
+const rendered = guide ? await render(guide) : null;
+const Content = rendered?.Content;
+---
+
+<Base
+  lang={lang}
+  title={H.metaTitle}
+  description={H.description}
+  path="help-now/"
+  bodyClass="help-now"
+  themeColor="#12282C"
+  noLangRedirect
+>
+  <main id="main" class="column help" data-started-label={H.started} data-elapsed-label={H.elapsed}>
+    <header class="help__top">
+      <p class="overline help__overline"><span class="overline__dot" aria-hidden="true"></span><span class="t-overline-12">{H.overline}</span></p>
+      <p class="help__clock t-caption-13" aria-live="off" data-clock></p>
+    </header>
+
+    <h1 class="help__title">{H.title}</h1>
+    <p class="help__reassure">{H.reassure}</p>
+
+    <section class="help__steps" aria-label={H.stepsHeading}>
+      {Content ? <Content /> : null}
+    </section>
+
+    <p class="help__footnote t-caption-13">
+      {H.footnote}
+      {guide && guide.data.status === 'draft' && <> {d.guide.draftBanner}.</>}
+      {' '}<a href={localHref(lang, 'guides/help-now/')}>{H.readGuide}</a>
+    </p>
+
+    <div class="help__bar">
+      <a class="btn btn--emergency btn--block" href="tel:999" data-emergency-link>
+        <Icon name="phone" size={20} />
+        <span data-emergency-label data-template={H.emergency}>{fmt(H.emergency, { number: '999' })}</span>
+      </a>
+      <div class="help__bar-row">
+        <a class="btn btn--on-dark" href={localHref(lang, '')} data-done>{H.done}</a>
+        <button type="button" class="btn btn--on-dark btn--ghost-dark" data-change-number aria-expanded="false" aria-controls="emergency-form">
+          <span data-change-label data-template={H.changeNumber}>{fmt(H.changeNumber, { number: '999' })}</span>
+        </button>
+      </div>
+      <form id="emergency-form" class="help__number" hidden>
+        <label for="emergency-number" class="t-body-strong-14">{H.numberLabel}</label>
+        <input id="emergency-number" name="number" type="tel" inputmode="tel" autocomplete="off" maxlength="20" required pattern="[0-9+ ]{2,20}" />
+        <p class="t-caption-13">{H.numberHint}</p>
+        <div class="help__bar-row">
+          <button type="submit" class="btn btn--primary">{H.save}</button>
+          <button type="button" class="btn btn--on-dark" data-cancel>{H.cancel}</button>
+        </div>
+      </form>
+    </div>
+  </main>
+</Base>
+
+<script>
+  const KEY = 'dayline.emergencyNumber';
+  const main = document.querySelector<HTMLElement>('.help')!;
+  const lang = document.documentElement.lang === 'bn' ? 'bn-BD' : 'en-GB';
+  const started = new Date();
+  const clock = document.querySelector<HTMLElement>('[data-clock]');
+  const timeFmt = new Intl.DateTimeFormat(lang, { hour: 'numeric', minute: '2-digit', hour12: true });
+  const nFmt = new Intl.NumberFormat(lang);
+  function tick() {
+    if (!clock) return;
+    const mins = Math.floor((Date.now() - started.getTime()) / 60000);
+    const startedText = (main.dataset.startedLabel ?? '').replace('{time}', timeFmt.format(started));
+    const elapsed = (main.dataset.elapsedLabel ?? '').replace('{n}', nFmt.format(mins));
+    clock.textContent = `${startedText} · ${elapsed}`;
+  }
+  tick();
+  setInterval(tick, 30_000);
+
+  // Emergency number: 999 by default (Bangladesh), changeable, kept on this phone.
+  const link = document.querySelector<HTMLAnchorElement>('[data-emergency-link]')!;
+  const label = document.querySelector<HTMLElement>('[data-emergency-label]')!;
+  const changeBtn = document.querySelector<HTMLButtonElement>('[data-change-number]')!;
+  const changeLabel = document.querySelector<HTMLElement>('[data-change-label]')!;
+  const form = document.querySelector<HTMLFormElement>('#emergency-form')!;
+  const input = form.querySelector<HTMLInputElement>('input')!;
+  const read = () => {
+    try {
+      return localStorage.getItem(KEY) || '999';
+    } catch {
+      return '999';
+    }
+  };
+  function show(number: string) {
+    link.href = `tel:${number.replace(/[^0-9+]/g, '')}`;
+    label.textContent = (label.dataset.template ?? '').replace('{number}', number);
+    changeLabel.textContent = (changeLabel.dataset.template ?? '').replace('{number}', number);
+  }
+  show(read());
+  changeBtn.addEventListener('click', () => {
+    form.hidden = !form.hidden;
+    changeBtn.setAttribute('aria-expanded', String(!form.hidden));
+    if (!form.hidden) {
+      input.value = read();
+      input.focus();
+    }
+  });
+  form.querySelector('[data-cancel]')?.addEventListener('click', () => {
+    form.hidden = true;
+    changeBtn.setAttribute('aria-expanded', 'false');
+    changeBtn.focus();
+  });
+  form.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const value = input.value.trim();
+    if (!value) return;
+    try {
+      localStorage.setItem(KEY, value);
+    } catch {
+      /* not saved, but used for this visit */
+    }
+    show(value);
+    form.hidden = true;
+    changeBtn.setAttribute('aria-expanded', 'false');
+    changeBtn.focus();
+  });
+
+  // "I'm done" goes back to where the reader came from, when that was this site.
+  document.querySelector<HTMLAnchorElement>('[data-done]')?.addEventListener('click', (e) => {
+    if (document.referrer && new URL(document.referrer).origin === location.origin && history.length > 1) {
+      e.preventDefault();
+      history.back();
+    }
+  });
+</script>

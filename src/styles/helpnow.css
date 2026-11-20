@@ -1,0 +1,176 @@
+/* Help now (Figma 2530:457): dark, calm, big type, call buttons always in reach. */
+
+body.help-now {
+  background: var(--text-ink);
+  color: var(--text-on-color);
+}
+
+.help {
+  display: grid;
+  gap: var(--space-4);
+  min-height: 100dvh;
+  padding-top: var(--space-5);
+  padding-bottom: 240px;
+  align-content: start;
+}
+
+.help__top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+}
+
+.help__overline {
+  color: var(--text-on-color);
+}
+
+.help__clock {
+  color: color-mix(in srgb, var(--text-on-color) 82%, transparent);
+  font-weight: 600;
+}
+
+.help__title {
+  font: 700 28px/1.15 var(--font-display);
+  letter-spacing: -0.005em;
+}
+
+:lang(bn) .help__title {
+  font-family: var(--font-bangla);
+  letter-spacing: 0;
+  line-height: 1.3;
+}
+
+.help__reassure {
+  margin-top: calc(var(--space-2) * -1);
+  color: color-mix(in srgb, var(--text-on-color) 82%, transparent);
+  font: 500 16px/1.4 var(--font-ui);
+}
+
+:lang(bn) .help__reassure,
+:lang(bn) .help__steps {
+  font-family: var(--font-bangla);
+}
+
+.help__steps {
+  display: grid;
+  gap: var(--space-3);
+  font: 500 17px/1.45 var(--font-ui);
+}
+
+.help__steps > p:first-child {
+  color: color-mix(in srgb, var(--text-on-color) 82%, transparent);
+  font-size: 15px;
+}
+
+.help__steps h2 {
+  margin-top: var(--space-3);
+  color: color-mix(in srgb, var(--text-on-color) 78%, transparent);
+  font: 700 12px/1.3 var(--font-ui);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+:lang(bn) .help__steps h2 {
+  font: 700 14px/1.3 var(--font-bangla);
+  letter-spacing: 0;
+}
+
+.help__steps ul {
+  display: grid;
+  gap: var(--space-2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.help__steps li {
+  position: relative;
+  padding: var(--space-3) var(--space-4) var(--space-3) 36px;
+  border-radius: var(--radius-small);
+  background: color-mix(in srgb, var(--brand-monsoon) 70%, var(--text-ink));
+}
+
+.help__steps li::before {
+  content: '';
+  position: absolute;
+  left: 16px;
+  top: 21px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--brand-marigold);
+}
+
+/* The last section ("Get help now if") stands out. */
+.help__steps h2:last-of-type + ul li {
+  background: color-mix(in srgb, var(--event-hard-moment) 22%, var(--text-ink));
+}
+
+.help__footnote {
+  color: color-mix(in srgb, var(--text-on-color) 78%, transparent);
+}
+
+.help__footnote a {
+  color: var(--text-on-color);
+  font-weight: 600;
+}
+
+.help__bar {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 10;
+  display: grid;
+  gap: var(--space-3);
+  max-width: var(--app-column);
+  margin-inline: auto;
+  padding: var(--space-4) var(--space-4) calc(var(--space-4) + env(safe-area-inset-bottom));
+  background: linear-gradient(to top, var(--text-ink) 80%, transparent);
+}
+
+.help__bar-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-3);
+}
+
+.btn--emergency {
+  min-height: 60px;
+  background: var(--bg-surface);
+  color: var(--text-caution);
+  font-size: 17px;
+}
+
+.btn--on-dark {
+  background: transparent;
+  border-color: color-mix(in srgb, var(--text-on-color) 45%, transparent);
+  color: var(--text-on-color);
+  font-size: 14px;
+  padding-inline: var(--space-3);
+}
+
+.btn--ghost-dark {
+  border-color: transparent;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.help__number {
+  display: grid;
+  gap: var(--space-2);
+  padding: var(--space-4);
+  border-radius: var(--radius-card);
+  background: color-mix(in srgb, var(--brand-monsoon) 60%, var(--text-ink));
+}
+
+.help__number input {
+  min-height: 48px;
+  padding: 0 var(--space-3);
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius-small);
+  background: var(--bg-surface);
+  color: var(--text-ink);
+  font: 600 18px/1.2 var(--font-ui);
+}
