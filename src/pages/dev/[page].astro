@@ -1,0 +1,94 @@
+---
+/**
+ * Component sheet for development only. getStaticPaths returns nothing in production,
+ * so this page is never built or deployed.
+ */
+import Base from '../../layouts/Base.astro';
+import { Button } from '../../components/Button';
+import { Chip } from '../../components/Chip';
+import { Overline } from '../../components/Overline';
+import { GuideRow } from '../../components/GuideRow';
+import { CategoryTile } from '../../components/CategoryTile';
+import { Icon, type IconName } from '../../components/Icon';
+import { TONES, OVERLINE_TONES } from '../../components/tones';
+
+export function getStaticPaths() {
+  return import.meta.env.DEV ? [{ params: { page: 'components' } }] : [];
+}
+
+const icons: IconName[] = [
+  'today', 'guides', 'insights', 'child', 'check', 'chevron-right', 'chevron-left', 'chevron-down', 'share',
+  'search', 'phone', 'close', 'menu', 'print', 'plus', 'download', 'clock', 'arrow-right', 'add-to-home', 'ios-share',
+];
+---
+
+<Base lang="en" title="Components · Dayline (dev)" description="Component sheet" path="dev/components/" noindex altPath={null}>
+  <main class="wrap stack" style="--stack-gap: 32px; padding-block: 32px;">
+    <h1 class="t-display-32">Components</h1>
+
+    <section class="stack">
+      <h2 class="t-heading-17">Button</h2>
+      <div style="display:flex;flex-wrap:wrap;gap:12px">
+        <Button>Save to today</Button>
+        <Button variant="secondary">Read the guides</Button>
+        <Button variant="hard-moment">Hard moment</Button>
+        <Button variant="win">Win</Button>
+        <Button variant="dose">Mark given</Button>
+        <Button variant="ghost">Ghost</Button>
+        <Button variant="quiet">Quiet</Button>
+        <Button size="sm" variant="secondary">Small</Button>
+      </div>
+    </section>
+
+    <section class="stack">
+      <h2 class="t-heading-17">Chip</h2>
+      <div class="chip-group">
+        <Chip>Transition</Chip>
+        <Chip mode="single" on>Transition</Chip>
+        <Chip on>Transition</Chip>
+      </div>
+    </section>
+
+    <section class="stack">
+      <h2 class="t-heading-17">Overline</h2>
+      <div style="display:flex;flex-wrap:wrap;gap:20px">
+        {OVERLINE_TONES.map((tone) => <Overline tone={tone}>{tone}</Overline>)}
+      </div>
+    </section>
+
+    <section class="stack">
+      <h2 class="t-heading-17">Guide row</h2>
+      <ul class="guide-list card" style="max-width:420px">
+        {TONES.map((tone) => (
+          <li><GuideRow href="#" tone={tone} title="Eid next week: visits and noise" meta={`Guide · 3 min · ${tone}`} /></li>
+        ))}
+      </ul>
+    </section>
+
+    <section class="stack">
+      <h2 class="t-heading-17">Category tile</h2>
+      <div class="category-grid" style="max-width:420px">
+        {TONES.map((tone) => <CategoryTile href="#" tone={tone} label="Everyday situations" count="24 guides" />)}
+      </div>
+    </section>
+
+    <section class="stack">
+      <h2 class="t-heading-17">Icons</h2>
+      <div style="display:flex;flex-wrap:wrap;gap:16px;color:var(--text-ink)">
+        {icons.map((name) => <span title={name}><Icon name={name} /></span>)}
+      </div>
+    </section>
+
+    <section class="stack">
+      <h2 class="t-heading-17">Type</h2>
+      <p class="t-display-32">Every day, on one line.</p>
+      <p class="t-title-26">Today</p>
+      <p class="t-heading-17">The day so far</p>
+      <p class="t-body-15">Woke twice in the night</p>
+      <p class="t-caption-13 muted">By Amma · 40 min late</p>
+      <p class="t-overline-12 muted">Watch for today</p>
+      <p lang="bn" class="t-title-26">আজকের দিন</p>
+      <div class="draft-banner">Draft — not yet reviewed by a clinician</div>
+    </section>
+  </main>
+</Base>
