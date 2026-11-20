@@ -285,8 +285,8 @@ html[data-searching] .guides-browse {
 
 /* "Print as picture steps": one big box per step, with room for a photo or drawing. */
 @media print {
+  /* A4 or Letter: the printer's paper decides. */
   @page {
-    size: A4;
     margin: 14mm;
   }
 
