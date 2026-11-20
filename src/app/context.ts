@@ -4,6 +4,7 @@ import type { Dict } from '../i18n';
 import type { DaylineDB } from '../data/db';
 import type { Repos } from '../data/repos';
 import type { Child, Lang } from '../data/types';
+import type { LabelSummary } from '../domain/labels';
 
 export interface GuideInfo {
   slug: string;
@@ -45,6 +46,7 @@ export interface AppCtx {
   guides: GuideInfo[];
   helpSteps: Record<Lang, HelpSteps>;
   calendar: SeasonEvent[];
+  labels: LabelSummary[];
   toast: (message: string, undo?: () => void) => void;
   emergency: string;
   flags: { playbook: boolean; insights: boolean };

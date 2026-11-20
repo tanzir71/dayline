@@ -18,6 +18,13 @@ import { ShareSheet } from './screens/ShareSheet';
 import { ShowMode } from './screens/ShowMode';
 import { Settings } from './screens/Settings';
 import { Insights } from './screens/Insights';
+import { Prescribers, Visits, VisitPrep, VisitReportScreen } from './screens/Visits';
+import { ChangeForm, ChangeReview } from './screens/Changes';
+import { WelcomeBack } from './screens/WelcomeBack';
+import { MedicineInfo } from './screens/MedicineInfo';
+import { DayView } from './screens/DayView';
+import { NavBar } from './ui';
+import type { LabelSummary } from '../domain/labels';
 
 interface Props {
   lang: Lang;
@@ -25,6 +32,7 @@ interface Props {
   guides: GuideInfo[];
   helpSteps: Record<Lang, HelpSteps>;
   calendar: SeasonEvent[];
+  labels: LabelSummary[];
   flags: { playbook: boolean; insights: boolean };
 }
 
@@ -59,6 +67,14 @@ export default function App(props: Props) {
         }
         if (!(await db.settings.get('firstUse'))) await repos.settings.set('firstUse', new Date().toISOString());
         setChildId(await repos.settings.get<string | null>('currentChild', null));
+        // Welcome back after 7 days away (M2): remember when the gap started, ask three questions once.
+        const last = await repos.settings.get<string | null>('lastOpened', null);
+        const gapDays = last ? (Date.now() - new Date(last).getTime()) / 86_400_000 : 0;
+        if (props.flags.insights && gapDays >= 7 && (await db.child.count()) > 0) {
+          await repos.settings.set('awaySince', last);
+          go('/welcome', true);
+        }
+        await repos.settings.set('lastOpened', new Date().toISOString());
         setStatus('ready');
       } catch {
         setStatus('error');
@@ -90,6 +106,7 @@ export default function App(props: Props) {
     guides: props.guides,
     helpSteps: props.helpSteps,
     calendar: props.calendar,
+    labels: props.labels,
     emergency,
     flags: props.flags,
     toast: (message, undo) => {
@@ -118,7 +135,8 @@ export default function App(props: Props) {
     );
   }
 
-  const [section = 'today', a, b] = route.parts;
+  const [section = 'today', a, b, c] = route.parts;
+  const m2 = props.flags.insights;
   const sheet = route.query.get('sheet');
   const needsChild = !['help-now', 'onboarding', 'settings'].includes(section);
 
@@ -133,7 +151,9 @@ export default function App(props: Props) {
     if (a === 'section' && b) screen = <SectionEdit section={b} />;
     else if (a === 'edit') screen = <ChildEdit />;
     else if (a === 'contacts') screen = <Contacts />;
+    else if (a === 'medicines' && b && c === 'info' && m2) screen = <MedicineInfo id={b} />;
     else if (a === 'medicines' && b) screen = <MedicineEdit id={b} />;
+    else if (a === 'prescribers' && m2) screen = <Prescribers />;
     else if (a === 'medicines') screen = <Medicines />;
     else screen = <About />;
   } else if (section === 'playbook') {
@@ -141,7 +161,34 @@ export default function App(props: Props) {
   } else if (section === 'settings') {
     screen = <Settings />;
   } else if (section === 'insights') {
-    screen = <Insights />;
+    screen = m2 ? (
+      <Insights />
+    ) : (
+      <div class="app-screen with-nav">
+        <main id="main" class="column app-main stack" style="--stack-gap: 12px">
+          <h1 class="screen-title">{t.insights.title}</h1>
+          <section class="card stack" style="--stack-gap: 8px">
+            <p class="t-body-15">{t.insights.soon}</p>
+            <p class="t-body-14 muted">{t.insights.meanwhile}</p>
+          </section>
+        </main>
+        <NavBar active="insights" />
+      </div>
+    );
+  } else if (m2 && section === 'visits') {
+    screen = <Visits />;
+  } else if (m2 && section === 'visit' && a && b === 'report') {
+    screen = <VisitReportScreen id={a} />;
+  } else if (m2 && section === 'visit' && a) {
+    screen = <VisitPrep id={a} />;
+  } else if (m2 && section === 'change' && a === 'new') {
+    screen = <ChangeForm />;
+  } else if (m2 && section === 'change' && a) {
+    screen = <ChangeReview id={a} />;
+  } else if (m2 && section === 'welcome') {
+    screen = <WelcomeBack />;
+  } else if (m2 && section === 'day' && a) {
+    screen = <DayView day={a} />;
   } else if (section === 'log' || section === 'dose') {
     // Manifest shortcuts: open Today with the quick log on top.
     go(`/today?sheet=log&kind=${section === 'dose' ? 'dose' : 'hard_moment'}`, true);

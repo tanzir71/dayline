@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'preact/hooks';
 import { useApp } from '../context';
-import { useChildData, sectionLines, sortedContacts } from '../data';
+import { useCareData, useChildData, sectionLines, sortedContacts } from '../data';
 import { NavBar, Row, ScreenHeader, TextArea, Field, TextInput } from '../ui';
 import { Icon } from '../../components/Icon';
 import { Chip } from '../../components/Chip';
@@ -19,6 +19,9 @@ const SECTION_TONE: Record<string, string> = {
   sleep: 'sleep',
   contacts: 'neutral',
   other: 'neutral',
+  prescribers: 'medicine',
+  visits: 'medicine',
+  changes: 'sleep',
 };
 
 /** About the child (2530:754): one-time profile that powers the brief. Every section optional. */
@@ -27,6 +30,7 @@ export function About() {
   const { t, child } = ctx;
   const A = t.about;
   const data = useChildData();
+  const care = useCareData();
   const name = child!.name;
   const preview = (key: string) => sectionLines(data.profile, key).join(', ');
   const anything = data.profile.some((p) => p.body.trim()) || data.contacts.length > 0 || data.medicines.length > 0;
@@ -44,6 +48,13 @@ export function About() {
     { key: 'sleep', href: '#/child/section/sleep', detail: preview('sleep') },
     { key: 'contacts', href: '#/child/contacts', detail: sortedContacts(data.contacts).map((c) => c.name).join(', ') || A.noContacts },
     { key: 'other', href: '#/child/section/other', detail: preview('other') },
+    ...(ctx.flags.insights
+      ? [
+          { key: 'prescribers', href: '#/child/prescribers', detail: care.prescribers.map((p) => p.name).join(', ') || A.noPrescribers },
+          { key: 'visits', href: '#/visits', detail: care.visits.length ? `${care.visits.length}` : A.noVisits },
+          { key: 'changes', href: '#/insights', detail: care.changes[0]?.summary ?? A.noChanges },
+        ]
+      : []),
   ];
   const sub = [ageLabel(child!.birth_month, ctx), child!.language === 'bn' ? t.common.langBn : t.common.langEn].filter(Boolean).join(' · ');
 

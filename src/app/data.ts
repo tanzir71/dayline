@@ -1,6 +1,6 @@
 import { useApp } from './context';
 import { useLive } from './live';
-import type { Contact, DayEvent, EventTag, Medicine, MedicineSchedule, PlaybookItem, ProfileSection, Stock } from '../data/types';
+import type { Change, CheckIn, Contact, DayEvent, EventTag, Medicine, MedicineSchedule, PlaybookItem, Prescriber, ProfileSection, Stock, Visit } from '../data/types';
 
 export interface ChildData {
   ready: boolean;
@@ -71,4 +71,38 @@ export function sectionLines(profile: ProfileSection[], key: string): string[] {
 export function sortedContacts(contacts: Contact[]): Contact[] {
   const order = ['parent', 'grandparent', 'sitter', 'teacher', 'doctor', 'therapist', 'other'];
   return [...contacts].sort((a, b) => order.indexOf(a.role) - order.indexOf(b.role));
+}
+
+export interface CareData {
+  ready: boolean;
+  prescribers: Prescriber[];
+  visits: Visit[];
+  changes: Change[];
+  checkIns: CheckIn[];
+}
+
+/** Doctors, visits, changes and weekly check-ins for the current child (M2), kept live. */
+export function useCareData(): CareData {
+  const { repos, child } = useApp();
+  const id = child?.id ?? '';
+  return useLive(
+    async () => {
+      if (!id) return { ready: true, prescribers: [], visits: [], changes: [], checkIns: [] };
+      const [prescribers, visits, changes, checkIns] = await Promise.all([
+        repos.prescribers.where('child_id', id),
+        repos.visits.where('child_id', id),
+        repos.changes.where('child_id', id),
+        repos.checkIns.where('child_id', id),
+      ]);
+      return {
+        ready: true,
+        prescribers,
+        visits: visits.sort((a, b) => a.scheduled_at.localeCompare(b.scheduled_at)),
+        changes: changes.sort((a, b) => b.effective_on.localeCompare(a.effective_on)),
+        checkIns: checkIns.sort((a, b) => b.week_start.localeCompare(a.week_start)),
+      };
+    },
+    [id],
+    { ready: false as boolean, prescribers: [] as Prescriber[], visits: [] as Visit[], changes: [] as Change[], checkIns: [] as CheckIn[] },
+  );
 }

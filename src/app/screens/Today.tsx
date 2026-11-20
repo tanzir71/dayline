@@ -1,6 +1,9 @@
 import { useEffect, useRef, useState } from 'preact/hooks';
 import { useApp } from '../context';
-import { useChildData, useEvents } from '../data';
+import { useCareData, useChildData, useEvents } from '../data';
+import { visitNudge } from './Visits';
+import { CheckInCard } from './CheckIn';
+import { REVIEW_WINDOW, SETTLE_DAYS } from '../../domain/daily';
 import { useLive, useNow } from '../live';
 import { NavBar, TimelineItem, Sheet } from '../ui';
 import { Icon } from '../../components/Icon';
@@ -25,6 +28,11 @@ export function Today() {
   const data = useChildData();
   const { events, tags, ready } = useEvents(day, day);
   const [switcher, setSwitcher] = useState(false);
+  const care = useCareData();
+  const m2 = ctx.flags.insights;
+  const visit = m2 ? visitNudge(care.visits, day) : undefined;
+  const reviewDue = m2 ? care.changes.find((c) => c.outcome === 'undecided' && day >= c.review_on && daysBetween(c.effective_on, day) <= SETTLE_DAYS + REVIEW_WINDOW + 14) : undefined;
+  const visitDoc = visit ? care.prescribers.find((p) => p.id === visit.prescriber_id)?.name ?? t.visits.someone : '';
   const backup = useLive(
     async () => ({ last: await repos.settings.get<string | null>('lastBackup', null), first: await repos.settings.get<string | null>('firstUse', null) }),
     [],
@@ -183,6 +191,26 @@ export function Today() {
           </section>
         )}
 
+        {visit && (
+          <section class="nudge tone-medicine">
+            <p class="t-body-strong-15">{fmt(t.visits.nudgeTitle, { name: visitDoc, day: dateLabel(new Date(visit.scheduled_at), lang) })}</p>
+            <p class="t-body-14 muted">{t.visits.nudgeBody}</p>
+            <a class="btn btn--quiet btn--sm" href={`#/visit/${visit.id}`}>
+              {t.visits.prep}
+            </a>
+          </section>
+        )}
+
+        {reviewDue && (
+          <section class="nudge tone-sleep">
+            <p class="t-body-strong-15">{reviewDue.summary}</p>
+            <p class="t-body-14 muted">{t.changes.ready}</p>
+            <a class="btn btn--quiet btn--sm" href={`#/change/${reviewDue.id}`}>
+              {t.changes.whatNext}
+            </a>
+          </section>
+        )}
+
         {lowStock.map(({ m, left }) => (
           <section class="nudge tone-medicine" key={m.id}>
             <p class="t-body-strong-15">{fmt(t.today.lowStock, { medicine: m.generic_name, n: left ?? 0 }, lang)}</p>
@@ -216,6 +244,8 @@ export function Today() {
             <Icon name="arrow-right" size={20} />
           </a>
         )}
+
+        {m2 && <CheckInCard />}
 
         {backupDue && (
           <section class="nudge tone-monsoon">

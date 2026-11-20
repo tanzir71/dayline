@@ -114,6 +114,10 @@ export function createRepos(db: DaylineDB) {
     events: eventRepo(db),
     playbook: tableRepo(db.playbook_item),
     shares: tableRepo(db.share_record),
+    visits: tableRepo(db.visit),
+    changes: tableRepo(db.change),
+    checkIns: tableRepo(db.check_in),
+    feedback: tableRepo(db.insight_feedback),
     settings: settingsRepo(db),
   };
 }

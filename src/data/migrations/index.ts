@@ -28,6 +28,17 @@ export const migrations: Migration[] = [
       settings: 'key',
     },
   },
+  {
+    // M2: visits and changes, weekly check-ins, feedback on patterns.
+    version: 2,
+    stores: {
+      visit: 'id, child_id, [child_id+scheduled_at]',
+      change: 'id, child_id, [child_id+effective_on]',
+      check_in: 'id, child_id, [child_id+week_start]',
+      insight_feedback: 'id, child_id, pattern_key',
+    },
+    upgradeBackup: (tables) => ({ visit: [], change: [], check_in: [], insight_feedback: [], ...tables }),
+  },
 ];
 
 export const SCHEMA_VERSION = migrations[migrations.length - 1]!.version;

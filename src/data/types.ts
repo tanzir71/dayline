@@ -137,6 +137,54 @@ export interface ShareRecord extends Row {
   at: string;
 }
 
+export interface VisitPrep {
+  hard_moments: 'fewer' | 'same' | 'more' | null;
+  sleep: 'better' | 'same' | 'worse' | null;
+  new_things: string[];
+}
+
+export interface Visit extends Row {
+  child_id: string;
+  prescriber_id: string | null;
+  scheduled_at: string;
+  prep: VisitPrep | null;
+  questions: string[];
+  report_period_start: string | null;
+}
+
+export const CHANGE_TYPES = ['medicine_start', 'dose_change', 'medicine_stop', 'therapy', 'diet', 'school', 'routine', 'other'] as const;
+export type ChangeType = (typeof CHANGE_TYPES)[number];
+
+export interface Change extends Row {
+  child_id: string;
+  type: ChangeType;
+  medicine_id: string | null;
+  summary: string;
+  reason: string;
+  decided_by: string;
+  effective_on: string;
+  review_on: string;
+  outcome: 'kept' | 'changed' | 'stopped' | 'undecided';
+}
+
+export type Trend = 'less' | 'same' | 'more';
+
+export interface CheckIn extends Row {
+  child_id: string;
+  week_start: string;
+  sleep: Trend | null;
+  mood: Trend | null;
+  hard_moments: Trend | null;
+  note: string;
+}
+
+export interface InsightFeedback extends Row {
+  child_id: string;
+  pattern_key: string;
+  verdict: 'makes_sense' | 'not_this';
+  note: string;
+}
+
 export interface Setting {
   key: string;
   value: unknown;
@@ -156,6 +204,10 @@ export const TABLES = [
   'event_tag',
   'playbook_item',
   'share_record',
+  'visit',
+  'change',
+  'check_in',
+  'insight_feedback',
   'settings',
 ] as const;
 export type TableName = (typeof TABLES)[number];

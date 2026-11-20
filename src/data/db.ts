@@ -2,7 +2,7 @@ import Dexie, { type Table } from 'dexie';
 import { migrations } from './migrations';
 import type {
   Child, Contact, DayEvent, EventTag, Medicine, MedicineSchedule, Noter, PlaybookItem, Prescriber,
-  ProfileSection, Setting, ShareRecord, Stock,
+  ProfileSection, Setting, ShareRecord, Stock, Visit, Change, CheckIn, InsightFeedback,
 } from './types';
 
 export class DaylineDB extends Dexie {
@@ -18,6 +18,10 @@ export class DaylineDB extends Dexie {
   event_tag!: Table<EventTag, string>;
   playbook_item!: Table<PlaybookItem, string>;
   share_record!: Table<ShareRecord, string>;
+  visit!: Table<Visit, string>;
+  change!: Table<Change, string>;
+  check_in!: Table<CheckIn, string>;
+  insight_feedback!: Table<InsightFeedback, string>;
   settings!: Table<Setting, string>;
 
   constructor(name = 'dayline') {

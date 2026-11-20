@@ -76,6 +76,13 @@ describe('migrations', () => {
     expect(current.verno).toBe(SCHEMA_VERSION);
   });
 
+  it('upgrades a version 1 backup: the M2 tables start empty', () => {
+    const t = upgradeBackupTables({ child: [{ id: 'c1' }] }, 1);
+    expect(t.child).toHaveLength(1);
+    expect(t.visit).toEqual([]);
+    expect(t.change).toEqual([]);
+  });
+
   it('refuses a backup from a newer app', () => {
     expect(() => upgradeBackupTables({}, SCHEMA_VERSION + 1)).toThrow(/newer Dayline/);
   });
