@@ -1,0 +1,71 @@
+---
+import Base from '../layouts/Base.astro';
+import App from '../app/App';
+import AppPlaceholder from './AppPlaceholder.astro';
+import { getDict } from '../i18n';
+import { basePath, type Lang } from '../lib/paths';
+import { publishedGuides } from '../lib/guides';
+import { events as calendar } from '../lib/seasonal';
+import { flags } from '../config/flags';
+import '../styles/helpnow.css';
+import '../styles/app.css';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const d = getDict(lang);
+const all = await publishedGuides();
+const guides = all.map((g) => ({
+  slug: g.data.slug,
+  lang: g.data.lang,
+  title: g.data.title,
+  category: g.data.category,
+  tone: g.data.tone,
+  read_minutes: g.data.read_minutes,
+  playbook_items: g.data.playbook_items,
+  seasonal: g.data.seasonal,
+  status: g.data.status,
+}));
+
+/** General Help now steps, from the help-now guide's "## N. Title" sections and bullet lines. */
+function steps(l: Lang) {
+  const body = all.find((g) => g.data.slug === 'help-now' && g.data.lang === l)?.body ?? '';
+  const sections: { title: string; items: string[] }[] = [];
+  for (const line of body.split('\n')) {
+    const h = /^##\s+(?:[0-9০-৯]+[.)]\s*)?(.+)$/.exec(line.trim());
+    if (h) {
+      sections.push({ title: h[1]!.trim(), items: [] });
+      continue;
+    }
+    const li = /^[-*]\s+(.+)$/.exec(line.trim());
+    if (li && sections.length) sections[sections.length - 1]!.items.push(li[1]!.replace(/\*\*/g, '').trim());
+  }
+  return { sections };
+}
+const helpSteps = { en: steps('en'), bn: steps('bn') };
+---
+
+{
+  flags.APP ? (
+    <Base lang={lang} title={`${d.app.nav.today} · Dayline`} description={d.meta.siteDescription} path="app/" bodyClass="app-body" noindex>
+      <App
+        client:only="preact"
+        lang={lang}
+        base={basePath}
+        guides={guides}
+        helpSteps={helpSteps}
+        calendar={calendar}
+        flags={{ playbook: flags.PLAYBOOK, insights: flags.INSIGHTS }}
+      >
+        <main slot="fallback" class="column app-message" aria-busy="true">
+          <p class="t-body-15 muted">{d.app.loading}</p>
+        </main>
+      </App>
+      <noscript><p class="column app-message">Dayline needs JavaScript to keep the record on this phone.</p></noscript>
+    </Base>
+  ) : (
+    <AppPlaceholder lang={lang} />
+  )
+}

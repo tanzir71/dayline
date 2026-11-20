@@ -276,3 +276,22 @@
   gap: var(--space-3);
   margin-top: var(--space-2);
 }
+
+/* Installed app: guide pages get the app's tab bar instead of the website's footer and menu. */
+.standalone-only {
+  display: none !important;
+}
+
+@media (display-mode: standalone) {
+  .standalone-only {
+    display: grid !important;
+  }
+  .site-footer,
+  .site-menu,
+  .site-header__app {
+    display: none !important;
+  }
+  body {
+    padding-bottom: calc(72px + env(safe-area-inset-bottom));
+  }
+}

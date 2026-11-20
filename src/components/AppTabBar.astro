@@ -1,0 +1,24 @@
+---
+// The app's tab bar on guide pages when Dayline runs as an installed app (display-mode: standalone),
+// so Guides feels like a tab of the app rather than a website.
+import { getDict } from '../i18n';
+import { localHref, type Lang } from '../lib/paths';
+import { Icon } from './Icon';
+
+interface Props {
+  lang: Lang;
+  current?: string;
+}
+const { lang, current } = Astro.props;
+const t = getDict(lang).app;
+const app = localHref(lang, 'app/');
+---
+
+<nav class="nav-bar standalone-only" aria-label={t.nav.main}>
+  <a href={`${app}#/today`}><Icon name="today" /><span>{t.nav.today}</span></a>
+  <a href={localHref(lang, 'guides/')} class={current === 'guides' ? 'is-active' : ''} aria-current={current === 'guides' ? 'page' : undefined}
+    ><Icon name="guides" /><span>{t.nav.guides}</span></a
+  >
+  <a href={`${app}#/insights`}><Icon name="insights" /><span>{t.nav.insights}</span></a>
+  <a href={`${app}#/child`}><Icon name="child" /><span>{t.nav.child}</span></a>
+</nav>

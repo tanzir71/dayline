@@ -6,6 +6,9 @@ import '../styles/site.css';
 import InstallSheet from '../islands/InstallSheet';
 import { getDict } from '../i18n';
 import { href } from '../lib/paths';
+import AppTabBar from '../components/AppTabBar.astro';
+import { flags } from '../config/flags';
+import '../styles/app.css';
 import type { Lang } from '../lib/paths';
 
 interface Props {
@@ -31,6 +34,7 @@ const d = getDict(props.lang);
     <slot />
   </main>
   <SiteFooter lang={props.lang} />
+  {flags.APP && <AppTabBar lang={props.lang} current={props.current} />}
   <div id="install-sheet-root" class="no-print">
     <InstallSheet client:idle s={d.install} iconSrc={href('icons/icon-192.png')} />
   </div>

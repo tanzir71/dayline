@@ -1,0 +1,188 @@
+import { useEffect, useMemo, useState } from 'preact/hooks';
+import { getDict } from '../i18n';
+import { getDB, requestPersistence } from '../data/db';
+import { createRepos } from '../data/repos';
+import type { Child, Lang } from '../data/types';
+import { Ctx, type AppCtx, type GuideInfo, type HelpSteps, type SeasonEvent } from './context';
+import { useLive } from './live';
+import { go, useRoute } from './router';
+import { Onboarding } from './screens/Onboarding';
+import { Today } from './screens/Today';
+import { QuickLog } from './screens/QuickLog';
+import { HelpNowApp } from './screens/HelpNowApp';
+import { About, ChildEdit, SectionEdit } from './screens/About';
+import { Contacts } from './screens/Contacts';
+import { Medicines, MedicineEdit } from './screens/Medicines';
+import { Playbook, PlaybookAdd } from './screens/Playbook';
+import { ShareSheet } from './screens/ShareSheet';
+import { ShowMode } from './screens/ShowMode';
+import { Settings } from './screens/Settings';
+import { Insights } from './screens/Insights';
+
+interface Props {
+  lang: Lang;
+  base: string;
+  guides: GuideInfo[];
+  helpSteps: Record<Lang, HelpSteps>;
+  calendar: SeasonEvent[];
+  flags: { playbook: boolean; insights: boolean };
+}
+
+interface Toast {
+  id: number;
+  message: string;
+  undo?: () => void;
+}
+
+export default function App(props: Props) {
+  const { lang, base } = props;
+  const dict = getDict(lang);
+  const t = dict.app;
+  const db = useMemo(() => getDB(), []);
+  const repos = useMemo(() => createRepos(db), [db]);
+  const [status, setStatus] = useState<'loading' | 'ready' | 'error'>('loading');
+  const [childId, setChildId] = useState<string | null>(null);
+  const [toasts, setToasts] = useState<Toast[]>([]);
+  const route = useRoute();
+
+  useEffect(() => {
+    (async () => {
+      try {
+        await db.open();
+        void requestPersistence();
+        // Carry over the emergency number chosen on the M0 Help now page.
+        try {
+          const old = localStorage.getItem('dayline.emergencyNumber');
+          if (old && !(await db.settings.get('emergencyNumber'))) await repos.settings.set('emergencyNumber', old);
+        } catch {
+          /* no localStorage */
+        }
+        if (!(await db.settings.get('firstUse'))) await repos.settings.set('firstUse', new Date().toISOString());
+        setChildId(await repos.settings.get<string | null>('currentChild', null));
+        setStatus('ready');
+      } catch {
+        setStatus('error');
+      }
+    })();
+  }, []);
+
+  const children = useLive(() => repos.children.all(), [status], null as Child[] | null);
+  const me = useLive(() => repos.settings.get('me', ''), [status], '');
+  const emergency = useLive(() => repos.settings.get('emergencyNumber', '999'), [status], '999');
+
+  const child = children?.find((c) => c.id === childId) ?? children?.[0] ?? null;
+
+  const ctx: AppCtx = {
+    lang,
+    dict,
+    t,
+    db,
+    repos,
+    base,
+    site: (path: string) => `${base}${lang === 'bn' ? 'bn/' : ''}${path}`,
+    child,
+    children: children ?? [],
+    setChild: (id) => {
+      setChildId(id);
+      void repos.settings.set('currentChild', id);
+    },
+    me,
+    guides: props.guides,
+    helpSteps: props.helpSteps,
+    calendar: props.calendar,
+    emergency,
+    flags: props.flags,
+    toast: (message, undo) => {
+      const id = Date.now() + Math.random();
+      setToasts((ts) => [...ts, { id, message, undo }]);
+      setTimeout(() => setToasts((ts) => ts.filter((x) => x.id !== id)), 6000);
+    },
+  };
+
+  useEffect(() => {
+    document.documentElement.classList.toggle('show-mode', route.parts[0] === 'show');
+  }, [route.path]);
+
+  if (status === 'error') {
+    return (
+      <main class="column app-message">
+        <p class="t-body-15">{t.dbError}</p>
+      </main>
+    );
+  }
+  if (status === 'loading' || children === null) {
+    return (
+      <main class="column app-message" aria-busy="true">
+        <p class="t-body-15 muted">{t.loading}</p>
+      </main>
+    );
+  }
+
+  const [section = 'today', a, b] = route.parts;
+  const sheet = route.query.get('sheet');
+  const needsChild = !['help-now', 'onboarding', 'settings'].includes(section);
+
+  let screen;
+  if (section === 'onboarding' || (needsChild && !child)) {
+    screen = <Onboarding adding={section === 'onboarding' && !!child} />;
+  } else if (section === 'show') {
+    screen = <ShowMode briefLang={(a as Lang) ?? lang} />;
+  } else if (section === 'help-now') {
+    screen = <HelpNowApp />;
+  } else if (section === 'child') {
+    if (a === 'section' && b) screen = <SectionEdit section={b} />;
+    else if (a === 'edit') screen = <ChildEdit />;
+    else if (a === 'contacts') screen = <Contacts />;
+    else if (a === 'medicines' && b) screen = <MedicineEdit id={b} />;
+    else if (a === 'medicines') screen = <Medicines />;
+    else screen = <About />;
+  } else if (section === 'playbook') {
+    screen = a === 'add' && b ? <PlaybookAdd slug={b} /> : <Playbook />;
+  } else if (section === 'settings') {
+    screen = <Settings />;
+  } else if (section === 'insights') {
+    screen = <Insights />;
+  } else if (section === 'log' || section === 'dose') {
+    // Manifest shortcuts: open Today with the quick log on top.
+    go(`/today?sheet=log&kind=${section === 'dose' ? 'dose' : 'hard_moment'}`, true);
+    screen = <Today />;
+  } else {
+    screen = <Today />;
+  }
+
+  const closeSheet = () => go(route.path, true);
+
+  return (
+    <Ctx.Provider value={ctx}>
+      {screen}
+      {child && sheet === 'log' && section !== 'show' && (
+        <QuickLog
+          onClose={closeSheet}
+          initialKind={route.query.get('kind') ?? 'hard_moment'}
+          medicineId={route.query.get('medicine')}
+          scheduleTime={route.query.get('time')}
+        />
+      )}
+      {child && sheet === 'share' && section !== 'show' && <ShareSheet onClose={closeSheet} />}
+      <div class="toasts" role="status" aria-live="polite">
+        {toasts.map((x) => (
+          <div class="toast" key={x.id}>
+            <span>{x.message}</span>
+            {x.undo && (
+              <button
+                type="button"
+                class="toast__undo"
+                onClick={() => {
+                  x.undo?.();
+                  setToasts((ts) => ts.filter((y) => y.id !== x.id));
+                }}
+              >
+                {t.common.undo}
+              </button>
+            )}
+          </div>
+        ))}
+      </div>
+    </Ctx.Provider>
+  );
+}

@@ -4,6 +4,7 @@ import preact from '@astrojs/preact';
 import { AstroPWAIntegration as AstroPWA } from '@vite-pwa/astro';
 import rehypeGuide from './src/lib/rehype-guide.mjs';
 import pagefind from './src/integrations/pagefind.mjs';
+import released from './src/config/released.json' with { type: 'json' };
 
 /** PUBLIC_SITE_URL: origin only, e.g. https://user.github.io or https://dayline.example */
 const site = process.env.PUBLIC_SITE_URL || 'https://tanzir71.github.io';
@@ -11,6 +12,8 @@ const site = process.env.PUBLIC_SITE_URL || 'https://tanzir71.github.io';
 const rawBase = process.env.PUBLIC_BASE_PATH ?? '';
 const trimmed = rawBase.replace(/^\/+|\/+$/g, '');
 const base = trimmed ? `/${trimmed}/` : '/';
+/** The app (M1) changes what an installed Dayline opens and its long-press shortcuts. */
+const appOn = released.APP || (process.env.PUBLIC_FLAGS ?? '').split(',').includes('APP');
 
 export default defineConfig({
   site,
@@ -35,7 +38,8 @@ export default defineConfig({
         description: 'A day record for families of autistic children, kept on your phone. Works offline.',
         lang: 'en',
         dir: 'ltr',
-        start_url: base,
+        // Once the app ships, an installed Dayline opens straight to Today.
+        start_url: appOn ? `${base}app/` : base,
         scope: base,
         display: 'standalone',
         orientation: 'portrait',
@@ -48,23 +52,53 @@ export default defineConfig({
           { src: `${base}icons/maskable-192.png`, sizes: '192x192', type: 'image/png', purpose: 'maskable' },
           { src: `${base}icons/maskable-512.png`, sizes: '512x512', type: 'image/png', purpose: 'maskable' },
         ],
-        // Android shows the first three on long-press. M1 adds Dose given and Log a moment.
-        shortcuts: [
-          {
-            name: 'Help now',
-            short_name: 'Help now',
-            description: 'Calm steps for a hard moment',
-            url: `${base}help-now/`,
-            icons: [{ src: `${base}icons/shortcut-help-now.png`, sizes: '96x96', type: 'image/png' }],
-          },
-          {
-            name: 'Guides',
-            short_name: 'Guides',
-            description: 'Guides for everyday situations',
-            url: `${base}guides/`,
-            icons: [{ src: `${base}icons/shortcut-guides.png`, sizes: '96x96', type: 'image/png' }],
-          },
-        ],
+        // Android shows the first three on long-press.
+        shortcuts: appOn
+          ? [
+              {
+                name: 'Help now',
+                short_name: 'Help now',
+                description: 'Calm steps for a hard moment',
+                url: `${base}app/#/help-now`,
+                icons: [{ src: `${base}icons/shortcut-help-now.png`, sizes: '96x96', type: 'image/png' }],
+              },
+              {
+                name: 'Dose given',
+                short_name: 'Dose given',
+                description: 'Mark a dose as given',
+                url: `${base}app/#/dose`,
+                icons: [{ src: `${base}icons/shortcut-dose.png`, sizes: '96x96', type: 'image/png' }],
+              },
+              {
+                name: 'Log a moment',
+                short_name: 'Log',
+                description: 'Add a moment to the day line',
+                url: `${base}app/#/log`,
+                icons: [{ src: `${base}icons/shortcut-log.png`, sizes: '96x96', type: 'image/png' }],
+              },
+              {
+                name: 'Guides',
+                short_name: 'Guides',
+                url: `${base}guides/`,
+                icons: [{ src: `${base}icons/shortcut-guides.png`, sizes: '96x96', type: 'image/png' }],
+              },
+            ]
+          : [
+              {
+                name: 'Help now',
+                short_name: 'Help now',
+                description: 'Calm steps for a hard moment',
+                url: `${base}help-now/`,
+                icons: [{ src: `${base}icons/shortcut-help-now.png`, sizes: '96x96', type: 'image/png' }],
+              },
+              {
+                name: 'Guides',
+                short_name: 'Guides',
+                description: 'Guides for everyday situations',
+                url: `${base}guides/`,
+                icons: [{ src: `${base}icons/shortcut-guides.png`, sizes: '96x96', type: 'image/png' }],
+              },
+            ],
       },
       workbox: {
         // Precache the whole static site: pages, styles, scripts, Latin + Bengali fonts, icons and the search index.

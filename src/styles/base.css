@@ -152,8 +152,10 @@ button {
   }
 }
 
-.stack > * + * {
-  margin-top: var(--stack-gap, var(--space-4));
+.stack {
+  display: flex;
+  flex-direction: column;
+  gap: var(--stack-gap, var(--space-4));
 }
 
 .muted {

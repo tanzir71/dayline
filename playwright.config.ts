@@ -22,7 +22,8 @@ export default defineConfig({
   webServer: {
     command: `npm run build && node scripts/serve.mjs --port ${PORT} --base ${BASE}`,
     url: `http://localhost:${PORT}${BASE}`,
-    env: { PUBLIC_BASE_PATH: BASE, PUBLIC_SITE_URL: `http://localhost:${PORT}` },
+    // Unreleased milestones are tested with their flags on; production keeps them off until release.
+    env: { PUBLIC_BASE_PATH: BASE, PUBLIC_SITE_URL: `http://localhost:${PORT}`, PUBLIC_FLAGS: process.env.PUBLIC_FLAGS ?? 'APP,PLAYBOOK' },
     reuseExistingServer: !process.env.CI,
     timeout: 300_000,
   },

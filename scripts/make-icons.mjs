@@ -47,6 +47,10 @@ await png(rounded, 96, 'public/icons/shortcut-guides.png', true);
 // Help now shortcut icon: ember circle with the line.
 const helpIcon = `<svg xmlns="http://www.w3.org/2000/svg" width="160" height="160" viewBox="0 0 160 160"><rect width="160" height="160" rx="38" fill="#BE5625"/><path d="M80 44v52" stroke="white" stroke-width="14" stroke-linecap="round"/><circle cx="80" cy="120" r="9" fill="white"/></svg>`;
 await png(helpIcon, 96, 'public/icons/shortcut-help-now.png', true);
+const doseIcon = `<svg xmlns="http://www.w3.org/2000/svg" width="160" height="160" viewBox="0 0 160 160"><rect width="160" height="160" rx="38" fill="#2575AE"/><path d="M50 82l20 20 42-44" stroke="white" stroke-width="14" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>`;
+await png(doseIcon, 96, 'public/icons/shortcut-dose.png', true);
+const logIcon = `<svg xmlns="http://www.w3.org/2000/svg" width="160" height="160" viewBox="0 0 160 160"><rect width="160" height="160" rx="38" fill="#1A5F5A"/><path d="M80 48v64M48 80h64" stroke="white" stroke-width="14" stroke-linecap="round"/></svg>`;
+await png(logIcon, 96, 'public/icons/shortcut-log.png', true);
 
 // Open Graph image, 1200 x 630.
 await page.setViewportSize({ width: 1200, height: 630 });
