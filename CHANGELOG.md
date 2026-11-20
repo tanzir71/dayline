@@ -2,6 +2,18 @@
 
 Each milestone release is tagged `v0.<milestone>.0` and deployed to GitHub Pages.
 
+## v0.1.0 — M1: The child on this phone (2026-11-21)
+
+- The app at /app/ (English) and /bn/app/ (Bangla): set up a child in under two minutes (only the name is needed), several children with a switcher.
+- Today: planned doses, the day line with who noted each moment, the Now marker, Help now, seasonal guides, refill and monthly backup nudges. Nothing to fill in.
+- Quick log for hard moments, wins, doses, sleep, food, school, health and notes; one tap saves.
+- Medicines: schedules, in-app reminders, Mark given (late after 30 minutes), refill countdown, and a calendar file with alarms for the phone.
+- About the child, people to call, and a playbook filled from the guides' Save to playbook.
+- Help now with the child's own playbook; It's over saves the moment with what helped.
+- Share the brief: show mode (locked; Done needs a one-second press; screen stays awake), a one-page PDF made on the phone (Bangla included) for WhatsApp, or print.
+- Backup to a file (JSON and CSV) and restore; everything stays on the phone.
+- An installed Dayline opens Today; long-press offers Help now, Dose given and Log a moment.
+
 ## v0.0.0 — M0: Landing page and guides (2026-11-21)
 
 - Landing page in English and Bangla with every section of the design, Open Graph tags and a preview image for WhatsApp.

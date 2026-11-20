@@ -1,6 +1,6 @@
 {
-  "APP": false,
-  "PLAYBOOK": false,
+  "APP": true,
+  "PLAYBOOK": true,
   "INSIGHTS": false,
   "DESKTOP": false
 }
