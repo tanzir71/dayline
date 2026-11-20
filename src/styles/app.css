@@ -1395,3 +1395,400 @@ html.show-mode body {
     break-after: page;
   }
 }
+
+/* ---------- M2: insights, change review, visit report ---------- */
+.squares {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.squares span {
+  width: 16px;
+  height: 16px;
+  border-radius: 4px;
+  background: var(--line-default);
+}
+
+.squares span.is-hit {
+  background: var(--event-hard-moment);
+}
+
+.raw-days {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-3);
+}
+
+.raw-days__list {
+  font: 400 13px/1.6 var(--font-ui);
+}
+
+:lang(bn) .raw-days__list {
+  font-family: var(--font-bangla);
+}
+
+.tod {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: var(--space-2);
+  align-items: end;
+  height: 130px;
+}
+
+.tod__col {
+  display: grid;
+  gap: 6px;
+  align-content: end;
+  justify-items: stretch;
+  height: 100%;
+}
+
+.tod__bar {
+  display: block;
+  border-radius: 8px;
+  background: var(--event-hard-moment-tint);
+}
+
+.tod__bar.is-peak {
+  background: var(--event-hard-moment);
+}
+
+.tod__label {
+  color: var(--text-secondary);
+  font: 600 12px/1.2 var(--font-ui);
+  text-align: center;
+}
+
+.tod__label.is-peak {
+  color: var(--text-ink);
+}
+
+.rv-table {
+  width: 100%;
+  border-collapse: collapse;
+  font: 400 14px/1.35 var(--font-ui);
+}
+
+:lang(bn) .rv-table {
+  font-family: var(--font-bangla);
+}
+
+.rv-table th,
+.rv-table td {
+  padding: 10px 6px;
+  border-bottom: 1px solid var(--line-default);
+  text-align: right;
+}
+
+.rv-table th[scope='row'] {
+  text-align: left;
+  font-weight: 500;
+}
+
+.rv-table thead th {
+  color: var(--text-secondary);
+  font: 600 12px/1.3 var(--font-ui);
+}
+
+.rv-table .rv-after {
+  font-weight: 700;
+}
+
+.rv-based {
+  margin-top: var(--space-3);
+}
+
+.label-quote {
+  margin: 0;
+  padding: var(--space-3) var(--space-4);
+  border-left: 3px solid var(--event-medicine);
+  border-radius: var(--radius-small);
+  background: var(--bg-surface);
+  font: 400 14px/1.5 var(--font-ui);
+}
+
+.med-profile {
+  align-items: flex-start;
+}
+
+.report-screen {
+  padding-bottom: var(--space-12);
+}
+
+.report-bar {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  padding: var(--space-2) var(--space-4);
+  border-bottom: 1px solid var(--line-default);
+  background: var(--bg-surface);
+}
+
+.report-wrap {
+  max-width: 1280px;
+  margin-inline: auto;
+  padding: var(--space-5) var(--space-4);
+}
+
+.report {
+  display: grid;
+  gap: var(--space-4);
+}
+
+.report__side,
+.report__main {
+  display: grid;
+  gap: var(--space-4);
+  align-content: start;
+}
+
+.report__title {
+  font: 700 30px/1.15 var(--font-display);
+}
+
+:lang(bn) .report__title {
+  font-family: var(--font-bangla);
+}
+
+@media (min-width: 1024px) {
+  .report {
+    grid-template-columns: 320px 1fr;
+    gap: var(--space-6);
+  }
+  .report__title {
+    font-size: 36px;
+  }
+}
+
+.r-card {
+  display: grid;
+  gap: var(--space-3);
+  padding: var(--space-5);
+  border: 1px solid var(--line-default);
+  border-radius: var(--radius-card);
+  background: var(--bg-surface);
+}
+
+.r-card__head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-2);
+}
+
+.r-child p {
+  color: var(--text-secondary);
+  font-size: 14px;
+}
+
+.r-child__name {
+  font: 700 18px/1.3 var(--font-ui);
+}
+
+.r-small {
+  font-size: 13px !important;
+  color: var(--text-secondary);
+}
+
+.r-h2 {
+  font: 700 17px/1.3 var(--font-ui);
+}
+
+.r-overline {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--text-secondary);
+  font: 700 12px/1.3 var(--font-ui);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.r-overline i {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: var(--tone);
+}
+
+:lang(bn) :is(.r-overline, .r-h2, .r-child__name) {
+  font-family: var(--font-bangla);
+  letter-spacing: 0;
+  text-transform: none;
+}
+
+.r-tiles {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--space-3);
+}
+
+@media (min-width: 1024px) {
+  .r-tiles {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+.r-tile {
+  display: grid;
+  gap: 4px;
+  align-content: start;
+  padding: var(--space-4);
+  border: 1px solid var(--line-default);
+  border-radius: var(--radius-card);
+  background: var(--bg-surface);
+}
+
+.r-tile__label {
+  color: var(--text-secondary);
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.r-tile__value {
+  font: 700 24px/1.15 var(--font-display);
+}
+
+:lang(bn) .r-tile__value {
+  font-family: var(--font-bangla);
+}
+
+.r-tile__sub {
+  font-size: 13px;
+  color: var(--text-secondary);
+}
+
+.r-tile__sub--good {
+  color: var(--event-win-strong);
+}
+
+.r-tile__sub--caution {
+  color: var(--text-caution);
+}
+
+.r-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+
+.r-table th {
+  color: var(--text-secondary);
+  font-size: 12px;
+  font-weight: 600;
+  text-align: left;
+}
+
+.r-table th,
+.r-table td {
+  padding: 10px 8px 10px 0;
+  border-top: 1px solid var(--line-default);
+  vertical-align: top;
+}
+
+.r-pill {
+  display: inline-block;
+  margin-top: 4px;
+  padding: 2px 8px;
+  border-radius: 10px;
+  background: var(--brand-marigold-tint);
+  font-size: 12px;
+}
+
+.r-dots {
+  display: grid;
+  gap: 6px;
+  margin: 0;
+  padding-left: 18px;
+}
+
+.r-meds,
+.r-labels {
+  display: grid;
+  gap: var(--space-3);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.r-meds li,
+.r-labels li {
+  display: grid;
+  gap: 2px;
+}
+
+.r-meds span,
+.r-labels span {
+  color: var(--text-secondary);
+  font-size: 13px;
+}
+
+.r-foot {
+  color: var(--text-secondary);
+  font-size: 13px;
+}
+
+.week-chart {
+  width: 100%;
+  height: auto;
+}
+
+.week-chart .bar {
+  fill: var(--event-hard-moment-tint);
+}
+
+.week-chart .bar--marker {
+  fill: var(--event-hard-moment);
+}
+
+.week-chart .bar--empty {
+  fill: var(--line-default);
+}
+
+.week-chart .bar-num,
+.week-chart .bar-label {
+  fill: var(--text-secondary);
+  font: 600 12px var(--font-ui);
+}
+
+.week-chart .bar-label--marker {
+  fill: var(--event-medicine);
+}
+
+/* Two-page PDF of the visit report */
+.report-page {
+  gap: 14px;
+}
+
+.report-page .r-card {
+  padding: 14px 16px;
+  border-radius: 12px;
+}
+
+.report-page .r-tiles {
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+}
+
+.report-page .r-tile {
+  padding: 10px 12px;
+  border-radius: 12px;
+}
+
+.report-page .r-tile__value {
+  font-size: 20px;
+}
+
+.report-page .r-table {
+  font-size: 13px;
+}
+
+.check-in .chip {
+  min-height: 40px;
+}

@@ -44,6 +44,7 @@ export async function pagesToPdf(pages: HTMLElement[], filename: string, opts: P
     const p = pdf.addPage([A4.widthPt, A4.heightPt]);
     p.drawImage(img, { x: 0, y: 0, width: A4.widthPt, height: A4.heightPt });
   }
-  const bytes = await pdf.save();
+  // Plain object streams: opens in older phone PDF viewers too.
+  const bytes = await pdf.save({ useObjectStreams: false });
   return new File([bytes as BlobPart], filename, { type: 'application/pdf' });
 }
