@@ -31,6 +31,12 @@
   --event-food-tint: #F4EBD3;
   --event-school: #6B7C80;
 
+  /* Accessible fills for white text on event colours (≥ 4.5:1). Dots and rails keep the base colours. */
+  --event-hard-moment-strong: #BE5625;
+  --event-win-strong: #2B8454;
+  --event-food-strong: #946D1B;
+  --event-school-strong: #67787C;
+
   /* Type */
   --font-display: 'Bricolage Grotesque', system-ui, sans-serif;
   --font-ui: 'Figtree', system-ui, sans-serif;

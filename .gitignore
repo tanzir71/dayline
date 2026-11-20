@@ -11,3 +11,4 @@ test-results/
 supabase/.temp/
 dev-dist/
 *.tsbuildinfo
+.claude/

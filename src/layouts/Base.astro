@@ -1,0 +1,94 @@
+---
+import '../../design/tokens.css';
+import '../styles/fonts.css';
+import '../styles/base.css';
+import '../styles/components.css';
+import { href, localHref, type Lang } from '../lib/paths';
+
+interface Props {
+  lang: Lang;
+  title: string;
+  description: string;
+  /** Page path without the language prefix, e.g. 'guides/haircut-day/'. */
+  path: string;
+  /** Path of the same page in the other language when it differs (e.g. a guide without a translation). */
+  altPath?: string | null;
+  ogType?: 'website' | 'article';
+  ogImage?: string;
+  noindex?: boolean;
+  bodyClass?: string;
+  themeColor?: string;
+}
+
+const {
+  lang,
+  title,
+  description,
+  path,
+  altPath,
+  ogType = 'website',
+  ogImage = 'og/dayline.png',
+  noindex = false,
+  bodyClass,
+  themeColor = '#1A5F5A',
+} = Astro.props;
+
+const other: Lang = lang === 'en' ? 'bn' : 'en';
+const site = Astro.site ?? new URL('https://tanzir71.github.io');
+const abs = (p: string) => new URL(p, site).toString();
+const canonical = abs(localHref(lang, path));
+const alternates: Record<Lang, string | null> = {
+  [lang]: canonical,
+  [other]: altPath === null ? null : abs(localHref(other, altPath ?? path)),
+} as Record<Lang, string | null>;
+const ogLocale = lang === 'bn' ? 'bn_BD' : 'en_US';
+const csp = [
+  "default-src 'self'",
+  "script-src 'self' 'unsafe-inline' 'wasm-unsafe-eval'",
+  "style-src 'self' 'unsafe-inline'",
+  "img-src 'self' data: blob:",
+  "font-src 'self' data:",
+  "connect-src 'self'",
+  "worker-src 'self' blob:",
+  "manifest-src 'self'",
+  "media-src 'self' blob:",
+  "object-src 'none'",
+  "base-uri 'self'",
+  "form-action 'self'",
+].join('; ');
+---
+
+<!doctype html>
+<html lang={lang} data-base={href()}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta http-equiv="Content-Security-Policy" content={csp} />
+    <meta name="referrer" content="strict-origin-when-cross-origin" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    {noindex && <meta name="robots" content="noindex" />}
+    <link rel="canonical" href={canonical} />
+    {alternates.en && <link rel="alternate" hreflang="en" href={alternates.en} />}
+    {alternates.bn && <link rel="alternate" hreflang="bn" href={alternates.bn} />}
+    <meta name="theme-color" content={themeColor} />
+    <link rel="icon" href={href('favicon.svg')} type="image/svg+xml" />
+    <link rel="icon" href={href('icons/icon-192.png')} type="image/png" sizes="192x192" />
+    <link rel="apple-touch-icon" href={href('icons/apple-touch-icon.png')} />
+
+    <meta property="og:site_name" content="Dayline" />
+    <meta property="og:type" content={ogType} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={abs(href(ogImage))} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:locale" content={ogLocale} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <slot name="head" />
+  </head>
+  <body class={bodyClass}>
+    <slot />
+  </body>
+</html>

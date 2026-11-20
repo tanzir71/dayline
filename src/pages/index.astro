@@ -1,15 +1,10 @@
 ---
+import Base from '../layouts/Base.astro';
 ---
-<html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Dayline</title>
-  </head>
-  <body>
-    <main>
-      <h1>Dayline</h1>
-      <p>Every day, on one line. The first release is on its way.</p>
-    </main>
-  </body>
-</html>
+
+<Base lang="en" title="Dayline" description="Every day, on one line." path="" altPath={null}>
+  <main class="wrap" style="padding-block: 64px;">
+    <h1 class="t-display-32">Dayline</h1>
+    <p class="t-body-15 muted">Every day, on one line. The first release is on its way.</p>
+  </main>
+</Base>
