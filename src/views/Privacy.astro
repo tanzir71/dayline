@@ -1,0 +1,33 @@
+---
+import SitePage from '../layouts/SitePage.astro';
+import { getDict } from '../i18n';
+import type { Lang } from '../lib/paths';
+import '../styles/guides.css';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const P = getDict(lang).privacy;
+---
+
+<SitePage lang={lang} title={P.metaTitle} description={P.description} path="privacy/" current="privacy">
+  <article class="column prose-page">
+    <header class="page-head">
+      <h1 class="page-title">{P.title}</h1>
+      <p class="prose-page__lead">{P.lead}</p>
+    </header>
+    {
+      P.sections.map((s) => (
+        <section>
+          <h2 class="t-heading-17">{s.title}</h2>
+          <p class="t-body-15">{s.body}</p>
+        </section>
+      ))
+    }
+    <p class="t-body-15">
+      <a href="https://github.com/tanzir71/dayline/issues">{P.contact}</a>
+    </p>
+  </article>
+</SitePage>

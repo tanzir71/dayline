@@ -1,0 +1,26 @@
+---
+import SitePage from '../layouts/SitePage.astro';
+import { getDict } from '../i18n';
+import { localHref, type Lang } from '../lib/paths';
+import '../styles/guides.css';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const d = getDict(lang);
+const A = d.app;
+---
+
+<SitePage lang={lang} title={A.metaTitle} description={A.description} path="app/" current="app">
+  <div class="column prose-page app-placeholder">
+    <h1 class="page-title">{A.placeholderTitle}</h1>
+    <p class="t-body-15">{A.placeholderBody}</p>
+    <div class="status-page__actions">
+      <a class="btn btn--primary" href={localHref(lang, 'guides/')}>{A.goGuides}</a>
+      <a class="btn btn--secondary" href={localHref(lang, 'help-now/')}>{A.goHelpNow}</a>
+      <button type="button" class="btn btn--quiet" data-install-open hidden>{d.nav.installApp}</button>
+    </div>
+  </div>
+</SitePage>

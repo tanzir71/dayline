@@ -369,3 +369,28 @@ html[data-searching] .guides-browse {
     padding: 2mm 3mm;
   }
 }
+
+/* Privacy and other text pages */
+.prose-page {
+  display: grid;
+  gap: var(--space-6);
+  padding-block: var(--space-8) var(--space-16);
+}
+
+.prose-page section {
+  display: grid;
+  gap: var(--space-2);
+}
+
+.prose-page__lead {
+  font: 600 19px/1.4 var(--font-ui);
+  color: var(--brand-monsoon);
+}
+
+:lang(bn) .prose-page__lead {
+  font-family: var(--font-bangla);
+}
+
+.app-placeholder {
+  padding-block: var(--space-16);
+}
