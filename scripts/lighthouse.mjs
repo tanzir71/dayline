@@ -19,21 +19,32 @@ const chromePath = candidates.find((p) => existsSync(p));
 
 const server = spawn(process.execPath, ['scripts/serve.mjs', '--port', String(PORT), '--base', BASE], { stdio: 'ignore' });
 await new Promise((r) => setTimeout(r, 800));
-const chrome = await chromeLauncher.launch({ chromePath, chromeFlags: ['--headless=new', '--no-sandbox'] });
+const flags = ['--headless=new', '--no-sandbox', '--disable-dev-shm-usage', '--disable-gpu'];
+
+/** A fresh browser per page, one retry: CI runners sometimes crash a long-lived headless Chrome. */
+async function audit(url, attempt = 1) {
+  const chrome = await chromeLauncher.launch({ chromePath, chromeFlags: flags });
+  try {
+    const result = await lighthouse(url, { port: chrome.port, output: 'json', logLevel: 'error', onlyCategories: ['accessibility'], formFactor: 'mobile' });
+    return result.lhr;
+  } catch (e) {
+    if (attempt < 2) return audit(url, attempt + 1);
+    throw e;
+  } finally {
+    chrome.kill();
+  }
+}
 
 let failed = false;
 try {
   for (const p of pages) {
-    const url = `http://localhost:${PORT}${BASE}${p}`;
-    const result = await lighthouse(url, { port: chrome.port, output: 'json', logLevel: 'error', onlyCategories: ['accessibility'], formFactor: 'mobile' });
-    const lhr = result.lhr;
+    const lhr = await audit(`http://localhost:${PORT}${BASE}${p}`);
     const score = Math.round((lhr.categories.accessibility.score ?? 0) * 100);
     const failing = Object.values(lhr.audits).filter((a) => a.score === 0 && a.scoreDisplayMode === 'binary').map((a) => a.id);
     console.log(`${score >= MIN ? 'ok  ' : 'FAIL'} ${score}  /${p}${failing.length ? `  (${failing.join(', ')})` : ''}`);
     if (score < MIN) failed = true;
   }
 } finally {
-  chrome.kill();
   server.kill();
 }
 process.exit(failed ? 1 : 0);
