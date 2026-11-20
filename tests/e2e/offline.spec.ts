@@ -25,6 +25,7 @@ test('after one online visit, the site works in airplane mode', async ({ page, c
 
   // Search works offline too: the index is precached.
   await page.goto('guides/');
+  await page.locator('.guide-search[data-ready]').waitFor();
   await page.getByRole('searchbox').fill('haircut');
   await expect(page.locator('.guide-search__results')).toContainText('Haircut day');
 

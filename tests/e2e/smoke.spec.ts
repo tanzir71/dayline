@@ -35,12 +35,14 @@ test.describe('guides', () => {
 
   test('search finds a guide by an English word', async ({ page }) => {
     await page.goto('guides/');
+    await page.locator('.guide-search[data-ready]').waitFor();
     await page.getByRole('searchbox').fill('haircut');
     await expect(page.locator('.guide-search__results')).toContainText('Haircut day');
   });
 
   test('search finds a guide by a Bangla word', async ({ page }) => {
     await page.goto('bn/guides/');
+    await page.locator('.guide-search[data-ready]').waitFor();
     await page.getByRole('searchbox').fill('চুল');
     await expect(page.locator('.guide-search__results')).toContainText('চুল কাটার দিন');
   });
@@ -186,6 +188,7 @@ test('no request ever leaves the site', async ({ page, baseURL }) => {
     await page.goto(path, { waitUntil: 'networkidle' });
   }
   await page.goto('guides/');
+  await page.locator('.guide-search[data-ready]').waitFor();
   await page.getByRole('searchbox').fill('sleep');
   await expect(page.locator('.guide-search__results')).toBeVisible();
   expect(outside).toEqual([]);

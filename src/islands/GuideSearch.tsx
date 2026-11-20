@@ -40,6 +40,15 @@ export default function GuideSearch({ lang, base, s }: { lang: 'en' | 'bn'; base
   const [status, setStatus] = useState<'idle' | 'loading' | 'done' | 'error'>('idle');
   const [results, setResults] = useState<Result[]>([]);
   const pf = useRef<Pagefind | null>(null);
+  const input = useRef<HTMLInputElement>(null);
+  const [ready, setReady] = useState(false);
+
+  // Text typed before this island hydrated is searched as soon as it is ready.
+  useEffect(() => {
+    setReady(true);
+    const early = input.current?.value ?? '';
+    if (early.trim()) void search(early);
+  }, []);
 
   useEffect(() => {
     document.documentElement.toggleAttribute('data-searching', q.trim().length > 0);
@@ -95,13 +104,14 @@ export default function GuideSearch({ lang, base, s }: { lang: 'en' | 'bn'; base
           : '';
 
   return (
-    <div class="guide-search" role="search">
+    <div class="guide-search" role="search" data-ready={ready ? '' : undefined}>
       <label class="sr-only" for="guide-search-input">
         {s.label}
       </label>
       <div class="search-field">
         <Icon name="search" size={20} />
         <input
+          ref={input}
           id="guide-search-input"
           type="search"
           inputMode="search"
