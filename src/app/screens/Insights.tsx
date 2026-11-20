@@ -69,7 +69,7 @@ export function Insights() {
 
   return (
     <div class="app-screen with-nav">
-      <main id="main" class="column app-main stack" style="--stack-gap: 12px">
+      <main id="main" class="column column--wide app-main stack insights-layout" style="--stack-gap: 12px">
         <header class="stack" style="--stack-gap: 2px; padding-top: 12px">
           <p class="t-label-12 muted">{fmt(I.sub, { n: res?.logged ?? 0 }, lang)}</p>
           <h1 class="screen-title">{I.title}</h1>

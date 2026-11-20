@@ -1,5 +1,5 @@
 import type { ComponentChildren, InputHTMLAttributes, TextareaHTMLAttributes } from 'preact';
-import { useEffect, useRef } from 'preact/hooks';
+import { useLayoutEffect, useRef } from 'preact/hooks';
 import { Icon } from '../components/Icon';
 import { useApp } from './context';
 import { go } from './router';
@@ -23,7 +23,8 @@ export function Sheet({
   class?: string;
 }) {
   const ref = useRef<HTMLDivElement>(null);
-  useEffect(() => {
+  // Layout effect: Escape must work from the first frame the sheet is on screen.
+  useLayoutEffect(() => {
     const prev = document.activeElement as HTMLElement | null;
     const el = ref.current;
     el?.querySelector<HTMLElement>('[data-autofocus], input, button')?.focus();
@@ -147,12 +148,19 @@ export function NavBar({ active }: { active: 'today' | 'guides' | 'insights' | '
   ];
   return (
     <nav class="nav-bar" aria-label={t.nav.main}>
+      <a class="nav-bar__brand" href="#/today" aria-label="Dayline">
+        dayline<span class="wordmark__dot" aria-hidden="true" />
+      </a>
       {tabs.map((tab) => (
         <a key={tab.key} href={tab.href} class={tab.key === active ? 'is-active' : ''} aria-current={tab.key === active ? 'page' : undefined}>
           <Icon name={tab.icon} />
           <span>{tab.label}</span>
         </a>
       ))}
+      <button type="button" class="nav-bar__install" data-install-desktop hidden>
+        <Icon name="download" />
+        <span>{t.install.desktop}</span>
+      </button>
     </nav>
   );
 }

@@ -1792,3 +1792,271 @@ html.show-mode body {
 .check-in .chip {
   min-height: 40px;
 }
+
+/* ---------- M3: wide layouts from 1024 px (Figma 2546:2, 2547:2) ---------- */
+.nav-bar__brand,
+.nav-bar__install {
+  display: none;
+}
+
+@media (min-width: 1024px) {
+  .app-body .column {
+    max-width: 720px;
+  }
+
+  .app-body .column--wide {
+    max-width: 1200px;
+    padding-inline: var(--space-12);
+  }
+
+  .app-screen.with-nav,
+  .app-screen.with-nav.with-quick {
+    padding-left: 96px;
+    padding-bottom: var(--space-12);
+  }
+
+  .nav-bar {
+    top: 0;
+    right: auto;
+    bottom: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-2);
+    width: 96px;
+    height: auto;
+    max-width: none;
+    margin: 0;
+    padding: var(--space-6) 0;
+    border: 0;
+    border-right: 1px solid var(--line-default);
+    border-radius: 0;
+  }
+
+  .nav-bar a {
+    width: 76px;
+    min-height: 64px;
+    border-radius: var(--radius-small);
+  }
+
+  .nav-bar a.is-active {
+    background: var(--brand-monsoon-tint);
+  }
+
+  .nav-bar .nav-bar__brand {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    gap: 3px;
+    width: auto;
+    min-height: 0;
+    margin-bottom: var(--space-6);
+    color: var(--text-ink);
+    font: 700 18px/1 var(--font-display);
+  }
+
+  .nav-bar__brand .wordmark__dot {
+    width: 6px;
+    height: 6px;
+    margin-top: 2px;
+  }
+
+  .nav-bar .nav-bar__install:not([hidden]) {
+    display: grid;
+    place-items: center;
+    align-content: center;
+    gap: 3px;
+    width: 76px;
+    min-height: 64px;
+    margin-top: auto;
+    border: 0;
+    border-radius: var(--radius-small);
+    background: none;
+    color: var(--brand-monsoon);
+    font: 600 12px/1.3 var(--font-ui);
+  }
+
+  .today-layout.stack {
+    display: grid;
+    grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr);
+    grid-auto-flow: row dense;
+    align-items: start;
+    gap: var(--space-5) var(--space-6);
+  }
+
+  .today-layout > * {
+    grid-column: 2;
+  }
+
+  .today-layout > .quick-bar {
+    position: static;
+    grid-column: 1;
+    grid-row: 1;
+    max-width: none;
+    margin: 0;
+    padding: 0;
+    background: none;
+  }
+
+  .today-layout > .day-card {
+    grid-column: 1;
+    grid-row: 2 / span 40;
+  }
+
+  .insights-layout.stack {
+    display: block;
+    column-count: 3;
+    column-gap: var(--space-5);
+  }
+
+  .insights-layout > * {
+    margin-bottom: var(--space-5);
+    break-inside: avoid;
+  }
+
+  .insights-layout > header {
+    column-span: all;
+  }
+
+  .toasts {
+    bottom: var(--space-6);
+  }
+
+  /* Sheets become centred dialogs on a computer. */
+  .sheet {
+    top: 50%;
+    right: auto;
+    bottom: auto;
+    left: 50%;
+    width: min(560px, calc(100vw - 48px));
+    max-height: 86vh;
+    padding-bottom: var(--space-5);
+    border-radius: var(--radius-sheet);
+    transform: translate(-50%, -50%);
+    animation: fade-in 160ms ease;
+  }
+
+  .sheet__grabber {
+    display: none;
+  }
+
+  .app-sheet__footer {
+    position: static;
+    margin-inline: 0;
+    padding: var(--space-3) 0 0;
+    border-top: 0;
+  }
+
+  .guides-page.column {
+    max-width: 760px;
+  }
+
+  .guides-page .category-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+.site-header__install:not([hidden]) {
+  display: inline-flex;
+}
+
+/* ---------- Hospital passport (Figma 2545:2) ---------- */
+.passport-page {
+  gap: 14px;
+}
+
+.pp-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 20px;
+}
+
+.pp-head h1 {
+  margin-top: 4px;
+  font: 700 40px/1.1 var(--font-display);
+}
+
+.passport-page:lang(bn) .pp-head h1 {
+  font-family: var(--font-bangla);
+  line-height: 1.3;
+}
+
+.pp-head .pdf-wordmark {
+  display: flex;
+  width: max-content;
+}
+
+.pp-overline {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 14px;
+  color: var(--text-secondary);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.passport-page:lang(bn) .pp-overline {
+  letter-spacing: 0;
+  text-transform: none;
+  font-size: 14px;
+}
+
+.pp-overline i {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--brand-monsoon);
+}
+
+.pp-call {
+  flex: none;
+  max-width: 270px;
+  padding: 14px 18px;
+  border-radius: 14px;
+  background: var(--brand-monsoon);
+  color: var(--text-on-color);
+}
+
+.pp-call__read {
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.pp-call__who {
+  margin-top: 8px;
+  font-size: 17px;
+  font-weight: 700;
+}
+
+.pp-call__em {
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.pp-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.pp-grid .pdf-box ul {
+  font-size: 15px;
+}
+
+@media print {
+  @page {
+    margin: 10mm;
+  }
+  html.printing .pdf-page {
+    font-size: 13px;
+    gap: 10px;
+  }
+  html.printing .pdf-box,
+  html.printing .r-card {
+    break-inside: avoid;
+  }
+}

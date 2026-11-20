@@ -136,7 +136,7 @@ export function Today() {
 
   return (
     <div class="app-screen with-nav with-quick">
-      <header class="column app-head">
+      <header class="column column--wide app-head">
         <div class="app-head__top">
           <button type="button" class="child-switch" onClick={() => setSwitcher(true)} aria-label={`${t.today.switchChild}: ${name}`}>
             <span class="avatar" aria-hidden="true">
@@ -158,7 +158,21 @@ export function Today() {
         <h1 class="screen-title">{t.today.title}</h1>
       </header>
 
-      <main id="main" class="column app-main stack" style="--stack-gap: 10px">
+      <main id="main" class="column column--wide app-main stack today-layout" style="--stack-gap: 10px">
+        <div class="quick-bar" role="group" aria-label={t.today.quickTitle}>
+          <a class="btn btn--hard-moment" href="#/today?sheet=log&kind=hard_moment">
+            {t.kinds.hard_moment}
+          </a>
+          <a class="btn btn--win" href="#/today?sheet=log&kind=win">
+            {t.kinds.win}
+          </a>
+          <a class="btn btn--dose" href="#/today?sheet=log&kind=dose">
+            {t.kinds.dose}
+          </a>
+          <a class="btn btn--secondary quick-bar__more" href="#/today?sheet=log&kind=sleep" aria-label={t.today.more}>
+            <Icon name="plus" size={20} />
+          </a>
+        </div>
         {quiet && (
           <a class="help-card" href="#/help-now">
             <span>
@@ -274,20 +288,6 @@ export function Today() {
         </section>
       </main>
 
-      <div class="quick-bar" role="group" aria-label={t.today.quickTitle}>
-        <a class="btn btn--hard-moment" href="#/today?sheet=log&kind=hard_moment">
-          {t.kinds.hard_moment}
-        </a>
-        <a class="btn btn--win" href="#/today?sheet=log&kind=win">
-          {t.kinds.win}
-        </a>
-        <a class="btn btn--dose" href="#/today?sheet=log&kind=dose">
-          {t.kinds.dose}
-        </a>
-        <a class="btn btn--secondary quick-bar__more" href="#/today?sheet=log&kind=sleep" aria-label={t.today.more}>
-          <Icon name="plus" size={20} />
-        </a>
-      </div>
       <NavBar active="today" />
 
       {switcher && (
