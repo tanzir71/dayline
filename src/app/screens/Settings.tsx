@@ -9,6 +9,8 @@ import { TABLES } from '../../data/types';
 import { isoWithOffset, localDay } from '../../lib/time';
 import { deliverFile, rememberNoter } from '../actions';
 import { shortDate } from '../format';
+import { Chip } from '../../components/Chip';
+import { DEFAULT_CHECK_IN, type CheckInSettings } from './CheckIn';
 
 /** Settings: language, emergency number, names, and backup (export, CSV, restore, delete). */
 export function Settings() {
@@ -18,6 +20,8 @@ export function Settings() {
   const lastBackup = useLive(() => repos.settings.get<string | null>('lastBackup', null), [], null);
   const persisted = useLive(async () => (await navigator.storage?.persisted?.()) ?? false, [], false);
   const noters = useLive(() => repos.noters.all(), [], []);
+  const checkIn = useLive(() => repos.settings.get<CheckInSettings>('checkIn', DEFAULT_CHECK_IN), [], DEFAULT_CHECK_IN);
+  const setCheckIn = (v: Partial<CheckInSettings>) => void repos.settings.set('checkIn', { ...checkIn, ...v });
   const [emergency, setEmergency] = useState<string | null>(null);
   const [me, setMe] = useState<string | null>(null);
   const [message, setMessage] = useState('');
@@ -136,6 +140,29 @@ export function Settings() {
             </button>
           </form>
         </section>
+
+        {ctx.flags.insights && (
+          <section class="card stack" style="--stack-gap: 10px">
+            <h2 class="t-heading-17">{t.checkIn.settings}</h2>
+            <p class="t-caption-13 muted">{t.checkIn.settingsHint}</p>
+            <div class="chip-group" role="radiogroup" aria-label={t.checkIn.day}>
+              <Chip mode="single" on={!checkIn.on} onClick={() => setCheckIn({ on: false })}>
+                {t.checkIn.off}
+              </Chip>
+              {t.medicines.weekdays.map((wd, i) => (
+                <Chip key={wd} mode="single" on={checkIn.on && checkIn.day === i} onClick={() => setCheckIn({ on: true, day: i })}>
+                  {wd}
+                </Chip>
+              ))}
+            </div>
+            {checkIn.on && (
+              <label class="check">
+                {t.checkIn.time}
+                <input type="time" class="input input--time" value={checkIn.time} onInput={(e) => setCheckIn({ time: (e.currentTarget as HTMLInputElement).value })} />
+              </label>
+            )}
+          </section>
+        )}
 
         <section class="card stack" style="--stack-gap: 12px" id="backup">
           <h2 class="t-heading-17">{S.backup}</h2>
