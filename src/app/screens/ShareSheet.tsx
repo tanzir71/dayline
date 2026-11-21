@@ -131,6 +131,7 @@ export function ShareSheetBase(o: Options) {
             <Icon name="chevron-right" size={18} />
           </button>
         </li>
+        {import.meta.env.PUBLIC_NATIVE !== '1' && (
         <li>
           <button
             type="button"
@@ -150,6 +151,7 @@ export function ShareSheetBase(o: Options) {
             <Icon name="chevron-right" size={18} />
           </button>
         </li>
+        )}
       </ul>
       <p class="t-body-14" role="status">
         {state === 'failed' && S.failed}

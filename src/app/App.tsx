@@ -27,6 +27,8 @@ import { PassportShow } from './passport';
 import { PassportShareSheet } from './screens/PassportShare';
 import { NavBar } from './ui';
 import type { LabelSummary } from '../domain/labels';
+import { isNative } from '../native/is-native';
+import type { NativeUi } from '../native/ui';
 
 interface Props {
   lang: Lang;
@@ -54,6 +56,12 @@ export default function App(props: Props) {
   const [childId, setChildId] = useState<string | null>(null);
   const [toasts, setToasts] = useState<Toast[]>([]);
   const route = useRoute();
+  const native = useMemo(() => import.meta.env.PUBLIC_NATIVE === '1' && isNative(), []);
+  const [nativeUi, setNativeUi] = useState<NativeUi | null>(null);
+
+  useEffect(() => {
+    if (import.meta.env.PUBLIC_NATIVE === '1' && native) void import('../native/ui').then((m) => setNativeUi(m.ui));
+  }, []);
 
   useEffect(() => {
     (async () => {
@@ -111,6 +119,7 @@ export default function App(props: Props) {
     labels: props.labels,
     emergency,
     flags: props.flags,
+    native,
     toast: (message, undo) => {
       const id = Date.now() + Math.random();
       setToasts((ts) => [...ts, { id, message, undo }]);
@@ -188,7 +197,7 @@ export default function App(props: Props) {
   } else if (section === 'playbook') {
     screen = a === 'add' && b ? <PlaybookAdd slug={b} /> : <Playbook />;
   } else if (section === 'settings') {
-    screen = <Settings />;
+    screen = import.meta.env.PUBLIC_NATIVE === '1' && nativeUi && a === 'app' ? <nativeUi.ThisApp /> : <Settings />;
   } else if (section === 'insights') {
     screen = m2 ? (
       <Insights />
@@ -218,9 +227,12 @@ export default function App(props: Props) {
     screen = <WelcomeBack />;
   } else if (m2 && section === 'day' && a) {
     screen = <DayView day={a} />;
+  } else if (import.meta.env.PUBLIC_NATIVE === '1' && native && section === 'speak') {
+    go('/today?sheet=speak', true);
+    screen = <Today />;
   } else if (section === 'log' || section === 'dose') {
-    // Manifest shortcuts: open Today with the quick log on top.
-    go(`/today?sheet=log&kind=${section === 'dose' ? 'dose' : 'hard_moment'}`, true);
+    // Shortcuts: open Today with the quick log on top.
+    go(`/today?sheet=log&kind=${section === 'dose' || a === 'dose' ? 'dose' : 'hard_moment'}`, true);
     screen = <Today />;
   } else {
     screen = <Today />;
@@ -237,7 +249,13 @@ export default function App(props: Props) {
           initialKind={route.query.get('kind') ?? 'hard_moment'}
           medicineId={route.query.get('medicine')}
           scheduleTime={route.query.get('time')}
+          eventId={route.query.get('event')}
+          key={route.query.get('event') ?? 'new'}
         />
+      )}
+      {import.meta.env.PUBLIC_NATIVE === '1' && nativeUi && <nativeUi.NativeRuntime />}
+      {import.meta.env.PUBLIC_NATIVE === '1' && nativeUi && child && sheet === 'speak' && section !== 'show' && (
+        <nativeUi.SpeakSheet onClose={closeSheet} medicineId={route.query.get('medicine')} setup={route.query.get('setup') === '1'} />
       )}
       {child && sheet === 'share' && section !== 'show' && <ShareSheet onClose={closeSheet} />}
       {child && sheet === 'passport' && props.flags.desktop && <PassportShareSheet onClose={closeSheet} />}

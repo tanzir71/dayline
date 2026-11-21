@@ -109,10 +109,10 @@ const otherLangName = d.guide.otherLangName;
         )
       }
       <div class="guide__actions-row">
-        <button type="button" class="btn btn--secondary" data-print>
+        {import.meta.env.PUBLIC_NATIVE !== '1' && (<button type="button" class="btn btn--secondary" data-print>
           <Icon name="print" size={20} />
           {T.print}
-        </button>
+        </button>)}
         <button type="button" class="btn btn--secondary" data-share data-copied={T.copied} data-title={g.title} data-text={g.summary}>
           <Icon name="share" size={20} />
           <span class="sr-only">{T.share}</span>

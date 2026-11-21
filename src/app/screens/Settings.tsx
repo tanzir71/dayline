@@ -44,6 +44,10 @@ export function Settings() {
       const clean = rows.map((r) => Object.fromEntries(Object.entries(r).filter(([, v]) => !(v instanceof Blob))));
       if (clean.length) files.push(new File([tableToCsv(clean)], `dayline-${name}-${localDay()}.csv`, { type: 'text/csv' }));
     }
+    if (import.meta.env.PUBLIC_NATIVE === '1' && ctx.native) {
+      if (files.length) await (await import('../../native/bridge')).shareFiles(files);
+      return;
+    }
     if (files.length && navigator.canShare?.({ files })) {
       try {
         await navigator.share({ files });
@@ -81,6 +85,12 @@ export function Settings() {
     <div class="app-screen">
       <main id="main" class="column app-main stack" style="--stack-gap: 18px">
         <ScreenHeader title={S.title} backTo={ctx.child ? '/child' : '/today'} />
+
+        {import.meta.env.PUBLIC_NATIVE === '1' && ctx.native && (
+          <a class="btn btn--secondary" href="#/settings/app">
+            {t.voice.thisApp}
+          </a>
+        )}
 
         <section class="card stack" style="--stack-gap: 12px">
           <h2 class="t-heading-17">{S.language}</h2>

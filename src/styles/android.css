@@ -1,0 +1,194 @@
+/* Android band on the landing page (Figma 8:370) and the /android/ install page (9:461). */
+
+.overline.android-overline {
+  --tone: var(--text-caution);
+  gap: 6px;
+  color: var(--text-caution);
+}
+
+.android-overline .overline__dot,
+.android-update__label .overline__dot {
+  width: 8px;
+  height: 8px;
+}
+
+/* ---------- Band ---------- */
+.android-band {
+  border-bottom: 1px solid var(--line-default);
+}
+
+.android-band__inner {
+  display: grid;
+  gap: var(--space-10);
+  max-width: 1120px;
+}
+
+.android-band__copy {
+  display: grid;
+  gap: var(--space-5);
+  justify-items: start;
+  min-width: 0;
+}
+
+.android-band__reassure {
+  display: grid;
+  gap: 10px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.android-band__reassure li {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.android-band__reassure .icon {
+  flex: none;
+}
+
+.android-note {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  width: 100%;
+  padding: 14px var(--space-4);
+  border-radius: var(--radius-small);
+  background: var(--bg-mist);
+}
+
+.android-note .icon {
+  flex: none;
+  color: var(--brand-monsoon);
+}
+
+.android-band__phone {
+  justify-self: center;
+  width: 276px;
+  height: auto;
+  border-radius: 22px;
+}
+
+@media (min-width: 1024px) {
+  .android-band__inner {
+    grid-template-columns: minmax(0, 1fr) 276px;
+    gap: 72px;
+    align-items: center;
+  }
+}
+
+/* ---------- /android/ page ---------- */
+.android-page {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: var(--space-4);
+  padding-block: var(--space-4) var(--space-10);
+}
+
+@media (max-width: 599px) {
+  .android-page {
+    padding-inline: var(--space-5);
+  }
+}
+
+.android-page > .overline {
+  align-self: flex-start;
+}
+
+.android-update {
+  display: grid;
+  gap: var(--space-2);
+  padding: var(--space-4);
+  border-radius: var(--radius-card);
+  background: var(--brand-monsoon-tint);
+}
+
+.overline.android-update__label {
+  --tone: var(--brand-monsoon);
+  gap: 6px;
+  color: var(--brand-monsoon);
+}
+
+.android-steps {
+  display: grid;
+  gap: var(--space-4);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.android-card {
+  display: grid;
+  gap: var(--space-2);
+  min-width: 0;
+  padding: var(--space-4);
+  border: 1px solid var(--line-default);
+  border-radius: var(--radius-card);
+  background: var(--bg-surface);
+}
+
+.android-step__title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.android-step__num {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: var(--brand-monsoon);
+  color: var(--text-on-color);
+}
+
+/* A drawn Android system dialog, not a screenshot. */
+.android-dialog {
+  display: grid;
+  gap: var(--space-2);
+  padding: var(--space-4) var(--space-4) var(--space-3);
+  border-radius: 20px;
+  background: var(--bg-mist);
+}
+
+.android-dialog__line {
+  height: 8px;
+  border-radius: 4px;
+  background: var(--line-strong);
+}
+
+.android-dialog__line--short {
+  width: 62%;
+}
+
+.android-dialog__actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--space-5);
+  margin-top: var(--space-1);
+  color: var(--text-secondary);
+}
+
+.android-dialog__go {
+  color: var(--brand-monsoon);
+}
+
+.android-hash {
+  color: var(--text-ink);
+  font: 400 13px/1.35 ui-monospace, monospace;
+  overflow-wrap: anywhere;
+}
+
+.android-weblink {
+  display: inline-flex;
+  align-self: flex-start;
+  align-items: center;
+  gap: 6px;
+  min-height: var(--touch-min);
+  color: var(--brand-monsoon);
+  text-decoration: none;
+}

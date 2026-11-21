@@ -2,6 +2,13 @@
 
 Each milestone release is tagged `v0.<milestone>.0` and deployed to GitHub Pages.
 
+## Unreleased: Android app
+
+- Speak (Android app only): say what happened in Bangla or English, or type it. A rule-based parser on the phone turns it into day-line entries, saved at once with Undo.
+- Entries saved by voice show “voice”. Quick log can now fix a saved entry.
+- Android app: native file sharing, back button, shortcuts, dose reminder notifications, and Settings · This app.
+- Website: Android band, /android/ install page, an Android option in the install sheet and an Android section on the privacy page. These appear once an APK has been released.
+
 ## v0.3.0 — M3: Desktop and passport (2026-11-21)
 
 - Wide layouts from 1024 px: a left rail instead of the tab bar, Today in two panes, Insights in three columns, the visit report full width, sheets as centred dialogs.

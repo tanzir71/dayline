@@ -1794,7 +1794,7 @@ html.show-mode body {
 }
 
 /* ---------- M3: wide layouts from 1024 px (Figma 2546:2, 2547:2) ---------- */
-.nav-bar__brand,
+.nav-bar .nav-bar__brand,
 .nav-bar__install {
   display: none;
 }

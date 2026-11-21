@@ -10,6 +10,7 @@ import { daysLeft } from '../../domain/schedule';
 import { medicineCalendar } from '../../domain/ics';
 import { hhmmLabel } from '../format';
 import { deliverFile } from '../actions';
+import { isNative } from '../../native/is-native';
 import { go } from '../router';
 import type { DoseData, Medicine } from '../../data/types';
 
@@ -181,6 +182,7 @@ export function MedicineEdit({ id }: { id: string }) {
     }
     if (sched) await repos.schedules.update(sched.id, sv);
     else await repos.schedules.add({ ...sv, medicine_id: medId!, starts_on: localDay(), ends_on: null });
+    if (import.meta.env.PUBLIC_NATIVE === '1' && isNative() && sv.times.length) void import('../../native/reminders').then((r) => r.afterScheduleSaved(ctx));
     const units = left.trim() === '' ? null : Math.max(0, Number(left));
     if (units !== null && !Number.isNaN(units)) {
       const kv = { units_left: units, units_per_dose: Math.max(0.25, Number(perDose) || 1), warn_at_days: Math.max(0, Number(warnAt) || 7) };

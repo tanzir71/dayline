@@ -1,5 +1,29 @@
 ---
 import Landing from '../views/Landing.astro';
+const native = import.meta.env.PUBLIC_NATIVE === '1';
 ---
 
-<Landing lang="en" />
+{
+  native ? (
+    <html lang="en">
+      <head>
+        <meta charset="utf-8" />
+        <title>Dayline</title>
+        <script is:inline>
+          (function () {
+            let saved = null;
+            try {
+              saved = localStorage.getItem('dayline.lang');
+            } catch {
+              /* storage unavailable: open in English */
+            }
+            location.replace((saved === 'bn' ? '/bn/app/' : '/app/') + location.hash);
+          })();
+        </script>
+      </head>
+      <body />
+    </html>
+  ) : (
+    <Landing lang="en" />
+  )
+}

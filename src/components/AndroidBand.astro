@@ -1,0 +1,46 @@
+---
+import { fmt, getDict } from '../i18n';
+import { formatSize, getLatest } from '../lib/android';
+import { href, localHref, type Lang } from '../lib/paths';
+import { Icon } from './Icon';
+import { Overline } from './Overline';
+import '../styles/android.css';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const A = getDict(lang).landing.android;
+const latest = await getLatest();
+---
+
+{
+  latest && (
+    <section class="band band--surface android-band" aria-labelledby="android-title">
+      <div class="wrap android-band__inner">
+        <div class="android-band__copy">
+          <Overline class="android-overline">{A.overline}</Overline>
+          <h2 id="android-title" class="band__title">{A.title}</h2>
+          <p class="band__body">{A.body}</p>
+          <div class="hero__cta">
+            <a class="btn btn--primary" href={href(`android/${latest.file}`)} download>
+              <Icon name="download" size={20} />
+              {A.download}
+            </a>
+            <a class="btn btn--secondary" href={localHref(lang, 'android/')}>{A.howTo}</a>
+          </div>
+          <p class="t-caption-13 muted">{fmt(A.meta, { version: latest.version, size: formatSize(latest.bytes, lang) }, lang)}</p>
+          <ul class="android-band__reassure" role="list">
+            {A.reassure.map((r) => <li class="t-body-strong-15"><Icon name="check" size={18} class="hero__check" />{r}</li>)}
+          </ul>
+          <p class="android-note t-body-14 muted">
+            <Icon name="shield" size={20} />
+            <span>{A.notPlay}</span>
+          </p>
+        </div>
+        <img class="android-band__phone" src={href('landing/android-speak.png')} alt="" width="276" height="591" loading="lazy" decoding="async" />
+      </div>
+    </section>
+  )
+}

@@ -106,9 +106,11 @@ export function describeEvent(
     default:
       title = e.note || ev.note;
   }
-  if (e.note && e.kind !== 'note') parts.push(e.note);
+  // Voice entries keep the words heard in the note; the day line shows the tidy version.
+  if (e.note && e.kind !== 'note' && e.source !== 'voice') parts.push(e.note);
   if (by) parts.push(by);
   if (e.source === 'help_now') parts.push(ev.fromHelpNow);
+  if (e.source === 'voice') parts.push(t.voice.byVoice);
   return { title, detail: parts.join(' · ') };
 }
 

@@ -86,7 +86,7 @@ export interface Stock extends Row {
 export const EVENT_KINDS = ['hard_moment', 'win', 'dose', 'sleep', 'food', 'school', 'health', 'note'] as const;
 export type EventKind = (typeof EVENT_KINDS)[number];
 
-export type EventSource = 'tap' | 'help_now' | 'schedule' | 'show_mode' | 'check_in' | 'import';
+export type EventSource = 'tap' | 'help_now' | 'schedule' | 'show_mode' | 'check_in' | 'import' | 'voice';
 
 export type DoseStatus = 'given' | 'late' | 'missed' | 'refused';
 

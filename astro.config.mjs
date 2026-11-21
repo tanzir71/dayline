@@ -13,6 +13,8 @@ const rawBase = process.env.PUBLIC_BASE_PATH ?? '';
 const trimmed = rawBase.replace(/^\/+|\/+$/g, '');
 const base = trimmed ? `/${trimmed}/` : '/';
 /** The app (M1) changes what an installed Dayline opens and its long-press shortcuts. */
+/** PUBLIC_NATIVE=1 is the Android build. A literal here lets the web build drop all native code. */
+const nativeBuild = process.env.PUBLIC_NATIVE === '1' ? '1' : '';
 const appOn = released.APP || (process.env.PUBLIC_FLAGS ?? '').split(',').includes('APP');
 
 export default defineConfig({
@@ -22,6 +24,7 @@ export default defineConfig({
   build: { format: 'directory', assets: '_astro' },
   markdown: { rehypePlugins: [rehypeGuide] },
   devToolbar: { enabled: false },
+  vite: { define: { 'import.meta.env.PUBLIC_NATIVE': JSON.stringify(nativeBuild) } },
   integrations: [
     preact(),
     // Must run before AstroPWA so the search index is in the precache manifest.

@@ -1,0 +1,165 @@
+{
+  "$description": "Parser test cases for web/src/domain/voice/parse.ts. Each case runs parse(text, ctx) with the shared context (now/lang overridable per case). 'expect' lists the Drafts in order; only the fields given are compared. start/end are local wall times (the part of started_at/ended_at before the offset), minute precision. place/tags are labels in the case's language (t.log.places, t.log.befores, t.log.helpedFallback). 'must' cases must all pass; overall pass rate must be at least 85%. Add a case for every real sentence that a parent had to fix.",
+  "context": {
+    "now": "2026-11-21T17:40:00+06:00",
+    "child": { "name": "Rafi", "hard_moment_word": null },
+    "medicines": [
+      { "id": "med-ris", "generic_name": "risperidone", "brand_name": "", "strength_text": "0.5 mg", "times": ["08:00", "20:00"] },
+      { "id": "med-lev", "generic_name": "levetiracetam", "brand_name": "Keppra", "strength_text": "250 mg", "times": ["13:00"] }
+    ],
+    "aliases": {},
+    "playbookHelped": [],
+    "loggedToday": []
+  },
+  "cases": [
+    { "id": "en-dose-time", "must": true, "lang": "en", "text": "Gave risperidone at 8",
+      "expect": [{ "kind": "dose", "medicine_id": "med-ris", "start": "2026-11-21T08:00", "data": { "status": "given", "schedule_time": "08:00" } }] },
+
+    { "id": "en-dose-generic", "must": true, "lang": "en", "text": "Gave his medicine",
+      "expect": [{ "kind": "dose", "medicine_id": "med-ris", "start": "2026-11-21T17:40", "data": { "schedule_time": "20:00" }, "confidence": "check" }] },
+
+    { "id": "en-dose-missed", "must": true, "lang": "en", "text": "He missed the morning risperidone",
+      "expect": [{ "kind": "dose", "medicine_id": "med-ris", "start": "2026-11-21T08:00", "data": { "status": "missed", "schedule_time": "08:00" } }] },
+
+    { "id": "en-dose-brand-refused", "must": true, "lang": "en", "now": "2026-11-21T13:20:00+06:00", "text": "Rafi spat out his Keppra",
+      "expect": [{ "kind": "dose", "medicine_id": "med-lev", "start": "2026-11-21T13:20", "data": { "status": "refused", "schedule_time": "13:00" } }] },
+
+    { "id": "en-dose-unknown", "must": true, "lang": "en", "now": "2026-11-21T21:30:00+06:00", "text": "Gave him melatonin at nine",
+      "expect": [{ "kind": "dose", "medicine_id": null, "start": "2026-11-21T21:00", "question": { "type": "new_medicine", "heard_name": "melatonin" } }] },
+
+    { "id": "en-two-doses", "must": true, "lang": "en", "now": "2026-11-21T13:30:00+06:00", "text": "Gave risperidone at 8, Keppra at 1",
+      "expect": [
+        { "kind": "dose", "medicine_id": "med-ris", "start": "2026-11-21T08:00", "data": { "schedule_time": "08:00" } },
+        { "kind": "dose", "medicine_id": "med-lev", "start": "2026-11-21T13:00", "data": { "schedule_time": "13:00" } }
+      ] },
+
+    { "id": "en-sleep-range", "must": true, "lang": "en", "text": "Slept from 9:30 to 6:50, woke up once",
+      "expect": [{ "kind": "sleep", "start": "2026-11-20T21:30", "end": "2026-11-21T06:50", "data": { "night_wakings": 1 } }] },
+
+    { "id": "en-sleep-quality-only", "must": false, "lang": "en", "text": "Bad night, woke up three times",
+      "expect": [{ "kind": "sleep", "start": "2026-11-20T21:00", "end": "2026-11-21T06:30", "data": { "quality": "poor", "night_wakings": 3 }, "confidence": "check" }] },
+
+    { "id": "en-nap", "must": false, "lang": "en", "text": "Had a nap from 2 to 3",
+      "expect": [{ "kind": "sleep", "start": "2026-11-21T14:00", "end": "2026-11-21T15:00" }] },
+
+    { "id": "en-hard-full", "must": true, "lang": "en", "text": "Meltdown at school after the fire drill, about 20 minutes, the quiet corner helped",
+      "expect": [{ "kind": "hard_moment", "place": "School", "start": "2026-11-21T17:20", "end": "2026-11-21T17:40",
+                   "data": { "duration_bucket": 2 },
+                   "tags": [{ "type": "before", "tag": "Noise" }, { "type": "helped", "tag": "Quiet place" }] }] },
+
+    { "id": "en-hard-small", "must": false, "lang": "en", "text": "Small upset when we turned off the TV",
+      "expect": [{ "kind": "hard_moment", "size": 1, "tags": [{ "type": "before", "tag": "Transition" }] }] },
+
+    { "id": "en-hard-unsafe", "must": false, "lang": "en", "text": "He hit his sister, really bad, needed help",
+      "expect": [{ "kind": "hard_moment", "size": 5 }] },
+
+    { "id": "en-hard-relative", "must": true, "lang": "en", "text": "An hour ago he screamed in the car",
+      "expect": [{ "kind": "hard_moment", "start": "2026-11-21T16:40", "place": "Car" }] },
+
+    { "id": "en-attach", "must": true, "lang": "en", "text": "He got upset at the shop. Deep pressure helped.",
+      "expect": [{ "kind": "hard_moment", "place": "Outside", "tags": [{ "type": "helped", "tag": "Deep pressure" }] }] },
+
+    { "id": "en-win", "must": true, "lang": "en", "text": "Asked for a break with his card for the first time",
+      "expect": [{ "kind": "win", "data": { "text": "Asked for a break with his card for the first time" } }] },
+
+    { "id": "en-food-lunch", "must": true, "lang": "en", "text": "Lunch, ate about half",
+      "expect": [{ "kind": "food", "start": "2026-11-21T13:00", "data": { "meal": "lunch", "ate": "some" } }] },
+
+    { "id": "en-food-gut", "must": false, "lang": "en", "text": "Dinner, ate nothing, constipated",
+      "expect": [{ "kind": "food", "start": "2026-11-21T17:40", "data": { "meal": "dinner", "ate": "none", "gut": "constipated" } }] },
+
+    { "id": "en-gut-only", "must": false, "lang": "en", "text": "No poop today",
+      "expect": [{ "kind": "food", "data": { "meal": "dinner", "gut": "none" } }] },
+
+    { "id": "en-health-temp", "must": true, "lang": "en", "text": "Fever, 38.5",
+      "expect": [{ "kind": "health", "data": { "symptom_key": "fever", "value": "38.5 °C" } }] },
+
+    { "id": "en-health-vomit", "must": false, "lang": "en", "text": "Vomited twice after lunch",
+      "expect": [{ "kind": "health", "data": { "symptom_key": "vomiting" } }] },
+
+    { "id": "en-school", "must": false, "lang": "en", "text": "Teacher said he had a calm day",
+      "expect": [{ "kind": "school", "data": { "summary": "Teacher said he had a calm day" } }] },
+
+    { "id": "en-note-guard", "must": true, "lang": "en", "text": "Ask the doctor about the risperidone dose",
+      "expect": [{ "kind": "note" }] },
+
+    { "id": "en-dose-and-sleep", "must": true, "lang": "en", "text": "Gave risperidone at 8 and he slept well",
+      "expect": [
+        { "kind": "dose", "medicine_id": "med-ris", "start": "2026-11-21T08:00" },
+        { "kind": "sleep", "data": { "quality": "good" }, "confidence": "check" }
+      ] },
+
+    { "id": "en-acceptance", "must": true, "lang": "en", "now": "2026-11-21T08:30:00+06:00", "text": "Gave risperidone at 8, slept nine thirty to almost seven, woke once",
+      "expect": [
+        { "kind": "dose", "medicine_id": "med-ris", "start": "2026-11-21T08:00", "data": { "status": "given", "schedule_time": "08:00" } },
+        { "kind": "sleep", "start": "2026-11-20T21:30", "end": "2026-11-21T07:00", "data": { "night_wakings": 1 } }
+      ] },
+
+    { "id": "bn-acceptance", "must": true, "lang": "bn", "now": "2026-11-21T08:30:00+06:00", "text": "৮টায় রিসপেরিডোন দিয়েছি, সাড়ে নয়টা থেকে প্রায় সাতটা পর্যন্ত ঘুমিয়েছে, একবার জেগেছিল",
+      "expect": [
+        { "kind": "dose", "medicine_id": "med-ris", "start": "2026-11-21T08:00", "data": { "status": "given", "schedule_time": "08:00" } },
+        { "kind": "sleep", "start": "2026-11-20T21:30", "end": "2026-11-21T07:00", "data": { "night_wakings": 1 } }
+      ] },
+
+    { "id": "en-guard-plan", "must": true, "lang": "en", "text": "I need to give risperidone at 8",
+      "expect": [{ "kind": "note" }] },
+
+    { "id": "en-guard-question", "must": true, "lang": "en", "text": "Should I give risperidone",
+      "expect": [{ "kind": "note" }] },
+
+    { "id": "en-guard-asked", "must": true, "lang": "en", "text": "Has he had his risperidone",
+      "expect": [{ "kind": "note" }] },
+
+    { "id": "en-guard-effect", "must": true, "lang": "en", "text": "Risperidone made him sleepy",
+      "expect": [{ "kind": "note" }] },
+
+    { "id": "en-dose-had", "must": true, "lang": "en", "text": "He had risperidone at 8",
+      "expect": [{ "kind": "dose", "medicine_id": "med-ris", "start": "2026-11-21T08:00" }] },
+
+    { "id": "en-dose-forgot-to", "must": true, "lang": "en", "text": "Forgot to give the morning risperidone",
+      "expect": [{ "kind": "dose", "medicine_id": "med-ris", "data": { "status": "missed" } }] },
+
+    { "id": "bn-guard-plan", "must": true, "lang": "bn", "text": "রিসপেরিডোন দিতে হবে",
+      "expect": [{ "kind": "note" }] },
+
+    { "id": "bn-guard-effect", "must": true, "lang": "bn", "text": "রিসপেরিডোন খেয়ে ঘুম ঘুম লাগছে",
+      "expect": [{ "kind": "note" }] },
+
+    { "id": "en-nothing", "must": true, "lang": "en", "text": "um",
+      "expect": [] },
+
+    { "id": "en-unknown-text", "must": true, "lang": "en", "text": "Grandma is visiting this weekend",
+      "expect": [{ "kind": "note" }] },
+
+    { "id": "bn-dose", "must": true, "lang": "bn", "text": "সকাল আটটায় রিসপেরিডোন দিয়েছি",
+      "expect": [{ "kind": "dose", "medicine_id": "med-ris", "start": "2026-11-21T08:00", "data": { "status": "given", "schedule_time": "08:00" } }] },
+
+    { "id": "bn-sleep", "must": true, "lang": "bn", "text": "রাত সাড়ে নয়টায় ঘুমিয়েছে, সকাল সাতটায় উঠেছে, একবার জেগেছিল",
+      "expect": [{ "kind": "sleep", "start": "2026-11-20T21:30", "end": "2026-11-21T07:00", "data": { "night_wakings": 1 } }] },
+
+    { "id": "bn-hard", "must": true, "lang": "bn", "text": "স্কুলে চিৎকার করে কান্না, প্রায় আধা ঘণ্টা, শব্দের জন্য",
+      "expect": [{ "kind": "hard_moment", "place": "স্কুল", "start": "2026-11-21T17:10", "end": "2026-11-21T17:40",
+                   "data": { "duration_bucket": 3 }, "tags": [{ "type": "before", "tag": "শব্দ" }] }] },
+
+    { "id": "bn-food", "must": true, "lang": "bn", "text": "দুপুরে অর্ধেক ভাত খেয়েছে",
+      "expect": [{ "kind": "food", "start": "2026-11-21T13:00", "data": { "meal": "lunch", "ate": "some" } }] },
+
+    { "id": "bn-win", "must": false, "lang": "bn", "text": "আজ নিজে নিজে জামা পরেছে, প্রথমবার",
+      "expect": [{ "kind": "win" }] },
+
+    { "id": "bn-dose-refused", "must": true, "lang": "bn", "now": "2026-11-21T21:10:00+06:00", "text": "রাতের ওষুধ খেতে চায়নি",
+      "expect": [{ "kind": "dose", "medicine_id": "med-ris", "start": "2026-11-21T21:00", "data": { "status": "refused", "schedule_time": "20:00" }, "confidence": "check" }] },
+
+    { "id": "bn-mixed-script", "must": true, "lang": "bn", "text": "সকালে risperidone দিয়েছি, তারপর স্কুলে meltdown হয়েছে",
+      "expect": [
+        { "kind": "dose", "medicine_id": "med-ris", "start": "2026-11-21T08:00" },
+        { "kind": "hard_moment", "place": "স্কুল" }
+      ] },
+
+    { "id": "bn-fever", "must": false, "lang": "bn", "text": "জ্বর ১০১",
+      "expect": [{ "kind": "health", "data": { "symptom_key": "fever", "value": "101 °F" } }] },
+
+    { "id": "bn-gut", "must": false, "lang": "bn", "text": "পায়খানা হয়নি",
+      "expect": [{ "kind": "food", "data": { "gut": "none" } }] }
+  ]
+}

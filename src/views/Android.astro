@@ -1,0 +1,134 @@
+---
+import SitePage from '../layouts/SitePage.astro';
+import { Icon } from '../components/Icon';
+import { Overline } from '../components/Overline';
+import { fmt, formatNumber, getDict } from '../i18n';
+import { formatDate, formatFingerprint, formatHash, formatSize, getLatest } from '../lib/android';
+import { href, localHref, type Lang } from '../lib/paths';
+import '../styles/android.css';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const d = getDict(lang);
+const A = d.androidPage;
+const latest = await getLatest();
+const [readyLabel = '', readyLine = ''] = A.updateReady.split(' · ');
+// The drawn dialogs show Android's own English button labels, the ones the Bangla steps quote too.
+const en = getDict('en');
+const dialogs: Record<number, [string, string]> = {
+  1: [en.app.common.cancel, en.app.settings.title],
+  2: [en.app.common.cancel, en.androidPage.steps[2]?.title ?? ''],
+};
+---
+
+<SitePage lang={lang} title={A.title} description={A.body} path="android/" current="other">
+  <div class="column android-page">
+    {
+      latest && (
+        <>
+          <div class="android-update" data-update="update" data-latest={latest.version} role="status" hidden>
+            <Overline class="android-update__label">{readyLabel}</Overline>
+            <p class="t-body-strong-15" data-line={fmt(readyLine, { latest: latest.version })} />
+            <p class="t-caption-13 muted">{A.updateBody}</p>
+          </div>
+          <div class="android-update" data-update="current" role="status" hidden>
+            <p class="t-body-strong-15">{A.upToDate}</p>
+          </div>
+        </>
+      )
+    }
+
+    <Overline class="android-overline">{A.sheetAppTitle}</Overline>
+    <h1 class="t-display-32">{A.title}</h1>
+    <p class="t-body-15 muted">{A.body}</p>
+
+    {
+      latest ? (
+        <>
+          <a class="btn btn--primary btn--block" href={href(`android/${latest.file}`)} download>
+            <Icon name="download" size={20} />
+            {d.landing.android.download}
+          </a>
+          <p class="t-caption-13 muted">{fmt(A.metaLine, { size: formatSize(latest.bytes, lang), date: formatDate(latest.date, lang) }, lang)}</p>
+
+          <h2 class="t-heading-17">{A.stepsTitle}</h2>
+          <ol class="android-steps" role="list">
+            {A.steps.map((s, i) => (
+              <li class="android-card">
+                <h3 class="android-step__title t-heading-17">
+                  <span class="android-step__num t-body-strong-14" aria-hidden="true">{formatNumber(i + 1, lang)}</span>
+                  {s.title}
+                </h3>
+                <p class="t-body-14 muted">{s.body}</p>
+                {dialogs[i] && (
+                  <div class="android-dialog" aria-hidden="true">
+                    <span class="android-dialog__line" />
+                    <span class="android-dialog__line android-dialog__line--short" />
+                    <span class="android-dialog__actions t-body-strong-14" lang="en">
+                      <span>{dialogs[i][0]}</span>
+                      <span class="android-dialog__go">{dialogs[i][1]}</span>
+                    </span>
+                  </div>
+                )}
+              </li>
+            ))}
+          </ol>
+
+          <section class="android-card">
+            <h2 class="t-heading-17">{A.movingTitle}</h2>
+            <p class="t-body-14 muted">{A.movingBody}</p>
+          </section>
+
+          <section class="android-card">
+            <h2 class="t-heading-17">{A.whyTitle}</h2>
+            <p class="t-body-14 muted">
+              {A.whyBody}
+              {latest.internet === false && ` ${A.whyNoInternet}`}
+            </p>
+          </section>
+
+          <section class="android-card">
+            <h2 class="t-heading-17">{A.checkTitle}</h2>
+            <p class="t-label-12 muted">{fmt(A.checkSha, { file: latest.file })}</p>
+            <code class="android-hash" lang="en">{formatHash(latest.sha256)}</code>
+            <p class="t-label-12 muted">{A.checkCert}</p>
+            <code class="android-hash" lang="en">
+              {formatFingerprint(latest.cert_sha256).split(':').map((byte, i, all) => <>{byte}{i < all.length - 1 && ':'}<wbr /></>)}
+            </code>
+          </section>
+
+          <a class="android-weblink t-body-strong-14" href={localHref(lang, 'app/')}>
+            {A.webInstead}
+            <Icon name="chevron-right" size={18} />
+          </a>
+        </>
+      ) : (
+        <>
+          <p class="android-card t-body-15">{A.comingSoon}</p>
+          <a class="btn btn--primary btn--block" href={localHref(lang, 'app/')}>{d.nav.openApp}</a>
+        </>
+      )
+    }
+  </div>
+</SitePage>
+
+<script>
+  import { updateState } from '../lib/android';
+
+  const ready = document.querySelector<HTMLElement>('[data-update="update"]');
+  const current = document.querySelector<HTMLElement>('[data-update="current"]');
+  const latest = ready?.dataset.latest;
+  const have = new URLSearchParams(location.search).get('have');
+  const state = latest ? updateState(have, latest) : null;
+
+  if (state === 'update' && ready && have) {
+    const line = ready.querySelector<HTMLElement>('[data-line]');
+    if (line) line.textContent = (line.dataset.line ?? '').replace('{have}', have);
+    ready.hidden = false;
+  } else if (state === 'current' && current) {
+    current.hidden = false;
+  }
+</script>

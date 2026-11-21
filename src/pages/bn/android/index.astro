@@ -1,0 +1,8 @@
+---
+import Android from '../../../views/Android.astro';
+import { localHref } from '../../../lib/paths';
+
+if (import.meta.env.PUBLIC_NATIVE) return Astro.redirect(localHref('bn', 'app/'));
+---
+
+<Android lang="bn" />

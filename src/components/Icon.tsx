@@ -21,9 +21,30 @@ export type IconName =
   | 'clock'
   | 'arrow-right'
   | 'add-to-home'
-  | 'ios-share';
+  | 'ios-share'
+  | 'mic'
+  | 'keyboard'
+  | 'shield';
 
 const paths: Record<IconName, VNode> = {
+  mic: (
+    <>
+      <path d="M11 2.75c1.66 0 3 1.34 3 3v4.5c0 1.66-1.34 3-3 3s-3-1.34-3-3v-4.5c0-1.66 1.34-3 3-3Z" stroke="currentColor" stroke-width="2" />
+      <path d="M4.75 10.5a6.25 6.25 0 0 0 12.5 0M11 16.75v2.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+    </>
+  ),
+  keyboard: (
+    <>
+      <rect x="2.75" y="5.5" width="16.5" height="11" rx="2" stroke="currentColor" stroke-width="2" />
+      <path d="M6.5 9.25h.01M11 9.25h.01M15.5 9.25h.01M7.5 13h7" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+    </>
+  ),
+  shield: (
+    <>
+      <path d="M11 2.75 4.58 5.5v5c0 4.13 2.75 7.33 6.42 8.75 3.67-1.42 6.42-4.62 6.42-8.75v-5L11 2.75Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round" />
+      <path d="m8.1 11 2.1 2.1 3.9-3.9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+    </>
+  ),
   today: (
     <>
       <path d="M2.75 13.75H19.25" stroke="currentColor" stroke-width="2" stroke-linecap="round" />

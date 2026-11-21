@@ -20,6 +20,20 @@ interface Strings {
   manualStep2Hint: string;
 }
 
+/** The Android app option. Only passed when the site has a release. */
+export interface AndroidOption {
+  apkHref: string;
+  howToHref: string;
+  title: string;
+  appTitle: string;
+  appBadge: string;
+  appBody: string;
+  download: string;
+  howTo: string;
+  webTitle: string;
+  webBody: string;
+}
+
 interface DeferredPrompt extends Event {
   prompt: () => Promise<void>;
   userChoice: Promise<{ outcome: 'accepted' | 'dismissed' }>;
@@ -38,12 +52,13 @@ function isStandalone(): boolean {
   return window.matchMedia('(display-mode: standalone)').matches || (navigator as Navigator & { standalone?: boolean }).standalone === true;
 }
 
-export default function InstallSheet({ s, iconSrc }: { s: Strings; iconSrc: string }) {
+export default function InstallSheet({ s, iconSrc, android }: { s: Strings; iconSrc: string; android?: AndroidOption }) {
   const [platform, setPlatform] = useState<Platform>('none');
   const [open, setOpen] = useState(false);
-  const [mode, setMode] = useState<'prompt' | 'ios' | 'manual'>('prompt');
+  const [mode, setMode] = useState<'prompt' | 'ios' | 'manual' | 'android'>('prompt');
   const deferred = useRef<DeferredPrompt | null>(null);
   const firstButton = useRef<HTMLButtonElement>(null);
+  const firstLink = useRef<HTMLAnchorElement>(null);
   const sheet = useRef<HTMLDivElement>(null);
   const opener = useRef<HTMLElement | null>(null);
 
@@ -70,6 +85,7 @@ export default function InstallSheet({ s, iconSrc }: { s: Strings; iconSrc: stri
 
     let timer: number | undefined;
     const autoShow = () => {
+      if (location.pathname.includes('/android/')) return; // never over the install steps
       if (!shouldAutoShow(readState(), new Date())) return;
       window.clearTimeout(timer);
       timer = window.setTimeout(() => show(false), SETTLE_MS);
@@ -113,6 +129,7 @@ export default function InstallSheet({ s, iconSrc }: { s: Strings; iconSrc: stri
     });
     deferred.current = window.__daylineInstall ?? deferred.current;
     if (pf === 'ios') setMode('ios');
+    else if (android && /Android/.test(navigator.userAgent)) setMode('android');
     else if (deferred.current) setMode('prompt');
     else if (fromLink || pf === 'manual') setMode('manual');
     else return;
@@ -121,11 +138,11 @@ export default function InstallSheet({ s, iconSrc }: { s: Strings; iconSrc: stri
 
   useEffect(() => {
     if (!open) return;
-    firstButton.current?.focus();
+    (firstLink.current ?? firstButton.current)?.focus();
     const onKey = (e: KeyboardEvent) => {
       if (e.key === 'Escape') notNow();
       if (e.key === 'Tab' && sheet.current) {
-        const f = [...sheet.current.querySelectorAll<HTMLElement>('button')];
+        const f = [...sheet.current.querySelectorAll<HTMLElement>('a[href],button')];
         const first = f[0];
         const last = f[f.length - 1];
         if (!first || !last) return;
@@ -140,7 +157,7 @@ export default function InstallSheet({ s, iconSrc }: { s: Strings; iconSrc: stri
     };
     document.addEventListener('keydown', onKey);
     return () => document.removeEventListener('keydown', onKey);
-  }, [open]);
+  }, [open, mode]);
 
   function close() {
     setOpen(false);
@@ -172,23 +189,70 @@ export default function InstallSheet({ s, iconSrc }: { s: Strings; iconSrc: stri
     }
   }
 
+  /** Add to home screen: the browser's prompt when it offered one, otherwise the manual steps. */
+  function addToHome() {
+    deferred.current = window.__daylineInstall ?? deferred.current;
+    if (deferred.current) void install();
+    else setMode('manual');
+  }
+
   if (platform === 'none' || !open) return null;
 
-  const title = mode === 'ios' ? s.iosTitle : mode === 'manual' ? s.manualTitle : s.title;
+  const title = mode === 'ios' ? s.iosTitle : mode === 'manual' ? s.manualTitle : mode === 'android' && android ? android.title : s.title;
   return (
     <>
       <div class="sheet-backdrop" onClick={notNow} />
       <div class="sheet install-sheet" role="dialog" aria-modal="true" aria-labelledby="install-title" ref={sheet} data-mode={mode}>
         <div class="sheet__grabber" aria-hidden="true" />
-        <div class="install-sheet__head">
-          <img src={iconSrc} width="56" height="56" alt="" />
-          <div>
+        {mode === 'android' && android ? (
+          <>
             <h2 id="install-title" class="sheet__title">
               {title}
             </h2>
-            <p class="t-body-15 muted">{s.body}</p>
+            <div class="install-options">
+              <section class="install-option install-option--app">
+                <div class="install-option__head">
+                  <h3 class="t-heading-17">{android.appTitle}</h3>
+                  <span class="install-option__badge t-label-12">
+                    <Icon name="mic" size={14} />
+                    {android.appBadge}
+                  </span>
+                </div>
+                <p class="t-body-14 muted">{android.appBody}</p>
+                <a
+                  ref={firstLink}
+                  class="btn btn--primary btn--block"
+                  href={android.apkHref}
+                  download
+                  onClick={() => writeState(dismiss(readState(), new Date()))}
+                >
+                  <Icon name="download" size={20} />
+                  {android.download}
+                </a>
+                <a class="install-option__howto t-body-strong-14" href={android.howToHref}>
+                  {android.howTo}
+                </a>
+              </section>
+              <section class="install-option">
+                <h3 class="t-heading-17">{android.webTitle}</h3>
+                <p class="t-body-14 muted">{android.webBody}</p>
+                <button type="button" class="btn btn--secondary btn--block" onClick={addToHome}>
+                  {s.install}
+                </button>
+              </section>
+            </div>
+          </>
+        ) : (
+          <div class="install-sheet__head">
+            <img src={iconSrc} width="56" height="56" alt="" />
+            <div>
+              <h2 id="install-title" class="sheet__title">
+                {title}
+              </h2>
+              <p class="t-body-15 muted">{s.body}</p>
+            </div>
           </div>
-        </div>
+        )}
 
         {mode === 'ios' && (
           <ol class="install-steps" role="list">
@@ -246,6 +310,10 @@ export default function InstallSheet({ s, iconSrc }: { s: Strings; iconSrc: stri
                 {s.notNow}
               </button>
             </>
+          ) : mode === 'android' ? (
+            <button type="button" class="btn btn--ghost btn--block" onClick={notNow}>
+              {s.notNow}
+            </button>
           ) : (
             <button ref={firstButton} type="button" class="btn btn--secondary btn--block" onClick={notNow}>
               {s.notNow}

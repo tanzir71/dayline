@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'preact/hooks';
+import { isNative } from '../native/is-native';
 
 const HOLD_MS = 1000;
 
@@ -27,6 +28,7 @@ export function useShowLock(prefix: string): (to: string) => void {
       } catch {
         /* not supported or not allowed */
       }
+      if (import.meta.env.PUBLIC_NATIVE === '1' && !lock && isNative()) void import('../native/bridge').then((b) => b.keepAwake(true));
     };
     void ask();
     const onVis = () => document.visibilityState === 'visible' && void ask();
@@ -36,6 +38,7 @@ export function useShowLock(prefix: string): (to: string) => void {
       window.removeEventListener('hashchange', onHash);
       document.removeEventListener('visibilitychange', onVis);
       void lock?.release();
+      if (import.meta.env.PUBLIC_NATIVE === '1' && isNative()) void import('../native/bridge').then((b) => b.keepAwake(false));
     };
   }, []);
   return (to: string) => {

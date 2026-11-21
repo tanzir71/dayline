@@ -54,6 +54,7 @@ export interface EventRepo extends Repo<DayEvent> {
   between(childId: string, fromDay: string, toDay: string): Promise<DayEvent[]>;
   addWithTags(input: Input<DayEvent>, tags: { type: EventTag['type']; tag: string }[]): Promise<DayEvent>;
   tags(eventIds: string[]): Promise<EventTag[]>;
+  setTags(eventId: string, tags: { type: EventTag['type']; tag: string }[]): Promise<void>;
 }
 
 export function eventRepo(db: DaylineDB): EventRepo {
@@ -75,6 +76,13 @@ export function eventRepo(db: DaylineDB): EventRepo {
         const ev = await base.add(input);
         for (const t of tags) await tagRepo.add({ event_id: ev.id, type: t.type, tag: t.tag });
         return ev;
+      });
+    },
+    async setTags(eventId, tags) {
+      await db.transaction('rw', db.event_tag, async () => {
+        const old = await db.event_tag.where('event_id').equals(eventId).toArray();
+        for (const x of old.filter((o) => !o.deleted_at)) await tagRepo.remove(x.id);
+        for (const x of tags) await tagRepo.add({ event_id: eventId, type: x.type, tag: x.tag });
       });
     },
     async tags(eventIds) {

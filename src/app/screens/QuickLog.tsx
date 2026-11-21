@@ -5,9 +5,9 @@ import { useLive } from '../live';
 import { Sheet, TextInput, TextArea } from '../ui';
 import { Chip } from '../../components/Chip';
 import { fmt } from '../../i18n';
-import { EVENT_KINDS, type DoseStatus, type EventKind } from '../../data/types';
-import { isoWithOffset, localDay, addDays } from '../../lib/time';
-import { plannedDoses, nextDose } from '../../domain/schedule';
+import { EVENT_KINDS, type DayEvent, type DoseStatus, type EventKind } from '../../data/types';
+import { isoWithOffset, localDay, addDays, dayOf } from '../../lib/time';
+import { plannedDoses, nextDose, doseStatusAt } from '../../domain/schedule';
 import { timeLabel, hardWord } from '../format';
 import { markDose, rememberNoter, saveMoment } from '../actions';
 import { SYMPTOMS } from '../../domain/labels';
@@ -26,11 +26,14 @@ export function QuickLog({
   initialKind,
   medicineId,
   scheduleTime,
+  eventId = null,
 }: {
   onClose: () => void;
   initialKind: string;
   medicineId: string | null;
   scheduleTime: string | null;
+  /** Fix an entry that is already on the day line (from Speak's Saved sheet). */
+  eventId?: string | null;
 }) {
   const ctx = useApp();
   const { t, lang, child, repos, me } = ctx;
@@ -71,33 +74,149 @@ export function QuickLog({
   const [newName, setNewName] = useState('');
   const [adding, setAdding] = useState(false);
   const [busy, setBusy] = useState(false);
+  const [editing, setEditing] = useState<DayEvent | null>(null);
+
+  // Editing: fill the form from the saved entry.
+  useEffect(() => {
+    if (!eventId) return;
+    void (async () => {
+      const e = await repos.events.get(eventId);
+      if (!e) return;
+      const tags = await repos.events.tags([e.id]);
+      const d = e.data as Record<string, unknown>;
+      const str = (v: unknown) => (typeof v === 'string' ? v : null);
+      setKind(e.kind);
+      setTime(e.started_at.slice(11, 16));
+      setSize(e.size);
+      setPlace(e.place);
+      setDur(typeof d.duration_bucket === 'number' ? d.duration_bucket : null);
+      setBefore(tags.filter((x) => x.type === 'before').map((x) => x.tag));
+      setHelped(tags.filter((x) => x.type === 'helped').map((x) => x.tag));
+      setText(str(d.text) ?? str(d.summary) ?? '');
+      if (e.kind === 'dose') {
+        setMed(str(d.medicine_id));
+        setSlot(str(d.schedule_time));
+        setStatus((str(d.status) as DoseStatus | null) ?? 'given');
+      }
+      if (e.kind === 'sleep') {
+        setBed(e.started_at.slice(11, 16));
+        if (e.ended_at) setWake(e.ended_at.slice(11, 16));
+        setQuality(str(d.quality));
+        setWakings(Number(d.night_wakings ?? 0));
+      }
+      if (e.kind === 'food') {
+        setMeal(str(d.meal) ?? 'snack');
+        setAte(str(d.ate));
+        setGut(str(d.gut));
+      }
+      if (e.kind === 'health') {
+        setSymptom(str(d.symptom) ?? '');
+        setSymptomKey(str(d.symptom_key));
+        setValue(str(d.value) ?? '');
+      }
+      setNote(e.note);
+      setNotedBy(e.noted_by);
+      setEditing(e);
+    })();
+  }, [eventId]);
 
   // Default "noted by": the last name used, else the parent's own name.
   useEffect(() => {
-    if (notedBy === null && (lastNoter || me)) setNotedBy(lastNoter || me);
+    if (!eventId && notedBy === null && (lastNoter || me)) setNotedBy(lastNoter || me);
   }, [lastNoter, me]);
 
   // Dose: preselect the next due medicine.
   useEffect(() => {
-    if (kind !== 'dose' || med || !data.medicines.length) return;
+    if ((eventId && !editing) || kind !== 'dose' || med || !data.medicines.length) return;
     const now = new Date();
     const n = nextDose(plannedDoses(today, data.medicines, data.schedules, events), now.getHours() * 60 + now.getMinutes());
     setMed(n?.medicine.id ?? data.medicines.find((m) => m.active)?.id ?? null);
     if (n) setSlot(n.time);
-  }, [kind, data.medicines.length]);
+  }, [kind, data.medicines.length, editing]);
 
   const names = [...new Set([me, ...noters.map((n) => n.name)].filter(Boolean))];
   const playbookHelps = data.playbook.filter((p) => p.situation === 'hard_moment').map((p) => p.text);
-  const helpedOptions = playbookHelps.length ? playbookHelps : L.helpedFallback;
+  // An entry being fixed may carry a tag that isn't in today's list; keep it visible so it can be removed.
+  const helpedOptions = [...new Set([...(playbookHelps.length ? playbookHelps : L.helpedFallback), ...helped])];
+
+  async function moveStock(medicineId: string, sign: 1 | -1): Promise<(() => Promise<void>) | null> {
+    const stock = (await repos.stock.where('medicine_id', medicineId))[0];
+    if (!stock) return null;
+    const before = stock.units_left;
+    await repos.stock.update(stock.id, { units_left: Math.max(0, before + sign * (stock.units_per_dose || 1)) });
+    return () => repos.stock.update(stock.id, { units_left: before });
+  }
+
+  /** Update a saved entry in place. Its source stays the same, so a voice entry stays "voice". */
+  async function saveEdit(ev: DayEvent, at: Date, started: string, by: string | null): Promise<() => Promise<void>> {
+    const oldData = ev.data as Record<string, unknown>;
+    const oldTags = await repos.events.tags([ev.id]);
+    const fields = { kind, started_at: started, ended_at: null as string | null, size: null as number | null, place: null as string | null, data: {} as Record<string, unknown>, note: note.trim(), noted_by: by };
+    let tags: { type: 'before' | 'helped'; tag: string }[] = [];
+    if (kind === 'dose') {
+      const s = data.schedules.find((x) => x.medicine_id === med);
+      const st = status === 'given' || status === 'late' ? doseStatusAt(slot, started) : status;
+      fields.data = { medicine_id: med, schedule_time: slot, status: st, amount_text: ev.kind === 'dose' && oldData.medicine_id === med ? (oldData.amount_text ?? '') : (s?.amount_text ?? '') };
+    } else if (kind === 'hard_moment') {
+      const oldBucket = ev.kind === 'hard_moment' ? oldData.duration_bucket : null;
+      const oldMinutes = ev.ended_at ? (new Date(ev.ended_at).getTime() - new Date(ev.started_at).getTime()) / 60000 : null;
+      const minutes = dur === null ? null : dur === oldBucket && oldMinutes ? oldMinutes : DURATION_MIN[dur]!;
+      fields.ended_at = minutes ? isoWithOffset(new Date(at.getTime() + minutes * 60000)) : null;
+      fields.size = size;
+      fields.place = place;
+      fields.data = { parent_word: child?.hard_moment_word ?? null, duration_bucket: dur };
+      tags = [...before.map((tag) => ({ type: 'before' as const, tag })), ...helped.map((tag) => ({ type: 'helped' as const, tag }))];
+    } else if (kind === 'sleep') {
+      const wakeDay = ev.kind === 'sleep' && ev.ended_at ? dayOf(ev.ended_at) : dayOf(ev.started_at);
+      fields.started_at = isoWithOffset(new Date(`${bed > wake ? addDays(wakeDay, -1) : wakeDay}T${bed}:00`));
+      fields.ended_at = isoWithOffset(new Date(`${wakeDay}T${wake}:00`));
+      fields.data = { quality, night_wakings: wakings };
+    } else if (kind === 'win') fields.data = { text: text.trim() };
+    else if (kind === 'food') fields.data = { meal, ate, gut };
+    else if (kind === 'school') fields.data = { summary: text.trim() };
+    else if (kind === 'health') fields.data = { symptom: symptom.trim(), symptom_key: symptomKey, value: value.trim() };
+
+    const counted = (k: EventKind, d: Record<string, unknown>) => (k === 'dose' && (d.status === 'given' || d.status === 'late') ? String(d.medicine_id) : null);
+    const was = counted(ev.kind, oldData);
+    const nowCounted = counted(kind, fields.data);
+    const stockUndos: ((() => Promise<void>) | null)[] = [];
+    if (was !== nowCounted) {
+      if (was) stockUndos.push(await moveStock(was, 1));
+      if (nowCounted) stockUndos.push(await moveStock(nowCounted, -1));
+    }
+    await repos.events.update(ev.id, fields);
+    await repos.events.setTags(ev.id, tags);
+    const oldHelped = oldTags.filter((x) => x.type === 'helped').map((x) => x.tag);
+    const newHelped = tags.filter((x) => x.type === 'helped').map((x) => x.tag);
+    const counts: { id: string; count: number }[] = [];
+    for (const item of data.playbook) {
+      const delta = Number(newHelped.includes(item.text)) - Number(oldHelped.includes(item.text));
+      if (!delta) continue;
+      counts.push({ id: item.id, count: item.helped_count });
+      await repos.playbook.update(item.id, { helped_count: Math.max(0, item.helped_count + delta) });
+    }
+    return async () => {
+      await repos.events.update(ev.id, { kind: ev.kind, started_at: ev.started_at, ended_at: ev.ended_at, size: ev.size, place: ev.place, data: ev.data, note: ev.note, noted_by: ev.noted_by });
+      await repos.events.setTags(ev.id, oldTags.map((x) => ({ type: x.type, tag: x.tag })));
+      for (const u of stockUndos.reverse()) await u?.();
+      for (const c of counts) await repos.playbook.update(c.id, { helped_count: c.count });
+    };
+  }
 
   async function save() {
     if (busy) return;
     setBusy(true);
-    const at = new Date(`${today}T${time}:00`);
-    const started = isoWithOffset(at);
+    const at = new Date(`${editing ? dayOf(editing.started_at) : today}T${time}:00`);
+    const started = editing && time === editing.started_at.slice(11, 16) ? editing.started_at : isoWithOffset(at);
     const by = notedBy?.trim() || null;
     if (by) await rememberNoter(ctx, by);
     let undo: (() => Promise<void>) | undefined;
+    if (editing) {
+      undo = await saveEdit(editing, at, started, by);
+      ctx.toast(L.saved, () => void undo!());
+      onClose();
+      return;
+    }
     const base = { started_at: started, ended_at: null as string | null, size: null as number | null, place: null as string | null, note: note.trim(), noted_by: by, source: 'tap' as const };
 
     if (kind === 'dose') {

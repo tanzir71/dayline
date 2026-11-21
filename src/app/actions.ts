@@ -3,6 +3,7 @@ import type { DayEvent, DoseStatus, EventTag, Medicine } from '../data/types';
 import { isoWithOffset } from '../lib/time';
 import { doseStatusAt } from '../domain/schedule';
 import { fmt } from '../i18n';
+import { isNative } from '../native/is-native';
 
 /** Record a dose; given doses count down the refill stock. Returns an undo. */
 export async function markDose(
@@ -58,6 +59,10 @@ export async function rememberNoter(ctx: Pick<AppCtx, 'repos'>, name: string): P
 
 /** Download or share a file made on this phone. */
 export async function deliverFile(file: File, opts: { share?: boolean; title?: string } = {}): Promise<'shared' | 'downloaded' | 'cancelled'> {
+  if (import.meta.env.PUBLIC_NATIVE === '1' && isNative()) {
+    const { shareFiles } = await import('../native/bridge');
+    return shareFiles([file], opts.title);
+  }
   if (opts.share && navigator.canShare?.({ files: [file] })) {
     try {
       await navigator.share({ files: [file], title: opts.title ?? file.name });

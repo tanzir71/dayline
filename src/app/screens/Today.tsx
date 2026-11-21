@@ -38,6 +38,7 @@ export function Today() {
     [],
     { last: null as string | null, first: null as string | null },
   );
+  const voiceUsed = useLive(async () => (import.meta.env.PUBLIC_NATIVE === '1' && ctx.native ? repos.settings.get<string | null>('voice.usedAt', null) : 'web'), [], 'web' as string | null);
   const name = child!.name;
 
   const planned = plannedDoses(day, data.medicines, data.schedules, events);
@@ -159,6 +160,17 @@ export function Today() {
       </header>
 
       <main id="main" class="column column--wide app-main stack today-layout" style="--stack-gap: 10px">
+        {import.meta.env.PUBLIC_NATIVE === '1' && ctx.native ? (
+          <div class="quick-bar speak-dock" role="group" aria-label={t.today.quickTitle}>
+            <a class="btn btn--primary speak-dock__speak" href="#/today?sheet=speak">
+              <Icon name="mic" size={24} />
+              {t.voice.speak}
+            </a>
+            <a class="btn btn--secondary quick-bar__more" href="#/today?sheet=log&kind=sleep" aria-label={t.today.more}>
+              <Icon name="plus" size={22} />
+            </a>
+          </div>
+        ) : (
         <div class="quick-bar" role="group" aria-label={t.today.quickTitle}>
           <a class="btn btn--hard-moment" href="#/today?sheet=log&kind=hard_moment">
             {t.kinds.hard_moment}
@@ -173,6 +185,7 @@ export function Today() {
             <Icon name="plus" size={20} />
           </a>
         </div>
+        )}
         {quiet && (
           <a class="help-card" href="#/help-now">
             <span>
@@ -251,6 +264,13 @@ export function Today() {
             </a>
           )}
         </section>
+
+        {import.meta.env.PUBLIC_NATIVE === '1' && ctx.native && !voiceUsed && (
+          <p class="voice-hint">
+            <Icon name="mic" size={18} />
+            <span class="t-caption-13 muted">{t.voice.hint}</span>
+          </p>
+        )}
 
         {!quiet && (
           <a class="help-bar" href="#/help-now">

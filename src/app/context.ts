@@ -50,6 +50,8 @@ export interface AppCtx {
   toast: (message: string, undo?: () => void) => void;
   emergency: string;
   flags: { playbook: boolean; insights: boolean; desktop: boolean };
+  /** Running inside the Android app. */
+  native: boolean;
 }
 
 export const Ctx = createContext<AppCtx | null>(null);

@@ -1,9 +1,11 @@
 ---
+import { getLatest } from '../lib/android';
 import SitePage from '../layouts/SitePage.astro';
 import { getDict } from '../i18n';
 import { href, localHref, type Lang } from '../lib/paths';
 import { Overline } from '../components/Overline';
 import { Icon } from '../components/Icon';
+import AndroidBand from '../components/AndroidBand.astro';
 import '../styles/landing.css';
 
 interface Props {
@@ -18,6 +20,9 @@ const usefulTones = ['win', 'hard-moment', 'monsoon', 'medicine'];
 const workflowTones = ['medicine', 'hard-moment', 'sleep', 'monsoon', 'win'];
 const audienceTones = ['monsoon', 'win', 'neutral', 'medicine'];
 const screens = ['see-help-now.png', 'see-brief.png', 'see-guides.png', 'see-change.png'];
+// The Android feature is only advertised on the website, never inside the Android app.
+// The Speak item appears once there is an APK to download.
+const features = (await getLatest()) ? L.features.items : L.features.items.filter((f) => f.badge !== 'A1');
 const badgeTone = (badge: string) =>
   badge.startsWith('M0') ? 'marigold' : badge.startsWith('M1') ? 'monsoon' : badge.startsWith('M2') ? 'medicine' : 'sleep';
 ---
@@ -99,6 +104,8 @@ const badgeTone = (badge: string) =>
     </div>
   </section>
 
+  <AndroidBand lang={lang} />
+
   <section class="band band--surface" aria-labelledby="useful-title">
     <div class="wrap">
       <header class="band__head">
@@ -178,7 +185,7 @@ const badgeTone = (badge: string) =>
       </header>
       <ul class="grid-4" role="list">
         {
-          L.features.items.map((f) => (
+          features.map((f) => (
             <li class="feature-card">
               <span class={`feature-card__badge tone-${badgeTone(f.badge)}`}>{f.badge}</span>
               <h3 class="t-heading-17">{f.title}</h3>

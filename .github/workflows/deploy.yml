@@ -36,6 +36,15 @@ jobs:
       - name: Check (types, lint, unit tests, content rules)
         run: npm run check
 
+      - name: Fetch latest Android release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          mkdir -p public/android
+          gh release download --repo tanzir71/dayline-android \
+            --pattern 'dayline-*.apk' --pattern 'latest.json' \
+            --dir public/android --clobber || echo "No Android release yet"
+
       - name: Build
         run: npm run build
         env:

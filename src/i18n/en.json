@@ -193,6 +193,11 @@
           "badge": "M3",
           "title": "Hospital passport",
           "body": "One page for the ER, in Bangla and English"
+        },
+        {
+          "badge": "A1",
+          "title": "Speak to log",
+          "body": "Android app: say what happened, in Bangla or English, and it goes on the day line."
         }
       ],
       "live": "Live",
@@ -245,6 +250,20 @@
     "cta": {
       "title": "Start with the guides today. No sign-up.",
       "hint": "On Android, add it to your home screen from Chrome. On iPhone, use Share, then Add to Home Screen."
+    },
+    "android": {
+      "overline": "New · Android app",
+      "title": "Say it. It goes on the line.",
+      "body": "Tap Speak and tell Dayline what happened, in Bangla or English. Doses, sleep, hard moments and meals land on the day line by themselves. Your words become text on the phone and never leave it.",
+      "download": "Download for Android",
+      "howTo": "How to install",
+      "meta": "Version {version} · {size} · Android 8 or newer · free",
+      "reassure": [
+        "Everything in the web app, plus Speak",
+        "Bring your record over with a backup file",
+        "Works offline, no account"
+      ],
+      "notPlay": "It isn’t on Google Play yet, so Android asks before installing. That’s expected. The install page shows how, and how to check the file."
     },
     "mock": {
       "child": "Rafi",
@@ -1225,7 +1244,106 @@
     },
     "install": {
       "desktop": "Install app"
+    },
+    "voice": {
+      "speak": "Speak",
+      "hint": "Tap Speak and say it your way: “gave his medicine at 8, slept badly”.",
+      "listening": "Listening",
+      "listenHint": "Say several things at once. Pause when you’re done.",
+      "offline": "Offline. Your words stay on this phone.",
+      "saved": "Saved to today · {n}",
+      "tapToFix": "Tap one to fix it. This closes by itself.",
+      "undo": "Undo",
+      "question": "One question",
+      "newMedicine": "“{name}” isn’t in {child}’s medicines.",
+      "newMedicineBody": "Add it and the {time} dose goes on the line.",
+      "addIt": "Add {name}",
+      "another": "It was another one",
+      "keepNote": "Keep as a note",
+      "whichMedicine": "Which medicine?",
+      "closeKeeps": "If you close this, the words are kept as a note.",
+      "notCaught": "Didn’t catch that. Try again, or type.",
+      "typeInstead": "Type instead",
+      "typePlaceholder": "What happened?",
+      "setupTitle": "Speak instead of tapping",
+      "setupBody": "Say what happened in your own words. Dayline puts it on the day line: doses, sleep, hard moments, food, school.",
+      "mic": "Microphone",
+      "micSub": "Listens only after you tap Speak",
+      "bangla": "Bangla voice",
+      "banglaSub": "Download once, then works offline",
+      "banglaNone": "Not available offline on this phone",
+      "english": "English voice",
+      "ready": "Ready",
+      "privacy": "Speech becomes text on this phone. Nothing is sent anywhere.",
+      "fallbackTitle": "Speak in English, or type in Bangla.",
+      "fallbackBody": "Dayline understands both. Typing uses the same smart sorting.",
+      "tryIt": "Try it: “{name} slept well”",
+      "tryEnglish": "Try it in English",
+      "byVoice": "voice",
+      "whoSpeaking": "Who is speaking",
+      "checkUpdates": "Check for updates",
+      "checkUpdatesBody": "The app never checks online by itself. This opens the Dayline website, which tells you if there is a newer version.",
+      "allow": "Allow",
+      "download": "Download",
+      "downloading": "Downloading",
+      "thisApp": "This app",
+      "voiceRow": "Voice",
+      "voiceOffline": "{langs} · offline",
+      "typingOnly": "Typing only",
+      "reminders": "Dose reminders",
+      "remindersOn": "On · with Given and Speak buttons",
+      "remindersOff": "Off",
+      "remindersBlocked": "Notifications are off for Dayline in Android settings.",
+      "actionGiven": "Given",
+      "actionLater": "In 15 min",
+      "reminderTitle": "{medicine} for {child}",
+      "version": "Dayline {version} for Android",
+      "shortcutsHint": "Long-press the Dayline icon on your home screen for Speak, Dose given and Help now."
     }
+  },
+  "androidPage": {
+    "title": "Dayline for Android",
+    "body": "Everything in the web app, plus Speak: say what happened and it goes on the day line.",
+    "metaLine": "APK · {size} · Android 8 or newer · {date}",
+    "stepsTitle": "Install in 3 steps",
+    "steps": [
+      {
+        "title": "Download",
+        "body": "Tap Download. If Chrome says the file might be harmful, tap Download anyway."
+      },
+      {
+        "title": "Allow Chrome, once",
+        "body": "Open the file. Android asks to allow installs from Chrome: tap Settings, turn on “Allow from this source”, then go back."
+      },
+      {
+        "title": "Install",
+        "body": "Tap Install. If Play Protect offers to scan the app, let it. Then open Dayline."
+      }
+    ],
+    "updateReady": "Update ready · {latest} is here. You have {have}.",
+    "updateBody": "Download it and install over the old one. Your record stays on the phone.",
+    "upToDate": "You have the latest version.",
+    "movingTitle": "Moving from the web app?",
+    "movingBody": "In the web app: Settings › Backup › Back up now. In the Android app: Settings › Backup › Restore, and pick that file.",
+    "whyTitle": "Why does Android warn me?",
+    "whyBody": "Dayline isn’t on Google Play yet, so Android checks with you first.",
+    "whyNoInternet": "The app has no internet permission, so it can’t send anything anywhere.",
+    "checkTitle": "Check the file (optional)",
+    "checkSha": "SHA-256 of {file}",
+    "checkCert": "Signing certificate (same for every version)",
+    "webInstead": "Prefer no download? Open the web app",
+    "comingSoon": "The Android app is coming soon. The web app works on every phone today.",
+    "sheetTitle": "Keep Dayline on this phone",
+    "sheetAppTitle": "Android app",
+    "sheetAppBadge": "Voice",
+    "sheetAppBody": "Speak to log, dose reminders on the lock screen. One download, {size}.",
+    "sheetWebTitle": "Add to home screen",
+    "sheetWebBody": "No download. Tap to log, no voice.",
+    "privacyTitle": "Android app",
+    "privacyMic": "The microphone is used only while the Speak sheet is open.",
+    "privacySpeech": "Speech is turned into text by Android’s on-device speech service, on the phone.",
+    "privacyReminders": "Dose reminders are scheduled on the phone.",
+    "privacyNoInternet": "The app has no internet permission."
   },
   "offline": {
     "metaTitle": "Offline · Dayline",

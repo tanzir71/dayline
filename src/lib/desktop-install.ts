@@ -15,20 +15,23 @@ function sync() {
   document.querySelectorAll<HTMLElement>('[data-install-desktop]').forEach((b) => (b.hidden = !show));
 }
 
-window.addEventListener('dayline:installable', sync);
-window.addEventListener('appinstalled', () => {
-  w.__daylineInstall = null;
+// The Android app is already installed: its buttons stay hidden.
+if (!import.meta.env.PUBLIC_NATIVE) {
+  window.addEventListener('dayline:installable', sync);
+  window.addEventListener('appinstalled', () => {
+    w.__daylineInstall = null;
+    sync();
+  });
+  new MutationObserver(sync).observe(document.body, { childList: true, subtree: true });
   sync();
-});
-new MutationObserver(sync).observe(document.body, { childList: true, subtree: true });
-sync();
 
-document.addEventListener('click', async (e) => {
-  const b = (e.target as HTMLElement | null)?.closest?.('[data-install-desktop]');
-  const ev = w.__daylineInstall;
-  if (!b || !ev) return;
-  await ev.prompt();
-  await ev.userChoice;
-  w.__daylineInstall = null;
-  sync();
-});
+  document.addEventListener('click', async (e) => {
+    const b = (e.target as HTMLElement | null)?.closest?.('[data-install-desktop]');
+    const ev = w.__daylineInstall;
+    if (!b || !ev) return;
+    await ev.prompt();
+    await ev.userChoice;
+    w.__daylineInstall = null;
+    sync();
+  });
+}

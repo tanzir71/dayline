@@ -10,5 +10,7 @@ test-results/
 .DS_Store
 supabase/.temp/
 dev-dist/
+public/android/
 *.tsbuildinfo
 .claude/
+.vitest/

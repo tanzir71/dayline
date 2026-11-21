@@ -1,6 +1,7 @@
 ---
 import SitePage from '../layouts/SitePage.astro';
 import { getDict } from '../i18n';
+import { getLatest } from '../lib/android';
 import type { Lang } from '../lib/paths';
 import '../styles/guides.css';
 
@@ -9,7 +10,10 @@ interface Props {
 }
 
 const { lang } = Astro.props;
-const P = getDict(lang).privacy;
+const d = getDict(lang);
+const P = d.privacy;
+const A = d.androidPage;
+const latest = await getLatest();
 ---
 
 <SitePage lang={lang} title={P.metaTitle} description={P.description} path="privacy/" current="privacy">
@@ -25,6 +29,17 @@ const P = getDict(lang).privacy;
           <p class="t-body-15">{s.body}</p>
         </section>
       ))
+    }
+    {
+      latest && (
+        <section>
+          <h2 class="t-heading-17">{A.privacyTitle}</h2>
+          <p class="t-body-15">{A.privacyMic}</p>
+          <p class="t-body-15">{A.privacySpeech}</p>
+          <p class="t-body-15">{A.privacyReminders}</p>
+          {latest.internet === false && <p class="t-body-15">{A.privacyNoInternet}</p>}
+        </section>
+      )
     }
     <p class="t-body-15">
       <a href="https://github.com/tanzir71/dayline/issues">{P.contact}</a>
