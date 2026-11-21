@@ -2,7 +2,7 @@
 
 Each milestone release is tagged `v0.<milestone>.0` and deployed to GitHub Pages.
 
-## Unreleased: Android app
+## Android app v1.0.0 (2026-11-22)
 
 - Speak (Android app only): say what happened in Bangla or English, or type it. A rule-based parser on the phone turns it into day-line entries, saved at once with Undo.
 - Entries saved by voice show “voice”. Quick log can now fix a saved entry.
