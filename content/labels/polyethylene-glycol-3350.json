@@ -3,7 +3,7 @@
  "source": "U.S. FDA drug label via openFDA",
  "set_id": "006a9eca-400f-47f5-bee5-facf7034043e",
  "effective_time": "20260902",
- "fetched_at": "2026-11-20",
+ "fetched_at": "2026-11-23",
  "dailymed_url": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=006a9eca-400f-47f5-bee5-facf7034043e",
  "sections": {
   "indications": "Use • relieves occasional constipation (irregularity) • generally produces a bowel movement in 1 to 3 days",

@@ -3,7 +3,7 @@
  "source": "U.S. FDA drug label via openFDA",
  "set_id": "00c6d67a-bb11-4884-9eeb-4e1b8701a08b",
  "effective_time": "20260908",
- "fetched_at": "2026-11-20",
+ "fetched_at": "2026-11-23",
  "dailymed_url": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=00c6d67a-bb11-4884-9eeb-4e1b8701a08b",
  "sections": {
   "indications": "INDICATIONS AND USAGE Clonidine hydrochloride tablets are indicated in the treatment of hypertension. Clonidine hydrochloride tablets may be employed alone or concomitantly with other antihypertensive agents.",

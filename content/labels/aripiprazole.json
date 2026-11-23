@@ -3,7 +3,7 @@
  "source": "U.S. FDA drug label via openFDA",
  "set_id": "02a4af27-c83c-4166-950c-7a1cb12d198d",
  "effective_time": "20260305",
- "fetched_at": "2026-11-20",
+ "fetched_at": "2026-11-23",
  "dailymed_url": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=02a4af27-c83c-4166-950c-7a1cb12d198d",
  "sections": {
   "indications": "1 INDICATIONS AND USAGE Aripiprazole is indicated for the treatment of: • Schizophrenia • Irritability Associated with Autistic Disorder • Treatment of Tourette’s Disorder Aripiprazole is an atypical antipsychotic. The oral formulations are indicated for: • Schizophrenia (14.1) • Irritability Associated with Autistic Disorder (14.4) • Treatment of Tourette’s disorder (14.5)",
